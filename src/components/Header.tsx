@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Menu, X, ChevronDown, LineChart, MessageSquare } from 'lucide-react';
@@ -21,7 +20,7 @@ const Header = () => {
       }
 
       // Track active section based on scroll position
-      const sections = ['home', 'about', 'donna', 'data-analysis', 'whatsapp', 'demo', 'waitlist'];
+      const sections = ['home', 'about', 'whatsapp', 'data-analysis', 'demo', 'waitlist'];
       for (const section of sections) {
         const element = document.getElementById(section);
         if (element) {
@@ -50,19 +49,14 @@ const Header = () => {
       icon: null
     }, 
     {
-      id: 'donna',
-      label: 'Donna',
-      icon: <MessageSquare size={16} className="mr-1" />
+      id: 'whatsapp',
+      label: 'WhatsApp',
+      icon: null
     }, 
     {
       id: 'data-analysis',
       label: 'Análise',
       icon: <LineChart size={16} className="mr-1" />
-    }, 
-    {
-      id: 'whatsapp',
-      label: 'WhatsApp',
-      icon: null
     }, 
     {
       id: 'demo',
