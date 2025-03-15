@@ -14,7 +14,7 @@ const Footer = () => {
               <a href="#" className="flex items-center">
                 <img src="/sightx-logo.svg" alt="SightX Logo" className="h-10 mr-2" />
                 <span className="text-2xl font-bold text-white">
-                  Sight<span className="text-black">X</span>
+                  Sight<span className="text-white">X</span>
                 </span>
               </a>
             </div>
