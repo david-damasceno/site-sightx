@@ -96,10 +96,6 @@ const ChatSimulation = () => {
     const fullResponse = questions.find(q => q.id === activeQuestion)?.response || "";
     return fullResponse.substring(0, typingIndex);
   };
-  return <section id="demo" className="section-padding bg-gradient-to-b from-gray-50 to-white relative overflow-hidden">
-      
-      
-      
-    </section>;
+  return;
 };
 export default ChatSimulation;
