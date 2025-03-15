@@ -1,4 +1,3 @@
-
 import { ArrowUp } from 'lucide-react';
 
 const Footer = () => {
@@ -15,8 +14,11 @@ const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-12 gap-8 mb-12">
           <div className="md:col-span-4">
             <div className="mb-6">
-              <a href="#" className="text-2xl font-bold">
-                Sight<span className="text-sightx-green">X</span>
+              <a href="#" className="flex items-center">
+                <img src="/sightx-logo.svg" alt="SightX Logo" className="h-10 mr-2" />
+                <span className="text-2xl font-bold text-white">
+                  Sight<span className="text-sightx-green">X</span>
+                </span>
               </a>
             </div>
             <p className="text-gray-400 mb-6">

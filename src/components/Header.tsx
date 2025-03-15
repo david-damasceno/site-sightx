@@ -14,8 +14,11 @@ const Header = () => {
     <header className="fixed top-0 left-0 w-full bg-white/90 backdrop-blur-sm z-50 shadow-sm">
       <div className="container-custom flex justify-between items-center h-20">
         <div className="flex items-center">
-          <a href="#" className="text-2xl font-bold text-sightx-purple">
-            Sight<span className="text-sightx-green">X</span>
+          <a href="#" className="flex items-center">
+            <img src="/sightx-logo.svg" alt="SightX Logo" className="h-10 mr-2" />
+            <span className="text-2xl font-bold text-sightx-purple">
+              Sight<span className="text-sightx-green">X</span>
+            </span>
           </a>
         </div>
 
