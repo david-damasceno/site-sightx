@@ -163,4 +163,16 @@
   .input-custom {
     @apply w-full border-2 border-gray-200 rounded-md py-3 px-4 focus:ring-2 focus:ring-sightx-purple focus:border-transparent outline-none;
   }
+  
+  .data-tab {
+    @apply px-4 py-2 flex items-center justify-center text-sm font-medium transition-all;
+  }
+  
+  .data-tab[data-state="active"] {
+    @apply text-sightx-purple bg-white;
+  }
+  
+  .data-tab[data-state="inactive"] {
+    @apply text-gray-600 hover:text-sightx-purple;
+  }
 }
