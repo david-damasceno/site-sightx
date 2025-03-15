@@ -1,10 +1,7 @@
-
 import { ArrowRight, BarChart2, Database, LineChart } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-
 const Hero = () => {
-  return (
-    <section id="home" className="pt-32 pb-20 md:pt-40 md:pb-32 overflow-hidden">
+  return <section id="home" className="pt-32 pb-20 md:pt-40 md:pb-32 overflow-hidden py-[100px]">
       <div className="container-custom">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           <div className="animate-fade-in">
@@ -59,8 +56,6 @@ const Hero = () => {
           </div>
         </div>
       </div>
-    </section>
-  );
+    </section>;
 };
-
 export default Hero;
