@@ -1,30 +1,19 @@
-
 import { useState, useEffect } from 'react';
 import { Bell, Brain, LineChart, MessageCircle, TrendingUp, Sparkles, Bot, User } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-
 const DonnaSection = () => {
   const [activeMessage, setActiveMessage] = useState(0);
   const [isTyping, setIsTyping] = useState(false);
   const [typedText, setTypedText] = useState('');
-  
-  const messages = [
-    "Bom dia, Marcos! Analisei seus dados de vendas e notei uma oportunidade.",
-    "Suas vendas de acessórios aumentaram 23% quando oferecidos junto com o produto principal.",
-    "Recomendo criar pacotes promocionais combinando esses itens para aumentar o ticket médio."
-  ];
-  
+  const messages = ["Bom dia, Marcos! Analisei seus dados de vendas e notei uma oportunidade.", "Suas vendas de acessórios aumentaram 23% quando oferecidos junto com o produto principal.", "Recomendo criar pacotes promocionais combinando esses itens para aumentar o ticket médio."];
   const userResponse = "Ótima ideia, Donna! Pode criar uma sugestão de pacotes para implementarmos na próxima semana?";
-  
   useEffect(() => {
     if (activeMessage < messages.length) {
       setIsTyping(true);
       setTypedText('');
-      
       let currentText = '';
       const message = messages[activeMessage];
       let index = 0;
-      
       const typeInterval = setInterval(() => {
         if (index < message.length) {
           currentText += message[index];
@@ -33,7 +22,7 @@ const DonnaSection = () => {
         } else {
           clearInterval(typeInterval);
           setIsTyping(false);
-          
+
           // Auto advance to next message after delay
           if (activeMessage < messages.length - 1) {
             const timer = setTimeout(() => {
@@ -43,17 +32,11 @@ const DonnaSection = () => {
           }
         }
       }, 35);
-      
       return () => clearInterval(typeInterval);
     }
   }, [activeMessage, messages]);
-
-  return (
-    <section id="donna" className="py-20 relative overflow-hidden bg-gradient-to-b from-white to-gray-50">
-      <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute -top-10 -right-10 w-72 h-72 bg-purple-100 rounded-full blur-3xl opacity-30"></div>
-        <div className="absolute bottom-40 -left-20 w-80 h-80 bg-green-100 rounded-full blur-3xl opacity-30"></div>
-      </div>
+  return <section id="donna" className="py-20 relative overflow-hidden bg-gradient-to-b from-white to-gray-50">
+      
       
       <div className="container-custom relative z-10">
         <div className="text-center max-w-3xl mx-auto mb-16">
@@ -69,10 +52,9 @@ const DonnaSection = () => {
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
           <div className="lg:col-span-5 space-y-6 order-2 lg:order-1">
-            <div 
-              className="bg-white p-6 rounded-xl shadow-md transform transition-all duration-500 hover:shadow-xl hover:-translate-y-1"
-              style={{ borderLeft: '4px solid #450D82' }}
-            >
+            <div className="bg-white p-6 rounded-xl shadow-md transform transition-all duration-500 hover:shadow-xl hover:-translate-y-1" style={{
+            borderLeft: '4px solid #450D82'
+          }}>
               <div className="flex items-start gap-5">
                 <div className="bg-gradient-to-br from-sightx-purple/20 to-sightx-purple/5 p-3 rounded-lg">
                   <Bell className="text-sightx-purple h-6 w-6" />
@@ -84,10 +66,9 @@ const DonnaSection = () => {
               </div>
             </div>
 
-            <div 
-              className="bg-white p-6 rounded-xl shadow-md transform transition-all duration-500 hover:shadow-xl hover:-translate-y-1"
-              style={{ borderLeft: '4px solid #450D82' }}
-            >
+            <div className="bg-white p-6 rounded-xl shadow-md transform transition-all duration-500 hover:shadow-xl hover:-translate-y-1" style={{
+            borderLeft: '4px solid #450D82'
+          }}>
               <div className="flex items-start gap-5">
                 <div className="bg-gradient-to-br from-sightx-purple/20 to-sightx-purple/5 p-3 rounded-lg">
                   <Brain className="text-sightx-purple h-6 w-6" />
@@ -99,10 +80,9 @@ const DonnaSection = () => {
               </div>
             </div>
 
-            <div 
-              className="bg-white p-6 rounded-xl shadow-md transform transition-all duration-500 hover:shadow-xl hover:-translate-y-1"
-              style={{ borderLeft: '4px solid #450D82' }}
-            >
+            <div className="bg-white p-6 rounded-xl shadow-md transform transition-all duration-500 hover:shadow-xl hover:-translate-y-1" style={{
+            borderLeft: '4px solid #450D82'
+          }}>
               <div className="flex items-start gap-5">
                 <div className="bg-gradient-to-br from-sightx-purple/20 to-sightx-purple/5 p-3 rounded-lg">
                   <TrendingUp className="text-sightx-purple h-6 w-6" />
@@ -136,44 +116,25 @@ const DonnaSection = () => {
                 
                 {/* Chat content */}
                 <div className="p-6 h-[calc(100%-140px)] overflow-y-auto flex flex-col space-y-6">
-                  {messages.map((message, index) => (
-                    index < activeMessage || (index === activeMessage && !isTyping) ? (
-                      <div key={index} className="flex items-start gap-3 animate-fade-in">
+                  {messages.map((message, index) => index < activeMessage || index === activeMessage && !isTyping ? <div key={index} className="flex items-start gap-3 animate-fade-in">
                         <div className="bg-sightx-purple text-white p-2 rounded-full">
-                          {index === 0 ? (
-                            <MessageCircle className="h-5 w-5" />
-                          ) : index === 1 ? (
-                            <LineChart className="h-5 w-5" />
-                          ) : (
-                            <Brain className="h-5 w-5" />
-                          )}
+                          {index === 0 ? <MessageCircle className="h-5 w-5" /> : index === 1 ? <LineChart className="h-5 w-5" /> : <Brain className="h-5 w-5" />}
                         </div>
                         <div className="bg-gray-100 rounded-2xl p-4 max-w-[80%] shadow-sm">
                           <p className="font-medium text-gray-800">{message}</p>
                         </div>
-                      </div>
-                    ) : index === activeMessage && isTyping ? (
-                      <div key={index} className="flex items-start gap-3 animate-fade-in">
+                      </div> : index === activeMessage && isTyping ? <div key={index} className="flex items-start gap-3 animate-fade-in">
                         <div className="bg-sightx-purple text-white p-2 rounded-full">
-                          {index === 0 ? (
-                            <MessageCircle className="h-5 w-5" />
-                          ) : index === 1 ? (
-                            <LineChart className="h-5 w-5" />
-                          ) : (
-                            <Brain className="h-5 w-5" />
-                          )}
+                          {index === 0 ? <MessageCircle className="h-5 w-5" /> : index === 1 ? <LineChart className="h-5 w-5" /> : <Brain className="h-5 w-5" />}
                         </div>
                         <div className="bg-gray-100 rounded-2xl p-4 max-w-[80%] shadow-sm">
                           <p className="font-medium text-gray-800">{typedText}
                             <span className="inline-block w-2 h-4 bg-gray-400 ml-1 animate-pulse"></span>
                           </p>
                         </div>
-                      </div>
-                    ) : null
-                  ))}
+                      </div> : null)}
                   
-                  {activeMessage === messages.length - 1 && !isTyping && (
-                    <div className="flex justify-end animate-fade-in">
+                  {activeMessage === messages.length - 1 && !isTyping && <div className="flex justify-end animate-fade-in">
                       <div className="flex items-start gap-3 flex-row-reverse">
                         <div className="bg-gray-700 text-white p-2 rounded-full">
                           <User className="h-5 w-5" />
@@ -182,8 +143,7 @@ const DonnaSection = () => {
                           <p className="font-medium">{userResponse}</p>
                         </div>
                       </div>
-                    </div>
-                  )}
+                    </div>}
                 </div>
                 
                 {/* Chat input */}
@@ -206,21 +166,16 @@ const DonnaSection = () => {
         </div>
         
         <div className="mt-16 text-center">
-          <Button 
-            onClick={() => {
-              setActiveMessage(0);
-              setIsTyping(true);
-              setTypedText('');
-            }}
-            className="bg-sightx-purple hover:bg-sightx-purple/90 text-white"
-          >
+          <Button onClick={() => {
+          setActiveMessage(0);
+          setIsTyping(true);
+          setTypedText('');
+        }} className="bg-sightx-purple hover:bg-sightx-purple/90 text-white">
             <MessageCircle className="mr-2 h-4 w-4" />
             Veja Donna em ação
           </Button>
         </div>
       </div>
-    </section>
-  );
+    </section>;
 };
-
 export default DonnaSection;
