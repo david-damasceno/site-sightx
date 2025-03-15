@@ -32,6 +32,9 @@ const Header = () => {
         <div className="flex items-center">
           <a href="#" className="flex items-center">
             <img src="/sightx-logo.svg" alt="SightX Logo" className="h-10 mr-2" />
+            <span className={`text-xl font-bold transition-colors ${scrolled ? 'text-sightx-purple' : 'text-sightx-black'}`}>
+              Sight<span className="text-sightx-green">X</span>
+            </span>
           </a>
         </div>
 
@@ -78,7 +81,7 @@ const Header = () => {
 
       {/* Mobile Navigation */}
       {mobileMenuOpen && (
-        <div className="md:hidden fixed inset-0 top-20 bg-white z-40 animate-fade-in">
+        <div className="md:hidden fixed inset-0 top-20 bg-white/95 backdrop-blur-md z-40 animate-fade-in">
           <nav className="flex flex-col items-center pt-8 space-y-6">
             <a href="#home" className="text-xl font-medium hover:text-sightx-purple transition-colors" onClick={() => setMobileMenuOpen(false)}>
               Home
@@ -98,8 +101,8 @@ const Header = () => {
             <a href="#demo" className="text-xl font-medium hover:text-sightx-purple transition-colors" onClick={() => setMobileMenuOpen(false)}>
               Demo
             </a>
-            <Button className="btn-primary mt-6 w-3/4" onClick={() => setMobileMenuOpen(false)}>
-              Entrar na Lista
+            <Button className="btn-primary mt-6 w-3/4" onClick={() => setMobileMenuOpen(false)} asChild>
+              <a href="#waitlist">Entrar na Lista</a>
             </Button>
           </nav>
         </div>

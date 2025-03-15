@@ -33,7 +33,7 @@
     --input: 214.3 31.8% 91.4%;
     --ring: 272 80% 28%;
 
-    --radius: 0.5rem;
+    --radius: 0.75rem;
 
     --sidebar-background: 0 0% 98%;
     --sidebar-foreground: 240 5.3% 26.1%;
@@ -95,15 +95,15 @@
   }
 
   h1, h2, h3, h4, h5, h6 {
-    @apply font-bold;
+    @apply font-bold tracking-tight;
   }
 
   h1 {
-    @apply text-4xl md:text-5xl lg:text-6xl tracking-tight;
+    @apply text-4xl md:text-5xl lg:text-6xl;
   }
   
   h2 {
-    @apply text-3xl md:text-4xl tracking-tight;
+    @apply text-3xl md:text-4xl;
   }
   
   h3 {
@@ -113,11 +113,15 @@
   p {
     @apply text-base md:text-lg leading-relaxed;
   }
+
+  a {
+    @apply transition-all duration-300;
+  }
 }
 
 @layer components {
   .gradient-text {
-    @apply bg-clip-text text-transparent bg-gradient-to-r from-sightx-purple to-sightx-green;
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-sightx-purple via-purple-600 to-sightx-green;
   }
 
   .gradient-bg {
@@ -137,7 +141,7 @@
   }
 
   .chat-bubble {
-    @apply rounded-lg p-4 max-w-[80%] md:max-w-[60%];
+    @apply rounded-lg p-4 max-w-[80%] md:max-w-[60%] shadow-soft;
   }
 
   .chat-bubble-user {
@@ -161,7 +165,7 @@
   }
 
   .input-custom {
-    @apply w-full border-2 border-gray-200 rounded-md py-3 px-4 focus:ring-2 focus:ring-sightx-purple focus:border-transparent outline-none;
+    @apply w-full border-2 border-gray-200 rounded-md py-3 px-4 focus:ring-2 focus:ring-sightx-purple focus:border-transparent outline-none shadow-soft;
   }
   
   .data-tab {
@@ -169,7 +173,7 @@
   }
   
   .data-tab[data-state="active"] {
-    @apply text-sightx-purple bg-white;
+    @apply text-sightx-purple bg-white shadow-soft;
   }
   
   .data-tab[data-state="inactive"] {
@@ -185,7 +189,7 @@
   }
   
   .glass-effect {
-    @apply bg-white/70 backdrop-blur-md border border-white/20;
+    @apply bg-white/70 backdrop-blur-md border border-white/20 shadow-soft;
   }
   
   .section-title {
@@ -202,6 +206,42 @@
   
   .animated-gradient-bg {
     @apply bg-gradient-to-r from-sightx-purple via-sightx-green to-sightx-purple bg-size-200 animate-gradient-x;
+  }
+
+  .form-group {
+    @apply mb-4;
+  }
+  
+  .form-label {
+    @apply block text-sm font-medium text-gray-700 mb-1;
+  }
+  
+  .form-input {
+    @apply px-4 py-2 w-full border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-sightx-purple focus:border-transparent;
+  }
+  
+  .form-select {
+    @apply px-4 py-2 w-full border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-sightx-purple focus:border-transparent;
+  }
+  
+  .form-check {
+    @apply flex items-start;
+  }
+  
+  .form-check-input {
+    @apply h-4 w-4 text-sightx-purple focus:ring-sightx-purple border-gray-300 rounded mt-1;
+  }
+  
+  .form-check-label {
+    @apply ml-2 block text-sm text-gray-700;
+  }
+  
+  .form-error {
+    @apply mt-1 text-sm text-red-600;
+  }
+  
+  .form-success {
+    @apply mt-1 text-sm text-green-600;
   }
 }
 
@@ -244,4 +284,77 @@
 
 .shadow-float {
   box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.05), 0 10px 10px -5px rgba(0, 0, 0, 0.01);
+}
+
+/* Custom animations */
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+.animate-float {
+  animation: float 5s ease-in-out infinite;
+}
+
+@keyframes pulse-soft {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.8;
+  }
+}
+
+.animate-pulse-soft {
+  animation: pulse-soft 3s ease-in-out infinite;
+}
+
+/* Modern scrollbar styling */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.05);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.3);
+}
+
+/* Improved shadows */
+.shadow-card {
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+.shadow-button {
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Modern button styles */
+.modern-button {
+  @apply py-2.5 px-5 rounded-md transition-all duration-300 font-medium;
+}
+
+.modern-button-primary {
+  @apply modern-button bg-sightx-purple text-white hover:bg-opacity-90 hover:shadow-lg active:scale-95;
+}
+
+.modern-button-secondary {
+  @apply modern-button bg-sightx-green text-white hover:bg-opacity-90 hover:shadow-lg active:scale-95;
+}
+
+.modern-button-outline {
+  @apply modern-button border-2 border-sightx-purple text-sightx-purple hover:bg-sightx-purple/10 active:scale-95;
 }

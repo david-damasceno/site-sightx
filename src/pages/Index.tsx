@@ -13,14 +13,20 @@ const Index = () => {
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
-      <main>
+      <main className="flex-1">
         <Hero />
-        <About />
+        <div className="bg-gray-50">
+          <About />
+        </div>
         <DonnaSection />
-        <AnalysisTabs />
+        <div className="bg-gray-50">
+          <AnalysisTabs />
+        </div>
         <WhatsAppSection />
-        <ChatSimulation />
-        <CTASection />
+        <div className="bg-gray-50" id="demo">
+          <ChatSimulation />
+        </div>
+        <CTASection id="waitlist" />
       </main>
       <Footer />
     </div>
