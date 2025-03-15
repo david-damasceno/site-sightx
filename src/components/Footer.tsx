@@ -1,4 +1,6 @@
+
 import { ArrowUp } from 'lucide-react';
+
 const Footer = () => {
   const scrollToTop = () => {
     window.scrollTo({
@@ -6,7 +8,9 @@ const Footer = () => {
       behavior: 'smooth'
     });
   };
-  return <footer className="bg-sightx-black text-white pt-16 pb-8">
+
+  return (
+    <footer className="bg-sightx-black text-white pt-16 pb-8">
       <div className="container-custom">
         <div className="grid grid-cols-1 md:grid-cols-12 gap-8 mb-12">
           <div className="md:col-span-4">
@@ -96,7 +100,7 @@ const Footer = () => {
           </div>
         </div>
         
-        <div className="border-t border-gray-800 pt-8 flex flex-col md:flex-row justify-between items-center">
+        <div className="border-t border-gray-800 pt-6 flex flex-col md:flex-row justify-between items-center">
           <p className="text-gray-500 text-sm mb-4 md:mb-0">
             &copy; {new Date().getFullYear()} SightX. Todos os direitos reservados.
           </p>
@@ -111,6 +115,8 @@ const Footer = () => {
           </button>
         </div>
       </div>
-    </footer>;
+    </footer>
+  );
 };
+
 export default Footer;

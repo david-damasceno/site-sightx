@@ -50,18 +50,18 @@ const WhatsAppSection = () => {
   };
 
   return (
-    <section id="whatsapp" className="section-padding py-20 overflow-hidden">
+    <section id="whatsapp" className="py-16 md:py-20 overflow-hidden">
       <div className="container-custom">
-        <div className="section-title">
-          <h2>SightX <span className="gradient-text">no WhatsApp</span></h2>
-          <p className="text-gray-600">
+        <div className="text-center max-w-3xl mx-auto mb-12">
+          <h2 className="text-3xl md:text-4xl font-bold mb-4">SightX <span className="gradient-text">no WhatsApp</span></h2>
+          <p className="text-gray-600 text-lg">
             Receba insights e notificações diretamente no seu WhatsApp, mantendo você informado onde quer que esteja.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center mt-16">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center mt-12">
           <div className="relative">
-            <div className="relative bg-white shadow-xl rounded-3xl p-8 max-w-md mx-auto z-10 transform hover:scale-[1.02] transition-all duration-300">
+            <div className="relative bg-white shadow-xl rounded-3xl p-6 max-w-md mx-auto z-10 transform hover:scale-[1.02] transition-all duration-300">
               <div className="flex items-center justify-between mb-6">
                 <div className="flex items-center gap-2">
                   <div className="bg-green-500 w-10 h-10 rounded-full flex items-center justify-center">
@@ -113,9 +113,9 @@ const WhatsAppSection = () => {
             <div className="absolute bottom-1/3 -right-16 w-32 h-32 bg-sightx-purple opacity-20 rounded-full blur-3xl"></div>
           </div>
           
-          <div className="bg-white rounded-3xl shadow-lg p-8">
+          <div className="bg-white rounded-xl shadow-lg p-8">
             <div className="flex items-center gap-3 mb-6">
-              <div className="bg-sightx-purple/10 p-3 rounded-lg">
+              <div className="bg-gradient-to-br from-sightx-purple/20 to-sightx-purple/5 p-3 rounded-lg">
                 <Smartphone className="text-sightx-purple h-6 w-6" />
               </div>
               <h3 className="text-2xl font-bold">Receba atualizações no WhatsApp</h3>
@@ -127,31 +127,31 @@ const WhatsAppSection = () => {
             
             <form onSubmit={handleSubmit} className="space-y-5">
               <div>
-                <label htmlFor="phone" className="form-label">Número de WhatsApp</label>
+                <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-1">Número de WhatsApp</label>
                 <input
                   id="phone"
                   type="tel"
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
                   placeholder="(00) 00000-0000"
-                  className="input-custom w-full"
+                  className="w-full border-2 border-gray-200 rounded-md py-2 px-3 focus:ring-2 focus:ring-sightx-purple focus:border-transparent outline-none"
                 />
               </div>
               
               <div>
-                <label htmlFor="message" className="form-label">Mensagem</label>
+                <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-1">Mensagem</label>
                 <Textarea
                   id="message"
                   value={message}
                   onChange={(e) => setMessage(e.target.value)}
                   placeholder="Digite sua mensagem aqui..."
-                  className="input-custom min-h-[120px]"
+                  className="w-full min-h-[120px] border-2 border-gray-200 rounded-md py-2 px-3 focus:ring-2 focus:ring-sightx-purple focus:border-transparent outline-none"
                 />
               </div>
               
               <Button
                 type="submit"
-                className="w-full bg-sightx-green hover:bg-sightx-green/90 text-white font-medium flex items-center justify-center gap-2"
+                className="w-full bg-sightx-green hover:bg-sightx-green/90 text-white font-medium py-2.5 flex items-center justify-center gap-2"
                 disabled={isMessageSent}
               >
                 {isMessageSent ? (

@@ -13,41 +13,41 @@ const Hero = () => {
               <span>Tecnologia de ponta para PMEs</span>
             </div>
             
-            <h1 className="mb-5 leading-tight text-3xl md:text-4xl lg:text-5xl">
+            <h1 className="mb-5 leading-tight text-3xl sm:text-4xl lg:text-5xl font-bold">
               Transforme seus dados em{' '}
               <span className="gradient-text font-extrabold">decisões estratégicas</span>
             </h1>
             
-            <p className="text-gray-700 mb-6 text-base md:text-lg max-w-xl">
+            <p className="text-gray-700 mb-6 text-lg max-w-xl">
               A SightX é uma plataforma inteligente que transforma informações dispersas em insights estratégicos para PMEs.
               Pare de perder tempo analisando manualmente seus dados e comece a tomar decisões assertivas.
             </p>
             
             <div className="flex flex-wrap gap-3 mb-8">
-              <div className="flex items-center gap-2">
-                <div className="h-8 w-8 rounded-full bg-sightx-purple/10 flex items-center justify-center">
-                  <Brain size={16} className="text-sightx-purple" />
+              <div className="flex items-center gap-2 bg-white shadow-sm rounded-full px-3 py-1.5">
+                <div className="h-7 w-7 rounded-full bg-sightx-purple/10 flex items-center justify-center">
+                  <Brain size={14} className="text-sightx-purple" />
                 </div>
                 <span className="text-sm font-medium">IA Avançada</span>
               </div>
               
-              <div className="flex items-center gap-2">
-                <div className="h-8 w-8 rounded-full bg-sightx-purple/10 flex items-center justify-center">
-                  <LineChart size={16} className="text-sightx-purple" />
+              <div className="flex items-center gap-2 bg-white shadow-sm rounded-full px-3 py-1.5">
+                <div className="h-7 w-7 rounded-full bg-sightx-purple/10 flex items-center justify-center">
+                  <LineChart size={14} className="text-sightx-purple" />
                 </div>
                 <span className="text-sm font-medium">Análise Preditiva</span>
               </div>
               
-              <div className="flex items-center gap-2">
-                <div className="h-8 w-8 rounded-full bg-sightx-purple/10 flex items-center justify-center">
-                  <Database size={16} className="text-sightx-purple" />
+              <div className="flex items-center gap-2 bg-white shadow-sm rounded-full px-3 py-1.5">
+                <div className="h-7 w-7 rounded-full bg-sightx-purple/10 flex items-center justify-center">
+                  <Database size={14} className="text-sightx-purple" />
                 </div>
                 <span className="text-sm font-medium">Integração Fácil</span>
               </div>
             </div>
             
             <div className="flex flex-col sm:flex-row gap-3">
-              <Button className="bg-sightx-purple hover:bg-sightx-purple/90 text-white shadow-float flex items-center gap-2" asChild>
+              <Button className="bg-sightx-purple hover:bg-sightx-purple/90 text-white shadow-md hover:shadow-lg flex items-center gap-2" asChild>
                 <a href="#waitlist">Entrar na Lista de Espera <ArrowRight size={16} /></a>
               </Button>
               
@@ -78,7 +78,7 @@ const Hero = () => {
                 </div>
                 
                 <div className="grid grid-cols-2 gap-4">
-                  <div className="bg-gray-50 p-3 rounded-lg flex items-center gap-2 shadow-soft">
+                  <div className="bg-gray-50 p-3 rounded-lg flex items-center gap-2 shadow-sm">
                     <BarChart2 size={16} className="text-sightx-purple" />
                     <div>
                       <p className="text-xs text-gray-500">Conversão</p>
@@ -86,7 +86,7 @@ const Hero = () => {
                     </div>
                   </div>
                   
-                  <div className="bg-gray-50 p-3 rounded-lg flex items-center gap-2 shadow-soft">
+                  <div className="bg-gray-50 p-3 rounded-lg flex items-center gap-2 shadow-sm">
                     <Database size={16} className="text-sightx-purple" />
                     <div>
                       <p className="text-xs text-gray-500">Dados</p>

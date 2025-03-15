@@ -82,7 +82,7 @@ const Header = () => {
   }) => (
     <a 
       href={`#${id}`} 
-      className={`font-medium transition-colors relative group ${activeSection === id ? 'text-sightx-purple' : 'hover:text-sightx-purple'}`} 
+      className={`font-medium transition-colors relative px-2 py-1 ${activeSection === id ? 'text-sightx-purple' : 'text-gray-800 hover:text-sightx-purple'}`} 
       onClick={() => setMobileMenuOpen(false)}
     >
       <div className="flex items-center">
@@ -97,7 +97,7 @@ const Header = () => {
 
   return (
     <header 
-      className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 ${scrolled ? 'bg-white/95 backdrop-blur-md shadow-md py-2' : 'bg-transparent py-4'}`}
+      className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 ${scrolled ? 'bg-white/95 backdrop-blur-md shadow-md py-3' : 'bg-transparent py-5'}`}
     >
       <div className="container-custom flex justify-between items-center">
         <div className="flex items-center">
@@ -111,7 +111,7 @@ const Header = () => {
         </div>
 
         {/* Desktop Navigation */}
-        <nav className="hidden md:flex items-center space-x-8">
+        <nav className="hidden md:flex items-center gap-8">
           {menuItems.map(item => (
             <NavLink 
               key={item.id} 
@@ -121,7 +121,7 @@ const Header = () => {
             />
           ))}
           <Button 
-            className="btn-primary shadow-md hover:shadow-lg transform transition-transform hover:scale-105" 
+            className="bg-sightx-purple hover:bg-sightx-purple/90 text-white shadow-md hover:shadow-lg transform transition-transform hover:scale-105" 
             asChild
           >
             <a href="#waitlist">Entrar na Lista</a>
@@ -140,13 +140,13 @@ const Header = () => {
 
       {/* Mobile Navigation */}
       {mobileMenuOpen && (
-        <div className="md:hidden fixed inset-0 top-20 bg-white/95 backdrop-blur-md z-40 animate-fade-in">
-          <nav className="flex flex-col items-center pt-8 space-y-6">
+        <div className="md:hidden fixed inset-0 top-16 bg-white/95 backdrop-blur-md z-40 animate-fade-in">
+          <nav className="flex flex-col items-center pt-8 gap-6">
             {menuItems.map(item => (
               <a 
                 key={item.id} 
                 href={`#${item.id}`} 
-                className={`text-xl font-medium transition-colors ${activeSection === item.id ? 'text-sightx-purple' : 'hover:text-sightx-purple'} flex items-center`} 
+                className={`text-lg font-medium transition-colors ${activeSection === item.id ? 'text-sightx-purple' : 'text-gray-800 hover:text-sightx-purple'} flex items-center`} 
                 onClick={() => setMobileMenuOpen(false)}
               >
                 {item.icon}
@@ -154,7 +154,7 @@ const Header = () => {
               </a>
             ))}
             <Button 
-              className="btn-primary mt-6 w-3/4 shadow-md" 
+              className="bg-sightx-purple hover:bg-sightx-purple/90 text-white mt-6 w-3/4 shadow-md" 
               onClick={() => setMobileMenuOpen(false)} 
               asChild
             >
