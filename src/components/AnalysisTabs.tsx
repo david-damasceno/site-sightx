@@ -1,3 +1,4 @@
+
 import { useState } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { 
@@ -15,7 +16,17 @@ import {
   Activity,
   Package,
   Target,
-  DollarSign
+  DollarSign,
+  Users,
+  Zap,
+  CalendarDays,
+  ArrowUpRight,
+  ShoppingCart,
+  CreditCard,
+  Search,
+  Bell,
+  HelpCircle,
+  Settings
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { 
@@ -33,7 +44,7 @@ import {
   ChartTooltip, 
   ChartTooltipContent 
 } from "@/components/ui/chart";
-import { ResponsiveContainer, LineChart as RechartsLineChart, Line, BarChart as RechartsBarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, PieChart, Pie, Cell } from 'recharts';
+import { ResponsiveContainer, LineChart as RechartsLineChart, Line, BarChart as RechartsBarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, PieChart, Pie, Cell, AreaChart, Area } from 'recharts';
 
 const AnalysisTabs = () => {
   const [activeTab, setActiveTab] = useState("dashboard");
@@ -50,6 +61,32 @@ const AnalysisTabs = () => {
     { month: 'Ago', value: 110000 },
   ];
 
+  const revenueAreaData = [
+    { month: 'Jan', revenue: 56000, target: 60000 },
+    { month: 'Feb', revenue: 62000, target: 63000 },
+    { month: 'Mar', revenue: 58000, target: 65000 },
+    { month: 'Apr', revenue: 70000, target: 68000 },
+    { month: 'Mai', revenue: 85000, target: 75000 },
+    { month: 'Jun', revenue: 92000, target: 85000 },
+    { month: 'Jul', revenue: 100000, target: 95000 },
+    { month: 'Ago', revenue: 110000, target: 105000 },
+  ];
+
+  const salesByChannelData = [
+    { name: 'Online', value: 65 },
+    { name: 'Loja Física', value: 25 },
+    { name: 'Parceiros', value: 10 },
+  ];
+
+  const customerData = [
+    { month: 'Mar', new: 120, returning: 80 },
+    { month: 'Abr', new: 150, returning: 95 },
+    { month: 'Mai', new: 180, returning: 110 },
+    { month: 'Jun', new: 220, returning: 130 },
+    { month: 'Jul', new: 280, returning: 150 },
+    { month: 'Ago', new: 310, returning: 170 },
+  ];
+
   const goalData = [
     { name: 'Alcançado', value: 78 },
     { name: 'Restante', value: 22 },
@@ -63,10 +100,47 @@ const AnalysisTabs = () => {
     { name: 'Produto E', stock: 32, demand: 45 },
   ];
 
+  const activitiesData = [
+    {
+      id: 1,
+      action: "Nova venda realizada",
+      details: "Pedido #4821 - R$ 450,00",
+      time: "Agora mesmo",
+      icon: <ShoppingCart size={16} className="text-green-500" />,
+      highlight: true
+    },
+    {
+      id: 2,
+      action: "Pagamento recebido",
+      details: "Pedido #4819 - R$ 1.250,00",
+      time: "5 min atrás",
+      icon: <CreditCard size={16} className="text-blue-500" />
+    },
+    {
+      id: 3,
+      action: "Novo cliente cadastrado",
+      details: "Ana Silva (ana.silva@email.com)",
+      time: "25 min atrás",
+      icon: <Users size={16} className="text-purple-500" />
+    },
+    {
+      id: 4,
+      action: "Produto com estoque baixo",
+      details: "Produto C (5 unidades)",
+      time: "1 hora atrás",
+      icon: <AlertCircle size={16} className="text-orange-500" />
+    }
+  ];
+
   const COLORS = ['#9b87f5', '#ecebfd'];
+  const CHANNEL_COLORS = ['#6366f1', '#a5b4fc', '#818cf8'];
   const INVENTORY_COLORS = {
     stock: '#9b87f5',
     demand: '#33C3F0'
+  };
+  const CUSTOMER_COLORS = {
+    new: '#6366f1',
+    returning: '#a5b4fc'
   };
 
   return (
@@ -139,14 +213,107 @@ const AnalysisTabs = () => {
           </div>
 
           <TabsContent value="dashboard" className="animate-fade-in">
+            {/* Dashboard Header */}
+            <div className="flex justify-between items-center mb-6">
+              <div>
+                <h3 className="text-2xl font-bold">Dashboard de Desempenho</h3>
+                <p className="text-gray-500">Visão geral dos principais indicadores do seu negócio</p>
+              </div>
+              <div className="flex items-center gap-3">
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                    <Search className="h-4 w-4 text-gray-400" />
+                  </div>
+                  <input 
+                    type="text" 
+                    placeholder="Buscar..." 
+                    className="py-2 pl-10 pr-4 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-sightx-purple focus:border-transparent w-40 md:w-64"
+                  />
+                </div>
+                <div className="relative">
+                  <button className="p-2 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors relative">
+                    <Bell className="h-5 w-5 text-gray-600" />
+                    <span className="absolute top-0 right-0 h-2.5 w-2.5 bg-red-500 rounded-full border-2 border-white"></span>
+                  </button>
+                </div>
+                <div className="relative">
+                  <button className="p-2 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors">
+                    <HelpCircle className="h-5 w-5 text-gray-600" />
+                  </button>
+                </div>
+                <div className="relative">
+                  <button className="p-2 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors">
+                    <Settings className="h-5 w-5 text-gray-600" />
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            {/* Dashboard Welcome Card */}
+            <Card className="mb-6 bg-gradient-to-r from-purple-50 to-indigo-50 border-purple-100">
+              <CardContent className="p-6">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  <div className="col-span-2">
+                    <h3 className="text-xl font-bold mb-2">Olá, Carlos! 👋</h3>
+                    <p className="text-gray-700 mb-3">Aqui está o resumo do seu negócio para o mês de Agosto.</p>
+                    <div className="grid grid-cols-3 gap-4 mb-4">
+                      <div className="bg-white rounded-lg p-3 shadow-sm">
+                        <p className="text-xs text-gray-500 mb-1">Faturamento Mensal</p>
+                        <div className="flex items-end">
+                          <span className="text-lg font-bold">R$ 110.000</span>
+                          <span className="ml-2 text-xs text-green-600 flex items-center">
+                            <ChevronUp size={12} />
+                            10%
+                          </span>
+                        </div>
+                      </div>
+                      <div className="bg-white rounded-lg p-3 shadow-sm">
+                        <p className="text-xs text-gray-500 mb-1">Vendas Totais</p>
+                        <div className="flex items-end">
+                          <span className="text-lg font-bold">481</span>
+                          <span className="ml-2 text-xs text-green-600 flex items-center">
+                            <ChevronUp size={12} />
+                            8%
+                          </span>
+                        </div>
+                      </div>
+                      <div className="bg-white rounded-lg p-3 shadow-sm">
+                        <p className="text-xs text-gray-500 mb-1">Meta Mensal</p>
+                        <div className="flex items-end">
+                          <span className="text-lg font-bold">78%</span>
+                          <span className="ml-2 text-xs text-green-600 flex items-center">
+                            <ArrowUpRight size={12} />
+                            5%
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                    <Button className="bg-sightx-purple hover:bg-purple-700 text-white">Ver Relatório Completo</Button>
+                  </div>
+                  <div className="hidden md:flex items-center justify-center">
+                    <div className="w-32 h-32 bg-white rounded-full flex items-center justify-center shadow-md">
+                      <div className="w-24 h-24 rounded-full bg-gradient-to-r from-purple-400 to-indigo-500 flex items-center justify-center text-white font-bold text-xl relative">
+                        <div className="absolute inset-0 rounded-full border-4 border-white opacity-30"></div>
+                        <div className="flex flex-col items-center">
+                          <span className="text-2xl">78%</span>
+                          <span className="text-xs font-normal">Meta</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
               <div className="lg:col-span-2 space-y-6">
-                <Card>
+                {/* Revenue Chart Card */}
+                <Card className="overflow-hidden">
                   <CardHeader className="pb-2">
                     <div className="flex items-center justify-between">
                       <div>
                         <CardTitle className="text-xl">Faturamento Mensal</CardTitle>
-                        <CardDescription>Análise de receita dos últimos 8 meses</CardDescription>
+                        <CardDescription>Análise de receita vs meta dos últimos 8 meses</CardDescription>
                       </div>
                       <div className="bg-green-50 text-green-600 py-1 px-3 rounded-full text-sm font-medium flex items-center">
                         <ChevronUp size={14} className="mr-1" />
@@ -157,7 +324,13 @@ const AnalysisTabs = () => {
                   <CardContent className="pt-0">
                     <div className="h-[300px] w-full">
                       <ResponsiveContainer width="100%" height="100%">
-                        <RechartsLineChart data={revenueData} margin={{ top: 20, right: 10, left: 10, bottom: 5 }}>
+                        <AreaChart data={revenueAreaData} margin={{ top: 20, right: 10, left: 10, bottom: 5 }}>
+                          <defs>
+                            <linearGradient id="colorRevenue" x1="0" y1="0" x2="0" y2="1">
+                              <stop offset="5%" stopColor="#9b87f5" stopOpacity={0.8}/>
+                              <stop offset="95%" stopColor="#9b87f5" stopOpacity={0.1}/>
+                            </linearGradient>
+                          </defs>
                           <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f0f0f0" />
                           <XAxis dataKey="month" axisLine={false} tickLine={false} />
                           <YAxis 
@@ -170,20 +343,71 @@ const AnalysisTabs = () => {
                             formatter={(value) => [`R$ ${Number(value).toLocaleString()}`, 'Receita']}
                             contentStyle={{ borderRadius: '8px', border: '1px solid #f0f0f0' }}
                           />
+                          <Area 
+                            type="monotone" 
+                            dataKey="revenue" 
+                            stroke="#9b87f5" 
+                            fillOpacity={1}
+                            fill="url(#colorRevenue)"
+                            strokeWidth={2}
+                            name="Receita"
+                          />
                           <Line 
                             type="monotone" 
-                            dataKey="value" 
-                            stroke="#9b87f5" 
-                            strokeWidth={3} 
-                            dot={{ stroke: '#9b87f5', strokeWidth: 3, r: 4, fill: 'white' }}
-                            activeDot={{ stroke: '#9b87f5', strokeWidth: 3, r: 6, fill: 'white' }}
+                            dataKey="target" 
+                            stroke="#f97316" 
+                            strokeWidth={2} 
+                            strokeDasharray="5 5"
+                            name="Meta"
+                            dot={false}
                           />
-                        </RechartsLineChart>
+                        </AreaChart>
                       </ResponsiveContainer>
                     </div>
                   </CardContent>
                 </Card>
 
+                {/* Customer Acquisition Chart */}
+                <Card>
+                  <CardHeader className="pb-2">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <CardTitle className="text-xl">Aquisição de Clientes</CardTitle>
+                        <CardDescription>Novos clientes vs clientes recorrentes</CardDescription>
+                      </div>
+                      <select className="text-sm border rounded-md p-1">
+                        <option>Últimos 6 meses</option>
+                        <option>Últimos 12 meses</option>
+                        <option>Este ano</option>
+                      </select>
+                    </div>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="h-[250px]">
+                      <ResponsiveContainer width="100%" height="100%">
+                        <BarChart data={customerData} margin={{ top: 20, right: 30, left: 0, bottom: 5 }}>
+                          <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f0f0f0" />
+                          <XAxis dataKey="month" axisLine={false} tickLine={false} />
+                          <YAxis axisLine={false} tickLine={false} />
+                          <Tooltip contentStyle={{ borderRadius: '8px', border: '1px solid #f0f0f0' }} />
+                          <Bar dataKey="new" fill={CUSTOMER_COLORS.new} radius={[4, 4, 0, 0]} name="Novos Clientes" />
+                          <Bar dataKey="returning" fill={CUSTOMER_COLORS.returning} radius={[4, 4, 0, 0]} name="Clientes Recorrentes" />
+                        </BarChart>
+                      </ResponsiveContainer>
+                    </div>
+                  </CardContent>
+                  <CardFooter className="pt-0 border-t">
+                    <div className="w-full bg-blue-50 p-3 rounded-lg flex gap-3 items-start">
+                      <Zap size={18} className="text-blue-600 mt-0.5 flex-shrink-0" />
+                      <div>
+                        <p className="text-sm font-medium text-blue-700 mb-1">Insight da Donna:</p>
+                        <p className="text-sm text-blue-700">Seus clientes recorrentes aumentaram 25% nos últimos 3 meses. Continue com as estratégias de fidelização atuais e considere expandir seu programa de referência.</p>
+                      </div>
+                    </div>
+                  </CardFooter>
+                </Card>
+
+                {/* Inventory Status */}
                 <Card>
                   <CardHeader className="pb-2">
                     <CardTitle className="text-xl">Status do Estoque</CardTitle>
@@ -205,21 +429,80 @@ const AnalysisTabs = () => {
                   </CardContent>
                   <CardFooter className="pt-0 border-t">
                     <div className="w-full bg-yellow-50 p-3 rounded-lg flex gap-3 items-center">
-                      <AlertCircle size={18} className="text-yellow-600" />
-                      <p className="text-sm text-yellow-700">Produto C tem estoque abaixo da demanda prevista. Recomendamos reabastecer.</p>
+                      <AlertCircle size={18} className="text-yellow-600 flex-shrink-0" />
+                      <div>
+                        <p className="text-sm font-medium text-yellow-700 mb-0.5">Alerta de Estoque Crítico:</p>
+                        <p className="text-sm text-yellow-700">Produto C tem estoque 53% abaixo da demanda prevista. Recomendamos reabastecer urgentemente para evitar perda de vendas.</p>
+                      </div>
                     </div>
                   </CardFooter>
                 </Card>
               </div>
 
               <div className="lg:col-span-1 space-y-6">
+                {/* Sales By Channel */}
+                <Card>
+                  <CardHeader>
+                    <div className="flex justify-between items-center">
+                      <CardTitle className="text-xl">Vendas por Canal</CardTitle>
+                      <select className="text-sm border rounded-md p-1">
+                        <option>Este mês</option>
+                        <option>Último mês</option>
+                        <option>Este ano</option>
+                      </select>
+                    </div>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="flex justify-center">
+                      <div className="w-[180px] h-[180px]">
+                        <ResponsiveContainer width="100%" height="100%">
+                          <PieChart>
+                            <Pie
+                              data={salesByChannelData}
+                              cx="50%"
+                              cy="50%"
+                              innerRadius={50}
+                              outerRadius={70}
+                              paddingAngle={2}
+                              dataKey="value"
+                            >
+                              {salesByChannelData.map((entry, index) => (
+                                <Cell key={`cell-${index}`} fill={CHANNEL_COLORS[index % CHANNEL_COLORS.length]} />
+                              ))}
+                            </Pie>
+                            <Tooltip 
+                              formatter={(value) => [`${value}%`, 'Participação']}
+                              contentStyle={{ borderRadius: '8px', border: '1px solid #f0f0f0' }}
+                            />
+                          </PieChart>
+                        </ResponsiveContainer>
+                      </div>
+                    </div>
+                    <div className="grid grid-cols-1 gap-2 mt-4">
+                      {salesByChannelData.map((item, index) => (
+                        <div key={index} className="flex items-center justify-between p-2 rounded-lg hover:bg-gray-50">
+                          <div className="flex items-center">
+                            <div 
+                              className="w-3 h-3 rounded-full mr-2" 
+                              style={{ backgroundColor: CHANNEL_COLORS[index] }}
+                            />
+                            <span>{item.name}</span>
+                          </div>
+                          <span className="font-medium">{item.value}%</span>
+                        </div>
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Monthly Goal */}
                 <Card>
                   <CardHeader>
                     <CardTitle className="text-xl">Meta Mensal</CardTitle>
                     <CardDescription>Progresso para agosto/2023</CardDescription>
                   </CardHeader>
                   <CardContent className="flex flex-col items-center">
-                    <div className="w-[180px] h-[180px]">
+                    <div className="w-[180px] h-[180px] relative">
                       <ResponsiveContainer width="100%" height="100%">
                         <PieChart>
                           <Pie
@@ -228,27 +511,35 @@ const AnalysisTabs = () => {
                             cy="50%"
                             innerRadius={60}
                             outerRadius={80}
+                            startAngle={90}
+                            endAngle={-270}
                             paddingAngle={0}
                             dataKey="value"
                           >
                             {goalData.map((entry, index) => (
-                              <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                              <Cell 
+                                key={`cell-${index}`} 
+                                fill={COLORS[index % COLORS.length]} 
+                                strokeWidth={index === 0 ? 0 : 0}
+                              />
                             ))}
                           </Pie>
-                          <Tooltip 
-                            formatter={(value) => [`${value}%`, 'Progresso']}
-                            contentStyle={{ borderRadius: '8px', border: '1px solid #f0f0f0' }}
-                          />
                         </PieChart>
                       </ResponsiveContainer>
+                      <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center">
+                        <div className="text-3xl font-bold text-sightx-purple">78%</div>
+                        <div className="text-xs text-gray-500">completado</div>
+                      </div>
                     </div>
                     <div className="text-center mt-4">
-                      <h3 className="text-3xl font-bold text-sightx-purple">78%</h3>
-                      <p className="text-gray-500">R$ 85.800 de R$ 110.000</p>
+                      <h3 className="text-gray-500 text-sm mb-1">Progresso</h3>
+                      <p className="text-gray-500 text-sm">R$ 85.800 de R$ 110.000</p>
                     </div>
+                    <Button variant="outline" className="mt-4 w-full">Ver detalhes</Button>
                   </CardContent>
                 </Card>
 
+                {/* KPI Cards */}
                 <div className="grid grid-cols-2 gap-4">
                   <Card className="bg-white">
                     <CardContent className="p-4">
@@ -314,6 +605,35 @@ const AnalysisTabs = () => {
                   </Card>
                 </div>
 
+                {/* Recent Activity Card */}
+                <Card className="bg-white">
+                  <CardHeader className="pb-2">
+                    <div className="flex justify-between items-center">
+                      <CardTitle className="text-xl">Atividades Recentes</CardTitle>
+                      <Button variant="ghost" size="sm" className="text-sightx-purple">Ver tudo</Button>
+                    </div>
+                  </CardHeader>
+                  <CardContent className="p-0">
+                    <div className="divide-y">
+                      {activitiesData.map(activity => (
+                        <div key={activity.id} className={`p-4 ${activity.highlight ? 'bg-purple-50' : ''}`}>
+                          <div className="flex gap-3">
+                            <div className="flex-shrink-0 mt-1">
+                              {activity.icon}
+                            </div>
+                            <div>
+                              <p className="font-medium text-sm">{activity.action}</p>
+                              <p className="text-gray-500 text-xs">{activity.details}</p>
+                              <p className="text-gray-400 text-xs mt-1">{activity.time}</p>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Donna Insights Card */}
                 <Card className="bg-gradient-to-br from-purple-50 to-indigo-50 border-purple-100">
                   <CardHeader>
                     <CardTitle className="flex items-center text-xl gap-2">
@@ -322,13 +642,25 @@ const AnalysisTabs = () => {
                     </CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-4">
-                    <div className="bg-white p-3 rounded-lg shadow-sm border border-purple-100">
+                    <div className="bg-white p-3 rounded-lg shadow-sm border border-purple-100 hover:shadow-md transition-shadow">
+                      <div className="flex gap-2 mb-1">
+                        <TrendingUp size={14} className="text-green-500 mt-0.5" />
+                        <p className="text-sm font-medium">Oportunidade de Vendas</p>
+                      </div>
                       <p className="text-sm">Suas vendas às quintas-feiras são 23% maiores que nos outros dias. Considere aumentar o estoque para esse dia da semana.</p>
                     </div>
-                    <div className="bg-white p-3 rounded-lg shadow-sm border border-purple-100">
+                    <div className="bg-white p-3 rounded-lg shadow-sm border border-purple-100 hover:shadow-md transition-shadow">
+                      <div className="flex gap-2 mb-1">
+                        <AlertCircle size={14} className="text-orange-500 mt-0.5" />
+                        <p className="text-sm font-medium">Alerta de Estoque</p>
+                      </div>
                       <p className="text-sm">O Produto C está prestes a ficar sem estoque, mas possui alta demanda. Recomendamos reabastecer com urgência.</p>
                     </div>
-                    <div className="bg-white p-3 rounded-lg shadow-sm border border-purple-100">
+                    <div className="bg-white p-3 rounded-lg shadow-sm border border-purple-100 hover:shadow-md transition-shadow">
+                      <div className="flex gap-2 mb-1">
+                        <Activity size={14} className="text-red-500 mt-0.5" />
+                        <p className="text-sm font-medium">Queda na Conversão</p>
+                      </div>
                       <p className="text-sm">A conversão caiu 3% este mês. Analisando os dados, percebemos uma correlação com o aumento de 5% no tempo de carregamento do site.</p>
                     </div>
                   </CardContent>
@@ -345,11 +677,11 @@ const AnalysisTabs = () => {
           <TabsContent value="chat-donna" className="animate-fade-in">
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
               <div className="lg:col-span-2">
-                <Card className="h-[650px] flex flex-col">
-                  <CardHeader className="flex-shrink-0 border-b">
+                <Card className="h-[650px] flex flex-col overflow-hidden border-purple-100">
+                  <CardHeader className="flex-shrink-0 border-b pb-4">
                     <div className="flex justify-between items-center">
                       <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-full bg-sightx-purple flex-shrink-0 flex items-center justify-center">
+                        <div className="w-10 h-10 rounded-full bg-gradient-to-r from-purple-500 to-indigo-600 flex-shrink-0 flex items-center justify-center">
                           <Bot size={18} className="text-white" />
                         </div>
                         <div>
@@ -357,70 +689,103 @@ const AnalysisTabs = () => {
                           <CardDescription>Assistente Inteligente</CardDescription>
                         </div>
                       </div>
-                      <div className="flex items-center gap-1 bg-green-100 text-green-600 py-1 px-3 rounded-full text-xs">
-                        <span className="h-2 w-2 rounded-full bg-green-500"></span>
-                        Online
+                      <div className="flex items-center gap-3">
+                        <div className="flex items-center gap-1 bg-green-100 text-green-600 py-1 px-3 rounded-full text-xs">
+                          <span className="h-2 w-2 rounded-full bg-green-500"></span>
+                          Online
+                        </div>
+                        <button className="p-1.5 hover:bg-gray-100 rounded-full transition-colors">
+                          <Settings size={16} className="text-gray-500" />
+                        </button>
                       </div>
                     </div>
                   </CardHeader>
                   <CardContent className="flex-1 overflow-y-auto p-6 space-y-6">
                     <div className="flex flex-col gap-6">
                       <div className="flex items-start gap-3">
-                        <div className="w-8 h-8 rounded-full bg-sightx-purple flex-shrink-0 flex items-center justify-center">
+                        <div className="w-8 h-8 rounded-full bg-gradient-to-r from-purple-500 to-indigo-600 flex-shrink-0 flex items-center justify-center">
                           <Bot size={14} className="text-white" />
                         </div>
-                        <div className="bg-gray-100 rounded-lg rounded-tl-none p-4 max-w-[80%]">
-                          <p>Olá Carlos! Como posso ajudar você hoje?</p>
+                        <div className="bg-gray-100 rounded-lg rounded-tl-none p-4 max-w-[80%] shadow-sm">
+                          <p>Olá Carlos! 👋 Como posso ajudar você hoje?</p>
                         </div>
                       </div>
 
                       <div className="flex items-start gap-3 flex-row-reverse">
-                        <div className="w-8 h-8 rounded-full bg-blue-500 flex-shrink-0 flex items-center justify-center">
+                        <div className="w-8 h-8 rounded-full bg-gradient-to-r from-blue-400 to-blue-600 flex-shrink-0 flex items-center justify-center">
                           <span className="text-white font-medium text-sm">C</span>
                         </div>
-                        <div className="bg-blue-500 text-white rounded-lg rounded-tr-none p-4 max-w-[80%]">
+                        <div className="bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-lg rounded-tr-none p-4 max-w-[80%] shadow-sm">
                           <p>Preciso entender por que minhas vendas caíram neste mês.</p>
                         </div>
                       </div>
 
                       <div className="flex items-start gap-3">
-                        <div className="w-8 h-8 rounded-full bg-sightx-purple flex-shrink-0 flex items-center justify-center">
+                        <div className="w-8 h-8 rounded-full bg-gradient-to-r from-purple-500 to-indigo-600 flex-shrink-0 flex items-center justify-center">
                           <Bot size={14} className="text-white" />
                         </div>
                         <div className="space-y-4 max-w-[85%]">
-                          <div className="bg-gray-100 rounded-lg rounded-tl-none p-4">
+                          <div className="bg-gray-100 rounded-lg rounded-tl-none p-4 shadow-sm">
                             <p>Analisei seus dados de vendas e identifiquei algumas causas possíveis para a queda:</p>
                           </div>
-                          <div className="bg-gray-100 rounded-lg p-4">
-                            <p className="font-medium mb-2">Análise de Vendas - Julho/2023</p>
+                          <div className="bg-gray-100 rounded-lg p-4 shadow-sm">
+                            <div className="flex justify-between items-center mb-2">
+                              <p className="font-medium">Análise de Vendas - Julho/2023</p>
+                              <CalendarDays size={14} className="text-gray-400" />
+                            </div>
                             <ul className="list-disc pl-4 space-y-2 text-sm">
-                              <li>Suas vendas caíram 8% em relação ao mês anterior</li>
-                              <li>O tempo de carregamento do seu site aumentou 5%</li>
+                              <li>Suas vendas caíram <span className="text-red-500 font-medium">8%</span> em relação ao mês anterior</li>
+                              <li>O tempo de carregamento do seu site aumentou <span className="text-yellow-500 font-medium">5%</span></li>
                               <li>Seus concorrentes lançaram uma campanha promocional agressiva</li>
                               <li>O produto mais vendido (Produto C) ficou sem estoque por 5 dias</li>
                             </ul>
                           </div>
-                          <div className="bg-gray-100 rounded-lg p-4">
-                            <p className="font-medium mb-2">Recomendação:</p>
+                          <div className="bg-gray-50 rounded-lg p-4 border-l-4 border-sightx-purple shadow-sm">
+                            <p className="font-medium mb-2 text-sightx-purple">Recomendação:</p>
                             <p className="text-sm">Sugiro lançar uma campanha promocional focada nos produtos A e B, que têm bom estoque, e otimizar o tempo de carregamento do site para melhorar a experiência do usuário.</p>
                           </div>
                         </div>
                       </div>
 
                       <div className="flex items-start gap-3 flex-row-reverse">
-                        <div className="w-8 h-8 rounded-full bg-blue-500 flex-shrink-0 flex items-center justify-center">
+                        <div className="w-8 h-8 rounded-full bg-gradient-to-r from-blue-400 to-blue-600 flex-shrink-0 flex items-center justify-center">
                           <span className="text-white font-medium text-sm">C</span>
                         </div>
-                        <div className="bg-blue-500 text-white rounded-lg rounded-tr-none p-4 max-w-[80%]">
+                        <div className="bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-lg rounded-tr-none p-4 max-w-[80%] shadow-sm">
                           <p>Ótimas sugestões! Como posso otimizar o tempo de carregamento do site?</p>
                         </div>
                       </div>
 
                       <div className="flex items-start gap-3">
-                        <div className="w-8 h-8 rounded-full bg-sightx-purple flex-shrink-0 flex items-center justify-center">
+                        <div className="w-8 h-8 rounded-full bg-gradient-to-r from-purple-500 to-indigo-600 flex-shrink-0 flex items-center justify-center">
                           <Bot size={14} className="text-white" />
                         </div>
-                        <div className="bg-gray-100 rounded-lg rounded-tl-none p-4 max-w-[80%]">
+                        <div className="bg-gray-100 rounded-lg rounded-tl-none p-4 max-w-[80%] shadow-sm">
+                          <p className="mb-3">Para melhorar o tempo de carregamento do seu site, recomendo estas ações imediatas:</p>
+                          <ol className="list-decimal pl-5 space-y-2 text-sm">
+                            <li>Otimize as imagens do produto usando formatos WebP</li>
+                            <li>Implemente carregamento preguiçoso (lazy loading)</li>
+                            <li>Minifique os arquivos CSS e JavaScript</li>
+                            <li>Use uma CDN para entrega de ativos estáticos</li>
+                          </ol>
+                          <p className="mt-3">Analise os dados e posso preparar um relatório mais detalhado. Vejo que estas melhorias podem aumentar suas conversões em até 12% com base em nossos benchmarks.</p>
+                        </div>
+                      </div>
+
+                      <div className="flex items-start gap-3 flex-row-reverse">
+                        <div className="w-8 h-8 rounded-full bg-gradient-to-r from-blue-400 to-blue-600 flex-shrink-0 flex items-center justify-center">
+                          <span className="text-white font-medium text-sm">C</span>
+                        </div>
+                        <div className="bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-lg rounded-tr-none p-4 max-w-[80%] shadow-sm">
+                          <p>Perfeito! E quanto à campanha promocional? Tem alguma sugestão específica?</p>
+                        </div>
+                      </div>
+
+                      <div className="flex items-start gap-3">
+                        <div className="w-8 h-8 rounded-full bg-gradient-to-r from-purple-500 to-indigo-600 flex-shrink-0 flex items-center justify-center">
+                          <Bot size={14} className="text-white" />
+                        </div>
+                        <div className="bg-gray-100 rounded-lg rounded-tl-none p-4 max-w-[80%] shadow-sm">
                           <div className="flex gap-1">
                             <span className="w-2 h-2 bg-gray-400 rounded-full animate-pulse" style={{ animationDelay: "0s" }}></span>
                             <span className="w-2 h-2 bg-gray-400 rounded-full animate-pulse" style={{ animationDelay: "0.2s" }}></span>
@@ -435,14 +800,21 @@ const AnalysisTabs = () => {
                       <div className="w-full relative">
                         <input 
                           type="text" 
-                          className="w-full py-2 px-4 border rounded-full bg-gray-50 focus:outline-none focus:ring-2 focus:ring-sightx-purple focus:border-transparent" 
+                          className="w-full py-3 px-4 border rounded-full bg-gray-50 focus:outline-none focus:ring-2 focus:ring-sightx-purple focus:border-transparent pr-12" 
                           placeholder="Digite sua mensagem..."
                         />
-                        <button className="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 bg-sightx-purple text-white rounded-full">
-                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 12h14M12 5l7 7-7 7" />
-                          </svg>
-                        </button>
+                        <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-1">
+                          <button className="p-1.5 hover:bg-gray-200 rounded-full transition-colors text-gray-500">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13" />
+                            </svg>
+                          </button>
+                          <button className="p-1.5 bg-sightx-purple text-white rounded-full hover:bg-purple-700 transition-colors">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 12h14M12 5l7 7-7 7" />
+                            </svg>
+                          </button>
+                        </div>
                       </div>
                     </div>
                   </CardFooter>
@@ -450,12 +822,13 @@ const AnalysisTabs = () => {
               </div>
 
               <div className="lg:col-span-1 space-y-6">
-                <Card>
-                  <CardHeader>
+                {/* Chat Context Card */}
+                <Card className="border-purple-100">
+                  <CardHeader className="pb-2">
                     <CardTitle className="text-lg">Contexto da Conversa</CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-4">
-                    <div className="bg-gray-50 p-3 rounded-lg">
+                    <div className="bg-gradient-to-r from-gray-50 to-white p-3 rounded-lg border border-gray-100">
                       <p className="text-sm font-medium mb-1">Dados Disponíveis:</p>
                       <div className="flex flex-wrap gap-2">
                         <span className="px-2 py-1 bg-purple-100 text-sightx-purple rounded-full text-xs">Vendas</span>
@@ -465,71 +838,142 @@ const AnalysisTabs = () => {
                         <span className="px-2 py-1 bg-pink-100 text-pink-600 rounded-full text-xs">Website</span>
                       </div>
                     </div>
-                    <div className="bg-gray-50 p-3 rounded-lg">
+                    <div className="bg-gradient-to-r from-gray-50 to-white p-3 rounded-lg border border-gray-100">
                       <p className="text-sm font-medium mb-1">Período Analisado:</p>
-                      <p className="text-sm">Julho 2023 (Comparativo com Jun/2023)</p>
+                      <div className="flex items-center">
+                        <CalendarDays size={14} className="text-gray-400 mr-2" />
+                        <p className="text-sm">Julho 2023 (Comparativo com Jun/2023)</p>
+                      </div>
                     </div>
-                    <div className="bg-gray-50 p-3 rounded-lg">
+                    <div className="bg-gradient-to-r from-gray-50 to-white p-3 rounded-lg border border-gray-100">
                       <p className="text-sm font-medium mb-1">Produto em Foco:</p>
-                      <p className="text-sm">Produto C (Estoque baixo)</p>
+                      <div className="flex items-center justify-between">
+                        <p className="text-sm">Produto C (Estoque baixo)</p>
+                        <span className="px-2 py-0.5 bg-red-100 text-red-600 rounded-full text-xs">Crítico</span>
+                      </div>
                     </div>
                   </CardContent>
                 </Card>
 
-                <Card>
+                {/* Suggested Questions */}
+                <Card className="bg-gradient-to-br from-purple-50 to-indigo-50 border-purple-100">
+                  <CardHeader>
+                    <CardTitle className="text-lg flex items-center gap-2">
+                      <Bot size={16} className="text-sightx-purple" />
+                      Perguntas Sugeridas
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-2">
+                    <button className="w-full text-left p-3 bg-white rounded-lg hover:bg-gray-50 transition-colors text-sm border border-purple-100 shadow-sm hover:shadow-md transform transition-transform hover:translate-y-[-2px]">
+                      Como posso aumentar as vendas do Produto B?
+                    </button>
+                    <button className="w-full text-left p-3 bg-white rounded-lg hover:bg-gray-50 transition-colors text-sm border border-purple-100 shadow-sm hover:shadow-md transform transition-transform hover:translate-y-[-2px]">
+                      Quais canais de marketing têm melhor ROI?
+                    </button>
+                    <button className="w-full text-left p-3 bg-white rounded-lg hover:bg-gray-50 transition-colors text-sm border border-purple-100 shadow-sm hover:shadow-md transform transition-transform hover:translate-y-[-2px]">
+                      Como está o desempenho das redes sociais?
+                    </button>
+                    <button className="w-full text-left p-3 bg-white rounded-lg hover:bg-gray-50 transition-colors text-sm border border-purple-100 shadow-sm hover:shadow-md transform transition-transform hover:translate-y-[-2px]">
+                      Gere um relatório de vendas semanal
+                    </button>
+                  </CardContent>
+                </Card>
+
+                {/* Recent Conversations */}
+                <Card className="border-purple-100">
                   <CardHeader>
                     <CardTitle className="text-lg">Conversas Recentes</CardTitle>
                   </CardHeader>
                   <CardContent className="p-0">
                     <div className="divide-y">
                       <button className="w-full p-4 text-left hover:bg-gray-50 transition-colors flex items-center gap-3">
-                        <MessageCircle size={16} className="text-gray-400" />
+                        <div className="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center flex-shrink-0">
+                          <MessageCircle size={14} className="text-sightx-purple" />
+                        </div>
                         <div>
                           <p className="text-sm font-medium">Estratégia de Marketing Q3</p>
-                          <p className="text-xs text-gray-500">Ontem às 14:30</p>
+                          <div className="flex items-center">
+                            <CalendarDays size={12} className="text-gray-400 mr-1" />
+                            <p className="text-xs text-gray-500">Ontem às 14:30</p>
+                          </div>
                         </div>
                       </button>
                       <button className="w-full p-4 text-left hover:bg-gray-50 transition-colors flex items-center gap-3">
-                        <MessageCircle size={16} className="text-gray-400" />
+                        <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0">
+                          <MessageCircle size={14} className="text-blue-500" />
+                        </div>
                         <div>
                           <p className="text-sm font-medium">Análise de Concorrentes</p>
-                          <p className="text-xs text-gray-500">25/07 às 10:15</p>
+                          <div className="flex items-center">
+                            <CalendarDays size={12} className="text-gray-400 mr-1" />
+                            <p className="text-xs text-gray-500">25/07 às 10:15</p>
+                          </div>
                         </div>
                       </button>
                       <button className="w-full p-4 text-left hover:bg-gray-50 transition-colors flex items-center gap-3">
-                        <MessageCircle size={16} className="text-gray-400" />
+                        <div className="w-8 h-8 bg-orange-100 rounded-full flex items-center justify-center flex-shrink-0">
+                          <MessageCircle size={14} className="text-orange-500" />
+                        </div>
                         <div>
                           <p className="text-sm font-medium">Problema de Estoque</p>
-                          <p className="text-xs text-gray-500">20/07 às 09:45</p>
+                          <div className="flex items-center">
+                            <CalendarDays size={12} className="text-gray-400 mr-1" />
+                            <p className="text-xs text-gray-500">20/07 às 09:45</p>
+                          </div>
                         </div>
                       </button>
                     </div>
                   </CardContent>
-                  <CardFooter className="border-t">
-                    <Button variant="outline" className="w-full">Ver histórico completo</Button>
+                  <CardFooter className="border-t p-4">
+                    <Button variant="outline" className="w-full hover:bg-gray-50">
+                      Ver histórico completo
+                    </Button>
                   </CardFooter>
                 </Card>
 
-                <Card className="bg-gradient-to-br from-purple-50 to-indigo-50 border-purple-100">
-                  <CardHeader>
+                {/* AI Capabilities */}
+                <Card className="bg-gradient-to-br from-indigo-50 to-purple-50 border-purple-100">
+                  <CardHeader className="pb-2">
                     <CardTitle className="text-lg flex items-center gap-2">
-                      <Bot size={16} className="text-sightx-purple" />
-                      Como posso ajudar?
+                      <Zap size={16} className="text-yellow-500" />
+                      Capacidades da Donna
                     </CardTitle>
                   </CardHeader>
-                  <CardContent className="space-y-2">
-                    <button className="w-full text-left p-2 bg-white rounded-lg hover:bg-gray-50 transition-colors text-sm border border-purple-100">
-                      Analisar meus dados de vendas
-                    </button>
-                    <button className="w-full text-left p-2 bg-white rounded-lg hover:bg-gray-50 transition-colors text-sm border border-purple-100">
-                      Gerar relatório mensal
-                    </button>
-                    <button className="w-full text-left p-2 bg-white rounded-lg hover:bg-gray-50 transition-colors text-sm border border-purple-100">
-                      Comparar com concorrentes
-                    </button>
-                    <button className="w-full text-left p-2 bg-white rounded-lg hover:bg-gray-50 transition-colors text-sm border border-purple-100">
-                      Verificar produtos com baixo estoque
-                    </button>
+                  <CardContent>
+                    <ul className="space-y-2">
+                      <li className="flex items-start gap-2">
+                        <div className="w-5 h-5 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0 mt-0.5">
+                          <svg className="w-3 h-3 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
+                          </svg>
+                        </div>
+                        <p className="text-sm">Análise de dados de vendas e estoque em tempo real</p>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <div className="w-5 h-5 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0 mt-0.5">
+                          <svg className="w-3 h-3 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
+                          </svg>
+                        </div>
+                        <p className="text-sm">Identificação proativa de problemas e oportunidades</p>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <div className="w-5 h-5 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0 mt-0.5">
+                          <svg className="w-3 h-3 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
+                          </svg>
+                        </div>
+                        <p className="text-sm">Recomendações personalizadas baseadas no seu negócio</p>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <div className="w-5 h-5 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0 mt-0.5">
+                          <svg className="w-3 h-3 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
+                          </svg>
+                        </div>
+                        <p className="text-sm">Geração automática de relatórios e visualizações</p>
+                      </li>
+                    </ul>
                   </CardContent>
                 </Card>
               </div>
@@ -947,4 +1391,3 @@ const AnalysisTabs = () => {
 };
 
 export default AnalysisTabs;
-
