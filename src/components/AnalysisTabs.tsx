@@ -1,11 +1,73 @@
-
 import { useState } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { BarChart, Map, MessageCircle, LineChart, Share2, TrendingUp } from 'lucide-react';
+import { 
+  BarChart, 
+  Map, 
+  MessageCircle, 
+  LineChart, 
+  Share2, 
+  TrendingUp,
+  LayoutDashboard,
+  ChevronUp,
+  ChevronDown,
+  AlertCircle,
+  Bot,
+  Activity,
+  Package,
+  Target,
+  DollarSign
+} from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { 
+  Card, 
+  CardContent, 
+  CardDescription, 
+  CardFooter, 
+  CardHeader, 
+  CardTitle 
+} from "@/components/ui/card";
+import { 
+  ChartContainer, 
+  ChartLegend, 
+  ChartLegendContent, 
+  ChartTooltip, 
+  ChartTooltipContent 
+} from "@/components/ui/chart";
+import { ResponsiveContainer, LineChart as RechartsLineChart, Line, BarChart as RechartsBarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, PieChart, Pie, Cell } from 'recharts';
 
 const AnalysisTabs = () => {
-  const [activeTab, setActiveTab] = useState("google-maps");
+  const [activeTab, setActiveTab] = useState("dashboard");
+
+  // Sample data for Dashboard charts
+  const revenueData = [
+    { month: 'Jan', value: 56000 },
+    { month: 'Feb', value: 62000 },
+    { month: 'Mar', value: 58000 },
+    { month: 'Apr', value: 70000 },
+    { month: 'Mai', value: 85000 },
+    { month: 'Jun', value: 92000 },
+    { month: 'Jul', value: 100000 },
+    { month: 'Ago', value: 110000 },
+  ];
+
+  const goalData = [
+    { name: 'Alcançado', value: 78 },
+    { name: 'Restante', value: 22 },
+  ];
+
+  const inventoryData = [
+    { name: 'Produto A', stock: 124, demand: 150 },
+    { name: 'Produto B', stock: 85, demand: 80 },
+    { name: 'Produto C', stock: 45, demand: 95 },
+    { name: 'Produto D', stock: 72, demand: 60 },
+    { name: 'Produto E', stock: 32, demand: 45 },
+  ];
+
+  const COLORS = ['#9b87f5', '#ecebfd'];
+  const INVENTORY_COLORS = {
+    stock: '#9b87f5',
+    demand: '#33C3F0'
+  };
 
   return (
     <section id="data-analysis" className="section-padding bg-gray-50">
@@ -17,12 +79,32 @@ const AnalysisTabs = () => {
         </div>
 
         <Tabs 
-          defaultValue="google-maps" 
+          defaultValue="dashboard" 
           className="w-full mt-12"
           onValueChange={setActiveTab}
         >
           <div className="flex justify-center mb-8">
-            <TabsList className="grid grid-cols-3 gap-2 bg-gray-100 p-1.5 rounded-xl">
+            <TabsList className="grid grid-cols-5 gap-2 bg-gray-100 p-1.5 rounded-xl">
+              <TabsTrigger 
+                value="dashboard"
+                className={`px-4 py-2.5 rounded-lg flex gap-2 items-center ${
+                  activeTab === "dashboard" ? 
+                  "data-[state=active]:bg-white data-[state=active]:shadow-md" : ""
+                }`}
+              >
+                <LayoutDashboard size={18} />
+                <span className="hidden sm:inline">Dashboard</span>
+              </TabsTrigger>
+              <TabsTrigger 
+                value="chat-donna"
+                className={`px-4 py-2.5 rounded-lg flex gap-2 items-center ${
+                  activeTab === "chat-donna" ? 
+                  "data-[state=active]:bg-white data-[state=active]:shadow-md" : ""
+                }`}
+              >
+                <Bot size={18} />
+                <span className="hidden sm:inline">Chat Donna</span>
+              </TabsTrigger>
               <TabsTrigger 
                 value="google-maps"
                 className={`px-4 py-2.5 rounded-lg flex gap-2 items-center ${
@@ -56,6 +138,404 @@ const AnalysisTabs = () => {
             </TabsList>
           </div>
 
+          <TabsContent value="dashboard" className="animate-fade-in">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              <div className="lg:col-span-2 space-y-6">
+                <Card>
+                  <CardHeader className="pb-2">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <CardTitle className="text-xl">Faturamento Mensal</CardTitle>
+                        <CardDescription>Análise de receita dos últimos 8 meses</CardDescription>
+                      </div>
+                      <div className="bg-green-50 text-green-600 py-1 px-3 rounded-full text-sm font-medium flex items-center">
+                        <ChevronUp size={14} className="mr-1" />
+                        14.6%
+                      </div>
+                    </div>
+                  </CardHeader>
+                  <CardContent className="pt-0">
+                    <div className="h-[300px] w-full">
+                      <ResponsiveContainer width="100%" height="100%">
+                        <RechartsLineChart data={revenueData} margin={{ top: 20, right: 10, left: 10, bottom: 5 }}>
+                          <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f0f0f0" />
+                          <XAxis dataKey="month" axisLine={false} tickLine={false} />
+                          <YAxis 
+                            axisLine={false} 
+                            tickLine={false} 
+                            tickFormatter={(value) => `R$ ${value/1000}k`}
+                            domain={[40000, 'auto']}
+                          />
+                          <Tooltip 
+                            formatter={(value) => [`R$ ${Number(value).toLocaleString()}`, 'Receita']}
+                            contentStyle={{ borderRadius: '8px', border: '1px solid #f0f0f0' }}
+                          />
+                          <Line 
+                            type="monotone" 
+                            dataKey="value" 
+                            stroke="#9b87f5" 
+                            strokeWidth={3} 
+                            dot={{ stroke: '#9b87f5', strokeWidth: 3, r: 4, fill: 'white' }}
+                            activeDot={{ stroke: '#9b87f5', strokeWidth: 3, r: 6, fill: 'white' }}
+                          />
+                        </RechartsLineChart>
+                      </ResponsiveContainer>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                <Card>
+                  <CardHeader className="pb-2">
+                    <CardTitle className="text-xl">Status do Estoque</CardTitle>
+                    <CardDescription>Análise de estoque vs demanda por produto</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="h-[250px]">
+                      <ResponsiveContainer width="100%" height="100%">
+                        <RechartsBarChart data={inventoryData} margin={{ top: 20, right: 30, left: 0, bottom: 5 }}>
+                          <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f0f0f0" />
+                          <XAxis dataKey="name" axisLine={false} tickLine={false} />
+                          <YAxis axisLine={false} tickLine={false} />
+                          <Tooltip contentStyle={{ borderRadius: '8px', border: '1px solid #f0f0f0' }} />
+                          <Bar dataKey="stock" fill={INVENTORY_COLORS.stock} radius={[4, 4, 0, 0]} name="Estoque" />
+                          <Bar dataKey="demand" fill={INVENTORY_COLORS.demand} radius={[4, 4, 0, 0]} name="Demanda" />
+                        </RechartsBarChart>
+                      </ResponsiveContainer>
+                    </div>
+                  </CardContent>
+                  <CardFooter className="pt-0 border-t">
+                    <div className="w-full bg-yellow-50 p-3 rounded-lg flex gap-3 items-center">
+                      <AlertCircle size={18} className="text-yellow-600" />
+                      <p className="text-sm text-yellow-700">Produto C tem estoque abaixo da demanda prevista. Recomendamos reabastecer.</p>
+                    </div>
+                  </CardFooter>
+                </Card>
+              </div>
+
+              <div className="lg:col-span-1 space-y-6">
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="text-xl">Meta Mensal</CardTitle>
+                    <CardDescription>Progresso para agosto/2023</CardDescription>
+                  </CardHeader>
+                  <CardContent className="flex flex-col items-center">
+                    <div className="w-[180px] h-[180px]">
+                      <ResponsiveContainer width="100%" height="100%">
+                        <PieChart>
+                          <Pie
+                            data={goalData}
+                            cx="50%"
+                            cy="50%"
+                            innerRadius={60}
+                            outerRadius={80}
+                            paddingAngle={0}
+                            dataKey="value"
+                          >
+                            {goalData.map((entry, index) => (
+                              <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                            ))}
+                          </Pie>
+                          <Tooltip 
+                            formatter={(value) => [`${value}%`, 'Progresso']}
+                            contentStyle={{ borderRadius: '8px', border: '1px solid #f0f0f0' }}
+                          />
+                        </PieChart>
+                      </ResponsiveContainer>
+                    </div>
+                    <div className="text-center mt-4">
+                      <h3 className="text-3xl font-bold text-sightx-purple">78%</h3>
+                      <p className="text-gray-500">R$ 85.800 de R$ 110.000</p>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <Card className="bg-white">
+                    <CardContent className="p-4">
+                      <div className="flex flex-col items-center">
+                        <div className="w-10 h-10 rounded-full bg-purple-50 flex items-center justify-center mb-2">
+                          <DollarSign size={20} className="text-sightx-purple" />
+                        </div>
+                        <p className="text-sm text-gray-500">Ticket Médio</p>
+                        <h4 className="text-xl font-bold">R$ 178,50</h4>
+                        <div className="flex items-center text-green-600 text-xs">
+                          <ChevronUp size={14} />
+                          <span>12%</span>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  <Card className="bg-white">
+                    <CardContent className="p-4">
+                      <div className="flex flex-col items-center">
+                        <div className="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center mb-2">
+                          <Activity size={20} className="text-blue-500" />
+                        </div>
+                        <p className="text-sm text-gray-500">Vendas</p>
+                        <h4 className="text-xl font-bold">481</h4>
+                        <div className="flex items-center text-green-600 text-xs">
+                          <ChevronUp size={14} />
+                          <span>8%</span>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  <Card className="bg-white">
+                    <CardContent className="p-4">
+                      <div className="flex flex-col items-center">
+                        <div className="w-10 h-10 rounded-full bg-green-50 flex items-center justify-center mb-2">
+                          <Package size={20} className="text-green-500" />
+                        </div>
+                        <p className="text-sm text-gray-500">Produtos</p>
+                        <h4 className="text-xl font-bold">24</h4>
+                        <div className="flex items-center text-gray-500 text-xs">
+                          <span>Estável</span>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  <Card className="bg-white">
+                    <CardContent className="p-4">
+                      <div className="flex flex-col items-center">
+                        <div className="w-10 h-10 rounded-full bg-red-50 flex items-center justify-center mb-2">
+                          <Target size={20} className="text-red-500" />
+                        </div>
+                        <p className="text-sm text-gray-500">Conversão</p>
+                        <h4 className="text-xl font-bold">24.8%</h4>
+                        <div className="flex items-center text-red-600 text-xs">
+                          <ChevronDown size={14} />
+                          <span>3%</span>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
+
+                <Card className="bg-gradient-to-br from-purple-50 to-indigo-50 border-purple-100">
+                  <CardHeader>
+                    <CardTitle className="flex items-center text-xl gap-2">
+                      <Bot size={18} className="text-sightx-purple" />
+                      Insights da Donna
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div className="bg-white p-3 rounded-lg shadow-sm border border-purple-100">
+                      <p className="text-sm">Suas vendas às quintas-feiras são 23% maiores que nos outros dias. Considere aumentar o estoque para esse dia da semana.</p>
+                    </div>
+                    <div className="bg-white p-3 rounded-lg shadow-sm border border-purple-100">
+                      <p className="text-sm">O Produto C está prestes a ficar sem estoque, mas possui alta demanda. Recomendamos reabastecer com urgência.</p>
+                    </div>
+                    <div className="bg-white p-3 rounded-lg shadow-sm border border-purple-100">
+                      <p className="text-sm">A conversão caiu 3% este mês. Analisando os dados, percebemos uma correlação com o aumento de 5% no tempo de carregamento do site.</p>
+                    </div>
+                  </CardContent>
+                  <CardFooter>
+                    <Button variant="outline" className="w-full border-purple-200 hover:bg-purple-100 text-sightx-purple">
+                      Ver todos os insights
+                    </Button>
+                  </CardFooter>
+                </Card>
+              </div>
+            </div>
+          </TabsContent>
+
+          <TabsContent value="chat-donna" className="animate-fade-in">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              <div className="lg:col-span-2">
+                <Card className="h-[650px] flex flex-col">
+                  <CardHeader className="flex-shrink-0 border-b">
+                    <div className="flex justify-between items-center">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-full bg-sightx-purple flex-shrink-0 flex items-center justify-center">
+                          <Bot size={18} className="text-white" />
+                        </div>
+                        <div>
+                          <CardTitle>Donna</CardTitle>
+                          <CardDescription>Assistente Inteligente</CardDescription>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-1 bg-green-100 text-green-600 py-1 px-3 rounded-full text-xs">
+                        <span className="h-2 w-2 rounded-full bg-green-500"></span>
+                        Online
+                      </div>
+                    </div>
+                  </CardHeader>
+                  <CardContent className="flex-1 overflow-y-auto p-6 space-y-6">
+                    <div className="flex flex-col gap-6">
+                      <div className="flex items-start gap-3">
+                        <div className="w-8 h-8 rounded-full bg-sightx-purple flex-shrink-0 flex items-center justify-center">
+                          <Bot size={14} className="text-white" />
+                        </div>
+                        <div className="bg-gray-100 rounded-lg rounded-tl-none p-4 max-w-[80%]">
+                          <p>Olá Carlos! Como posso ajudar você hoje?</p>
+                        </div>
+                      </div>
+
+                      <div className="flex items-start gap-3 flex-row-reverse">
+                        <div className="w-8 h-8 rounded-full bg-blue-500 flex-shrink-0 flex items-center justify-center">
+                          <span className="text-white font-medium text-sm">C</span>
+                        </div>
+                        <div className="bg-blue-500 text-white rounded-lg rounded-tr-none p-4 max-w-[80%]">
+                          <p>Preciso entender por que minhas vendas caíram neste mês.</p>
+                        </div>
+                      </div>
+
+                      <div className="flex items-start gap-3">
+                        <div className="w-8 h-8 rounded-full bg-sightx-purple flex-shrink-0 flex items-center justify-center">
+                          <Bot size={14} className="text-white" />
+                        </div>
+                        <div className="space-y-4 max-w-[85%]">
+                          <div className="bg-gray-100 rounded-lg rounded-tl-none p-4">
+                            <p>Analisei seus dados de vendas e identifiquei algumas causas possíveis para a queda:</p>
+                          </div>
+                          <div className="bg-gray-100 rounded-lg p-4">
+                            <p className="font-medium mb-2">Análise de Vendas - Julho/2023</p>
+                            <ul className="list-disc pl-4 space-y-2 text-sm">
+                              <li>Suas vendas caíram 8% em relação ao mês anterior</li>
+                              <li>O tempo de carregamento do seu site aumentou 5%</li>
+                              <li>Seus concorrentes lançaram uma campanha promocional agressiva</li>
+                              <li>O produto mais vendido (Produto C) ficou sem estoque por 5 dias</li>
+                            </ul>
+                          </div>
+                          <div className="bg-gray-100 rounded-lg p-4">
+                            <p className="font-medium mb-2">Recomendação:</p>
+                            <p className="text-sm">Sugiro lançar uma campanha promocional focada nos produtos A e B, que têm bom estoque, e otimizar o tempo de carregamento do site para melhorar a experiência do usuário.</p>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="flex items-start gap-3 flex-row-reverse">
+                        <div className="w-8 h-8 rounded-full bg-blue-500 flex-shrink-0 flex items-center justify-center">
+                          <span className="text-white font-medium text-sm">C</span>
+                        </div>
+                        <div className="bg-blue-500 text-white rounded-lg rounded-tr-none p-4 max-w-[80%]">
+                          <p>Ótimas sugestões! Como posso otimizar o tempo de carregamento do site?</p>
+                        </div>
+                      </div>
+
+                      <div className="flex items-start gap-3">
+                        <div className="w-8 h-8 rounded-full bg-sightx-purple flex-shrink-0 flex items-center justify-center">
+                          <Bot size={14} className="text-white" />
+                        </div>
+                        <div className="bg-gray-100 rounded-lg rounded-tl-none p-4 max-w-[80%]">
+                          <div className="flex gap-1">
+                            <span className="w-2 h-2 bg-gray-400 rounded-full animate-pulse" style={{ animationDelay: "0s" }}></span>
+                            <span className="w-2 h-2 bg-gray-400 rounded-full animate-pulse" style={{ animationDelay: "0.2s" }}></span>
+                            <span className="w-2 h-2 bg-gray-400 rounded-full animate-pulse" style={{ animationDelay: "0.4s" }}></span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </CardContent>
+                  <CardFooter className="border-t p-4">
+                    <div className="flex w-full gap-2 items-center">
+                      <div className="w-full relative">
+                        <input 
+                          type="text" 
+                          className="w-full py-2 px-4 border rounded-full bg-gray-50 focus:outline-none focus:ring-2 focus:ring-sightx-purple focus:border-transparent" 
+                          placeholder="Digite sua mensagem..."
+                        />
+                        <button className="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 bg-sightx-purple text-white rounded-full">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 12h14M12 5l7 7-7 7" />
+                          </svg>
+                        </button>
+                      </div>
+                    </div>
+                  </CardFooter>
+                </Card>
+              </div>
+
+              <div className="lg:col-span-1 space-y-6">
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="text-lg">Contexto da Conversa</CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div className="bg-gray-50 p-3 rounded-lg">
+                      <p className="text-sm font-medium mb-1">Dados Disponíveis:</p>
+                      <div className="flex flex-wrap gap-2">
+                        <span className="px-2 py-1 bg-purple-100 text-sightx-purple rounded-full text-xs">Vendas</span>
+                        <span className="px-2 py-1 bg-blue-100 text-blue-600 rounded-full text-xs">Estoque</span>
+                        <span className="px-2 py-1 bg-green-100 text-green-600 rounded-full text-xs">Marketing</span>
+                        <span className="px-2 py-1 bg-orange-100 text-orange-600 rounded-full text-xs">Concorrentes</span>
+                        <span className="px-2 py-1 bg-pink-100 text-pink-600 rounded-full text-xs">Website</span>
+                      </div>
+                    </div>
+                    <div className="bg-gray-50 p-3 rounded-lg">
+                      <p className="text-sm font-medium mb-1">Período Analisado:</p>
+                      <p className="text-sm">Julho 2023 (Comparativo com Jun/2023)</p>
+                    </div>
+                    <div className="bg-gray-50 p-3 rounded-lg">
+                      <p className="text-sm font-medium mb-1">Produto em Foco:</p>
+                      <p className="text-sm">Produto C (Estoque baixo)</p>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="text-lg">Conversas Recentes</CardTitle>
+                  </CardHeader>
+                  <CardContent className="p-0">
+                    <div className="divide-y">
+                      <button className="w-full p-4 text-left hover:bg-gray-50 transition-colors flex items-center gap-3">
+                        <MessageCircle size={16} className="text-gray-400" />
+                        <div>
+                          <p className="text-sm font-medium">Estratégia de Marketing Q3</p>
+                          <p className="text-xs text-gray-500">Ontem às 14:30</p>
+                        </div>
+                      </button>
+                      <button className="w-full p-4 text-left hover:bg-gray-50 transition-colors flex items-center gap-3">
+                        <MessageCircle size={16} className="text-gray-400" />
+                        <div>
+                          <p className="text-sm font-medium">Análise de Concorrentes</p>
+                          <p className="text-xs text-gray-500">25/07 às 10:15</p>
+                        </div>
+                      </button>
+                      <button className="w-full p-4 text-left hover:bg-gray-50 transition-colors flex items-center gap-3">
+                        <MessageCircle size={16} className="text-gray-400" />
+                        <div>
+                          <p className="text-sm font-medium">Problema de Estoque</p>
+                          <p className="text-xs text-gray-500">20/07 às 09:45</p>
+                        </div>
+                      </button>
+                    </div>
+                  </CardContent>
+                  <CardFooter className="border-t">
+                    <Button variant="outline" className="w-full">Ver histórico completo</Button>
+                  </CardFooter>
+                </Card>
+
+                <Card className="bg-gradient-to-br from-purple-50 to-indigo-50 border-purple-100">
+                  <CardHeader>
+                    <CardTitle className="text-lg flex items-center gap-2">
+                      <Bot size={16} className="text-sightx-purple" />
+                      Como posso ajudar?
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-2">
+                    <button className="w-full text-left p-2 bg-white rounded-lg hover:bg-gray-50 transition-colors text-sm border border-purple-100">
+                      Analisar meus dados de vendas
+                    </button>
+                    <button className="w-full text-left p-2 bg-white rounded-lg hover:bg-gray-50 transition-colors text-sm border border-purple-100">
+                      Gerar relatório mensal
+                    </button>
+                    <button className="w-full text-left p-2 bg-white rounded-lg hover:bg-gray-50 transition-colors text-sm border border-purple-100">
+                      Comparar com concorrentes
+                    </button>
+                    <button className="w-full text-left p-2 bg-white rounded-lg hover:bg-gray-50 transition-colors text-sm border border-purple-100">
+                      Verificar produtos com baixo estoque
+                    </button>
+                  </CardContent>
+                </Card>
+              </div>
+            </div>
+          </TabsContent>
+          
           <TabsContent value="google-maps" className="animate-fade-in">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
               <div>
@@ -248,7 +728,7 @@ const AnalysisTabs = () => {
                       </span>
                       <span className="w-8 h-8 rounded-full bg-pink-600 flex items-center justify-center text-white">
                         <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-                          <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+                          <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073z"/>
                         </svg>
                       </span>
                       <span className="w-8 h-8 rounded-full bg-blue-800 flex items-center justify-center text-white">
@@ -292,7 +772,7 @@ const AnalysisTabs = () => {
                         <p className="text-sm font-medium">Melhor Horário</p>
                         <div className="flex items-center mt-1">
                           <span className="text-sightx-purple mr-1">
-                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                             </svg>
                           </span>
@@ -357,12 +837,10 @@ const AnalysisTabs = () => {
                   </div>
                   
                   <div className="relative h-64 bg-gray-100 rounded-lg mb-6 overflow-hidden">
-                    {/* Map Placeholder */}
                     <div className="absolute inset-0 bg-gradient-to-br from-blue-50 to-blue-100 flex items-center justify-center">
                       <Map size={48} className="text-blue-300" />
                     </div>
                     
-                    {/* Hotspots */}
                     <div className="absolute top-1/4 left-1/3 w-6 h-6 bg-sightx-purple rounded-full flex items-center justify-center animate-pulse">
                       <div className="w-3 h-3 bg-white rounded-full"></div>
                     </div>
@@ -469,3 +947,4 @@ const AnalysisTabs = () => {
 };
 
 export default AnalysisTabs;
+
