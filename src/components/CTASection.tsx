@@ -14,7 +14,11 @@ import {
 } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 
-const CTASection = () => {
+interface CTASectionProps {
+  id?: string;
+}
+
+const CTASection = ({ id }: CTASectionProps) => {
   const { toast } = useToast();
   const [formData, setFormData] = useState({
     email: '',
@@ -75,7 +79,7 @@ const CTASection = () => {
   };
   
   return (
-    <section id="waitlist" className="section-padding">
+    <section id={id} className="section-padding">
       <div className="container-custom">
         <div className="bg-gradient-to-r from-sightx-purple to-sightx-purple/80 rounded-2xl p-8 md:p-12 text-white overflow-hidden relative">
           <div className="absolute top-0 left-0 w-full h-full opacity-10">
