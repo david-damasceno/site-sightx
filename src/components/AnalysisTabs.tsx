@@ -146,6 +146,51 @@ const AnalysisTabs = () => {
     }
   ];
 
+  // New animated sparkline data
+  const sparklineData = [
+    { value: 30 },
+    { value: 40 },
+    { value: 35 },
+    { value: 50 },
+    { value: 45 },
+    { value: 60 },
+    { value: 55 },
+    { value: 65 },
+    { value: 70 }
+  ];
+
+  // New metric cards data
+  const metricCards = [
+    { 
+      title: "Vendas Hoje", 
+      value: "R$ 8.254", 
+      change: "+12%", 
+      isPositive: true,
+      icon: <DollarSign className="text-green-500" />
+    },
+    { 
+      title: "Visitantes", 
+      value: "1.245", 
+      change: "+24%", 
+      isPositive: true,
+      icon: <Activity className="text-blue-500" />
+    },
+    { 
+      title: "Taxa de Conversão", 
+      value: "5.2%", 
+      change: "-0.8%", 
+      isPositive: false,
+      icon: <TrendingUp className="text-purple-500" />
+    },
+    { 
+      title: "Tempo Médio", 
+      value: "3m 42s", 
+      change: "+18%", 
+      isPositive: true,
+      icon: <Calendar className="text-orange-500" />
+    }
+  ];
+
   return (
     <section id="data-analysis" className="section-padding bg-gray-50">
       <div className="container-custom">
@@ -216,6 +261,7 @@ const AnalysisTabs = () => {
           </div>
 
           <TabsContent value="dashboard" className="animate-fade-in">
+            {/* Dashboard Header with Period Selection */}
             <div className="p-4 mb-6 bg-white rounded-xl shadow-sm border border-gray-100">
               <div className="flex flex-wrap items-center justify-between gap-4">
                 <h3 className="text-lg font-medium flex items-center gap-2">
@@ -236,6 +282,42 @@ const AnalysisTabs = () => {
                   ))}
                 </div>
               </div>
+            </div>
+
+            {/* Quick Stats Cards */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+              {metricCards.map((card, index) => (
+                <Card key={index} className="border-none shadow-sm hover:shadow-md transition-all duration-300">
+                  <CardContent className="p-4">
+                    <div className="flex justify-between items-start">
+                      <div>
+                        <p className="text-sm text-gray-500">{card.title}</p>
+                        <h3 className="text-2xl font-bold mt-1">{card.value}</h3>
+                        <div className={`flex items-center text-xs mt-1 ${card.isPositive ? 'text-green-500' : 'text-red-500'}`}>
+                          {card.isPositive ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
+                          <span>{card.change}</span>
+                        </div>
+                      </div>
+                      <div className="p-2 rounded-lg bg-gray-50">
+                        {card.icon}
+                      </div>
+                    </div>
+                    <div className="mt-3 h-10">
+                      <ResponsiveContainer width="100%" height="100%">
+                        <LineChart data={sparklineData}>
+                          <Line 
+                            type="monotone" 
+                            dataKey="value" 
+                            stroke={card.isPositive ? "#10b981" : "#ef4444"} 
+                            strokeWidth={2} 
+                            dot={false}
+                          />
+                        </LineChart>
+                      </ResponsiveContainer>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -894,7 +976,7 @@ const AnalysisTabs = () => {
                           </span>
                         </div>
                       </div>
-                      <LineChart size={40} className="text-sightx-purple opacity-70" />
+                      <LineChartIcon size={40} className="text-sightx-purple opacity-70" />
                     </div>
                     
                     <div className="grid grid-cols-2 gap-4">
@@ -924,7 +1006,7 @@ const AnalysisTabs = () => {
                     
                     <div className="p-4 bg-sightx-purple/10 rounded-lg">
                       <div className="flex items-center gap-2 mb-2">
-                        <BarChart size={18} className="text-sightx-purple" />
+                        <BarChartIcon size={18} className="text-sightx-purple" />
                         <h4 className="font-medium">Comparativo com Concorrentes</h4>
                       </div>
                       
