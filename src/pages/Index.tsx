@@ -2,7 +2,7 @@
 import Header from "@/components/Header";
 import Hero from "@/components/Hero";
 import About from "@/components/About";
-import AnalysisTabs from "@/components/AnalysisTabs";
+import DataSection from "@/components/DataSection";
 import WhatsAppSection from "@/components/WhatsAppSection";
 import ChatSimulation from "@/components/ChatSimulation";
 import CTASection from "@/components/CTASection";
@@ -19,7 +19,7 @@ const Index = () => {
         </div>
         <WhatsAppSection />
         <div className="bg-gray-50">
-          <AnalysisTabs />
+          <DataSection />
         </div>
         <div className="bg-gray-50" id="demo">
           <ChatSimulation />

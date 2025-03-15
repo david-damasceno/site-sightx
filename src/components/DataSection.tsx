@@ -1,12 +1,12 @@
 
 import { useState } from 'react';
-import { BarChart, LineChart, MapPin, Search, TrendingUp, Users } from 'lucide-react';
+import { BarChart, LineChart, MapPin, Search, TrendingUp, Users, LayoutDashboard, ChartPie, Gauge, AlertTriangle, Info } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 const DataSection = () => {
-  const [activeTab, setActiveTab] = useState('maps');
+  const [activeTab, setActiveTab] = useState('dashboard');
 
   return (
     <section id="data-analysis" className="section-padding bg-white">
@@ -19,8 +19,12 @@ const DataSection = () => {
           </p>
         </div>
 
-        <Tabs defaultValue="maps" className="w-full" onValueChange={setActiveTab}>
-          <TabsList className="grid grid-cols-3 w-full max-w-3xl mx-auto mb-10">
+        <Tabs defaultValue="dashboard" className="w-full" onValueChange={setActiveTab}>
+          <TabsList className="grid grid-cols-4 w-full max-w-3xl mx-auto mb-10">
+            <TabsTrigger value="dashboard" className="data-tab">
+              <LayoutDashboard className="mr-2 h-4 w-4" />
+              Dashboard
+            </TabsTrigger>
             <TabsTrigger value="maps" className="data-tab">
               <MapPin className="mr-2 h-4 w-4" />
               Google Maps
@@ -34,6 +38,118 @@ const DataSection = () => {
               Análise Geográfica
             </TabsTrigger>
           </TabsList>
+          
+          <TabsContent value="dashboard" className="animate-fade-in">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+              <div>
+                <h3 className="text-2xl font-bold mb-4">Dashboard Inteligente</h3>
+                <p className="mb-4 text-gray-700">
+                  Nossa plataforma reúne todos os dados importantes do seu negócio em um dashboard 
+                  intuitivo e personalizável, que permite:
+                </p>
+                <ul className="space-y-3 mb-6">
+                  <li className="flex items-start gap-3">
+                    <div className="w-6 h-6 rounded-full bg-sightx-purple/10 flex items-center justify-center flex-shrink-0 mt-1">
+                      <LayoutDashboard className="h-3 w-3 text-sightx-purple" />
+                    </div>
+                    <span>Visualizar métricas de desempenho em tempo real</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <div className="w-6 h-6 rounded-full bg-sightx-purple/10 flex items-center justify-center flex-shrink-0 mt-1">
+                      <LayoutDashboard className="h-3 w-3 text-sightx-purple" />
+                    </div>
+                    <span>Personalizar indicadores conforme as necessidades do seu negócio</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <div className="w-6 h-6 rounded-full bg-sightx-purple/10 flex items-center justify-center flex-shrink-0 mt-1">
+                      <LayoutDashboard className="h-3 w-3 text-sightx-purple" />
+                    </div>
+                    <span>Receber alertas e notificações sobre anomalias em seus dados</span>
+                  </li>
+                </ul>
+                <Button className="btn-primary">Saiba mais</Button>
+              </div>
+              <div className="bg-white p-6 rounded-xl shadow-lg">
+                <div className="rounded-lg overflow-hidden border border-gray-100">
+                  <div className="bg-gray-50 p-3 flex items-center justify-between border-b border-gray-100">
+                    <div className="flex items-center">
+                      <LayoutDashboard className="h-5 w-5 text-sightx-purple mr-2" />
+                      <span className="font-medium">Dashboard Central</span>
+                    </div>
+                    <div className="text-xs bg-sightx-green/10 text-sightx-green px-2 py-1 rounded-full">
+                      Atualizado agora
+                    </div>
+                  </div>
+                  <div className="p-4">
+                    <div className="grid grid-cols-2 gap-4 mb-6">
+                      <Card className="border border-gray-100">
+                        <CardHeader className="p-3 pb-0">
+                          <CardTitle className="text-sm flex items-center">
+                            <Users className="h-4 w-4 mr-2 text-sightx-purple" />
+                            Novos clientes
+                          </CardTitle>
+                        </CardHeader>
+                        <CardContent className="p-3">
+                          <p className="text-2xl font-bold">245</p>
+                          <div className="flex items-center text-xs text-sightx-green">
+                            <TrendingUp className="h-3 w-3 mr-1" />
+                            <span>+12% vs mês anterior</span>
+                          </div>
+                        </CardContent>
+                      </Card>
+                      <Card className="border border-gray-100">
+                        <CardHeader className="p-3 pb-0">
+                          <CardTitle className="text-sm flex items-center">
+                            <ChartPie className="h-4 w-4 mr-2 text-sightx-purple" />
+                            Conversão
+                          </CardTitle>
+                        </CardHeader>
+                        <CardContent className="p-3">
+                          <p className="text-2xl font-bold">8.7%</p>
+                          <div className="flex items-center text-xs text-sightx-green">
+                            <TrendingUp className="h-3 w-3 mr-1" />
+                            <span>+2.3% vs mês anterior</span>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    </div>
+                    
+                    <div className="mb-6">
+                      <div className="flex justify-between items-center mb-2">
+                        <h5 className="text-sm font-medium flex items-center">
+                          <Gauge className="h-4 w-4 mr-2 text-sightx-purple" />
+                          Meta de vendas
+                        </h5>
+                        <span className="text-xs font-medium">85%</span>
+                      </div>
+                      <div className="w-full bg-gray-200 rounded-full h-2">
+                        <div className="bg-sightx-purple h-2 rounded-full" style={{ width: '85%' }}></div>
+                      </div>
+                      <p className="text-xs text-gray-500 mt-1">R$ 127.500 de R$ 150.000</p>
+                    </div>
+                    
+                    <div className="bg-gray-50 p-3 rounded-lg mb-4">
+                      <div className="flex items-start gap-2 mb-2">
+                        <AlertTriangle className="h-4 w-4 text-amber-500 flex-shrink-0 mt-0.5" />
+                        <div>
+                          <h6 className="text-sm font-medium">Alerta de estoque</h6>
+                          <p className="text-xs text-gray-600">Produto SKU-8745 está com nível crítico (5 unidades)</p>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div className="p-3 bg-sightx-purple/5 rounded-lg text-sm">
+                      <p className="font-medium text-sightx-purple mb-1 flex items-center">
+                        <Info className="h-4 w-4 mr-1" />
+                        Insight:
+                      </p>
+                      <p className="text-gray-700">Seu negócio está crescendo acima da média do setor. Considere aumentar o estoque dos produtos mais vendidos para atender à demanda crescente.</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </TabsContent>
           
           <TabsContent value="maps" className="animate-fade-in">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
@@ -336,3 +452,4 @@ const DataSection = () => {
 };
 
 export default DataSection;
+
