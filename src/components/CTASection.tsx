@@ -2,21 +2,60 @@
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Checkbox } from '@/components/ui/checkbox';
+import { 
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import { Textarea } from '@/components/ui/textarea';
 
 const CTASection = () => {
   const { toast } = useToast();
-  const [email, setEmail] = useState('');
-  const [company, setCompany] = useState('');
+  const [formData, setFormData] = useState({
+    email: '',
+    company: '',
+    contactName: '',
+    whatsapp: '',
+    sector: '',
+    preferredSolution: '',
+    suggestions: '',
+    acceptTerms: false
+  });
   const [loading, setLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+  };
+  
+  const handleSelectChange = (name: string, value: string) => {
+    setFormData(prev => ({ ...prev, [name]: value }));
+  };
+  
+  const handleCheckboxChange = (checked: boolean) => {
+    setFormData(prev => ({ ...prev, acceptTerms: checked }));
+  };
   
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!email.trim() || !company.trim()) {
+    // Validate form
+    if (!formData.email.trim() || 
+        !formData.company.trim() || 
+        !formData.contactName.trim() || 
+        !formData.whatsapp.trim() || 
+        !formData.sector || 
+        !formData.preferredSolution || 
+        !formData.acceptTerms) {
       toast({
         title: "Campos incompletos",
-        description: "Por favor, preencha todos os campos.",
+        description: "Por favor, preencha todos os campos obrigatórios.",
         variant: "destructive",
       });
       return;
@@ -45,7 +84,7 @@ const CTASection = () => {
             <div className="absolute top-1/2 left-1/3 w-32 h-32 rounded-full bg-white"></div>
           </div>
           
-          <div className="relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+          <div className="relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
             <div>
               <h2 className="text-3xl md:text-4xl font-bold mb-6">
                 Transforme o futuro da sua empresa com dados inteligentes
@@ -85,58 +124,170 @@ const CTASection = () => {
             
             <div className="bg-white p-6 rounded-xl shadow-lg">
               {!submitted ? (
-                <form onSubmit={handleSubmit}>
+                <form onSubmit={handleSubmit} className="space-y-4">
                   <h3 className="text-sightx-purple font-bold text-xl mb-4">Entre na lista de espera</h3>
-                  <div className="space-y-4">
-                    <div>
-                      <label htmlFor="company" className="block text-sm font-medium text-gray-700 mb-1">
-                        Nome da empresa
-                      </label>
-                      <input
-                        type="text"
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="contactName" className="text-gray-700">
+                        Nome completo <span className="text-red-500">*</span>
+                      </Label>
+                      <Input
+                        id="contactName"
+                        name="contactName"
+                        value={formData.contactName}
+                        onChange={handleInputChange}
+                        className="input-custom"
+                        placeholder="Seu nome"
+                        required
+                      />
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <Label htmlFor="company" className="text-gray-700">
+                        Nome da empresa <span className="text-red-500">*</span>
+                      </Label>
+                      <Input
                         id="company"
-                        value={company}
-                        onChange={(e) => setCompany(e.target.value)}
+                        name="company"
+                        value={formData.company}
+                        onChange={handleInputChange}
                         className="input-custom"
                         placeholder="Sua empresa"
                         required
                       />
                     </div>
-                    <div>
-                      <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
-                        E-mail corporativo
-                      </label>
-                      <input
+                  </div>
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="email" className="text-gray-700">
+                        E-mail corporativo <span className="text-red-500">*</span>
+                      </Label>
+                      <Input
                         type="email"
                         id="email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
+                        name="email"
+                        value={formData.email}
+                        onChange={handleInputChange}
                         className="input-custom"
                         placeholder="seu@email.com"
                         required
                       />
                     </div>
-                    <Button
-                      type="submit"
-                      className="w-full btn-primary mt-2"
-                      disabled={loading}
-                    >
-                      {loading ? (
-                        <div className="flex items-center justify-center gap-2">
-                          <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                          </svg>
-                          <span>Processando...</span>
-                        </div>
-                      ) : (
-                        "Entrar na lista de espera"
-                      )}
-                    </Button>
-                    <p className="text-xs text-gray-500 text-center">
-                      Ao se inscrever, você concorda em receber emails sobre a SightX.
-                    </p>
+                    
+                    <div className="space-y-2">
+                      <Label htmlFor="whatsapp" className="text-gray-700">
+                        WhatsApp <span className="text-red-500">*</span>
+                      </Label>
+                      <Input
+                        id="whatsapp"
+                        name="whatsapp"
+                        value={formData.whatsapp}
+                        onChange={handleInputChange}
+                        className="input-custom"
+                        placeholder="(XX) XXXXX-XXXX"
+                        required
+                      />
+                    </div>
                   </div>
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="sector" className="text-gray-700">
+                        Setor <span className="text-red-500">*</span>
+                      </Label>
+                      <Select
+                        value={formData.sector}
+                        onValueChange={(value) => handleSelectChange('sector', value)}
+                      >
+                        <SelectTrigger className="input-custom">
+                          <SelectValue placeholder="Selecione o setor" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="comercio">Comércio</SelectItem>
+                          <SelectItem value="servicos">Serviços</SelectItem>
+                          <SelectItem value="industria">Indústria</SelectItem>
+                          <SelectItem value="tecnologia">Tecnologia</SelectItem>
+                          <SelectItem value="educacao">Educação</SelectItem>
+                          <SelectItem value="saude">Saúde</SelectItem>
+                          <SelectItem value="alimentacao">Alimentação</SelectItem>
+                          <SelectItem value="outro">Outro</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <Label htmlFor="preferredSolution" className="text-gray-700">
+                        Solução preferida <span className="text-red-500">*</span>
+                      </Label>
+                      <Select
+                        value={formData.preferredSolution}
+                        onValueChange={(value) => handleSelectChange('preferredSolution', value)}
+                      >
+                        <SelectTrigger className="input-custom">
+                          <SelectValue placeholder="Escolha uma solução" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="google_maps">Análise de Google Maps</SelectItem>
+                          <SelectItem value="social_media">Análise de Mídias Sociais</SelectItem>
+                          <SelectItem value="geographic">Análise Geográfica</SelectItem>
+                          <SelectItem value="donna_assistant">Assistente Virtual Donna</SelectItem>
+                          <SelectItem value="todas">Todas as soluções</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <Label htmlFor="suggestions" className="text-gray-700">
+                      Sugestões de outras soluções
+                    </Label>
+                    <Textarea
+                      id="suggestions"
+                      name="suggestions"
+                      value={formData.suggestions}
+                      onChange={handleInputChange}
+                      className="input-custom min-h-[80px]"
+                      placeholder="Compartilhe suas ideias para novas soluções..."
+                    />
+                  </div>
+                  
+                  <div className="flex items-start space-x-2 mt-4">
+                    <Checkbox 
+                      id="acceptTerms" 
+                      checked={formData.acceptTerms}
+                      onCheckedChange={handleCheckboxChange}
+                      className="mt-1"
+                    />
+                    <Label 
+                      htmlFor="acceptTerms" 
+                      className="text-xs text-gray-600 font-normal"
+                    >
+                      Concordo em receber comunicações da SightX e confirmo que li e aceito os 
+                      <a href="#" className="text-sightx-purple font-medium hover:underline"> Termos de Uso </a> 
+                      e a 
+                      <a href="#" className="text-sightx-purple font-medium hover:underline"> Política de Privacidade</a>.
+                    </Label>
+                  </div>
+                  
+                  <Button
+                    type="submit"
+                    className="w-full btn-primary mt-4"
+                    disabled={loading}
+                  >
+                    {loading ? (
+                      <div className="flex items-center justify-center gap-2">
+                        <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        <span>Processando...</span>
+                      </div>
+                    ) : (
+                      "Entrar na lista de espera"
+                    )}
+                  </Button>
                 </form>
               ) : (
                 <div className="text-center py-6">
@@ -154,8 +305,16 @@ const CTASection = () => {
                     className="btn-outline"
                     onClick={() => {
                       setSubmitted(false);
-                      setEmail('');
-                      setCompany('');
+                      setFormData({
+                        email: '',
+                        company: '',
+                        contactName: '',
+                        whatsapp: '',
+                        sector: '',
+                        preferredSolution: '',
+                        suggestions: '',
+                        acceptTerms: false
+                      });
                     }}
                   >
                     Voltar ao formulário
