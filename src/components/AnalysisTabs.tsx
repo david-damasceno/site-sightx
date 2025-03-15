@@ -1,10 +1,11 @@
+
 import { useState } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { 
-  BarChart, 
+  BarChart as BarChartIcon, 
   Map, 
   MessageCircle, 
-  LineChart, 
+  LineChart as LineChartIcon, 
   Share2, 
   TrendingUp,
   LayoutDashboard,
@@ -15,7 +16,10 @@ import {
   Activity,
   Package,
   Target,
-  DollarSign
+  DollarSign,
+  Zap,
+  PieChart,
+  Calendar
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { 
@@ -33,10 +37,11 @@ import {
   ChartTooltip, 
   ChartTooltipContent 
 } from "@/components/ui/chart";
-import { ResponsiveContainer, LineChart as RechartsLineChart, Line, BarChart as RechartsBarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, PieChart, Pie, Cell } from 'recharts';
+import { ResponsiveContainer, LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, PieChart as RechartsPieChart, Pie, Cell, AreaChart, Area } from 'recharts';
 
 const AnalysisTabs = () => {
   const [activeTab, setActiveTab] = useState("dashboard");
+  const [selectedPeriod, setSelectedPeriod] = useState("month");
 
   // Sample data for Dashboard charts
   const revenueData = [
@@ -48,6 +53,17 @@ const AnalysisTabs = () => {
     { month: 'Jun', value: 92000 },
     { month: 'Jul', value: 100000 },
     { month: 'Ago', value: 110000 },
+  ];
+
+  const customerData = [
+    { month: 'Jan', new: 120, returning: 380 },
+    { month: 'Feb', new: 150, returning: 420 },
+    { month: 'Mar', new: 170, returning: 390 },
+    { month: 'Apr', new: 190, returning: 450 },
+    { month: 'Mai', new: 220, returning: 480 },
+    { month: 'Jun', new: 250, returning: 520 },
+    { month: 'Jul', new: 270, returning: 550 },
+    { month: 'Ago', new: 300, returning: 580 },
   ];
 
   const goalData = [
@@ -63,11 +79,72 @@ const AnalysisTabs = () => {
     { name: 'Produto E', stock: 32, demand: 45 },
   ];
 
+  const salesByRegionData = [
+    { name: 'Norte', value: 15 },
+    { name: 'Sul', value: 35 },
+    { name: 'Leste', value: 20 },
+    { name: 'Oeste', value: 30 }
+  ];
+
   const COLORS = ['#9b87f5', '#ecebfd'];
+  const REGION_COLORS = ['#9b87f5', '#33C3F0', '#FF719A', '#FFA99F'];
   const INVENTORY_COLORS = {
     stock: '#9b87f5',
     demand: '#33C3F0'
   };
+  const CUSTOMER_COLORS = {
+    new: '#FF719A',
+    returning: '#9b87f5'
+  };
+
+  const chatMessages = [
+    { 
+      id: 1, 
+      sender: 'bot', 
+      message: 'Olá Carlos! Como posso ajudar você hoje?',
+      timestamp: '09:30'
+    },
+    { 
+      id: 2, 
+      sender: 'user', 
+      message: 'Preciso entender por que minhas vendas caíram neste mês.',
+      timestamp: '09:31' 
+    },
+    { 
+      id: 3, 
+      sender: 'bot', 
+      message: 'Analisei seus dados de vendas e identifiquei algumas causas possíveis para a queda:',
+      timestamp: '09:31',
+      isAnalysis: true
+    },
+    { 
+      id: 4, 
+      sender: 'bot', 
+      message: `<div class="font-medium mb-2">Análise de Vendas - Julho/2023</div>
+                <ul class="list-disc pl-4 space-y-2 text-sm">
+                  <li>Suas vendas caíram 8% em relação ao mês anterior</li>
+                  <li>O tempo de carregamento do seu site aumentou 5%</li>
+                  <li>Seus concorrentes lançaram uma campanha promocional agressiva</li>
+                  <li>O produto mais vendido (Produto C) ficou sem estoque por 5 dias</li>
+                </ul>`,
+      timestamp: '09:32',
+      isHtml: true 
+    },
+    { 
+      id: 5, 
+      sender: 'bot', 
+      message: `<div class="font-medium mb-2">Recomendação:</div>
+                <p class="text-sm">Sugiro lançar uma campanha promocional focada nos produtos A e B, que têm bom estoque, e otimizar o tempo de carregamento do site para melhorar a experiência do usuário.</p>`,
+      timestamp: '09:32',
+      isHtml: true
+    },
+    { 
+      id: 6, 
+      sender: 'user', 
+      message: 'Ótimas sugestões! Como posso otimizar o tempo de carregamento do site?',
+      timestamp: '09:33' 
+    }
+  ];
 
   return (
     <section id="data-analysis" className="section-padding bg-gray-50">
@@ -139,13 +216,38 @@ const AnalysisTabs = () => {
           </div>
 
           <TabsContent value="dashboard" className="animate-fade-in">
+            <div className="p-4 mb-6 bg-white rounded-xl shadow-sm border border-gray-100">
+              <div className="flex flex-wrap items-center justify-between gap-4">
+                <h3 className="text-lg font-medium flex items-center gap-2">
+                  <Calendar size={18} className="text-sightx-purple" />
+                  Período
+                </h3>
+                <div className="flex gap-2">
+                  {['semana', 'mês', 'trimestre', 'ano'].map((period) => (
+                    <Button 
+                      key={period}
+                      variant={selectedPeriod === period ? "default" : "outline"}
+                      className={selectedPeriod === period ? "bg-sightx-purple hover:bg-sightx-purple/90" : "text-gray-600"}
+                      size="sm"
+                      onClick={() => setSelectedPeriod(period)}
+                    >
+                      {period.charAt(0).toUpperCase() + period.slice(1)}
+                    </Button>
+                  ))}
+                </div>
+              </div>
+            </div>
+
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
               <div className="lg:col-span-2 space-y-6">
-                <Card>
-                  <CardHeader className="pb-2">
+                <Card className="overflow-hidden border-none shadow-lg hover:shadow-xl transition-shadow">
+                  <CardHeader className="pb-2 bg-gradient-to-r from-purple-50 to-indigo-50">
                     <div className="flex items-center justify-between">
                       <div>
-                        <CardTitle className="text-xl">Faturamento Mensal</CardTitle>
+                        <CardTitle className="text-xl flex items-center gap-2">
+                          <LineChartIcon size={18} className="text-sightx-purple" />
+                          Faturamento Mensal
+                        </CardTitle>
                         <CardDescription>Análise de receita dos últimos 8 meses</CardDescription>
                       </div>
                       <div className="bg-green-50 text-green-600 py-1 px-3 rounded-full text-sm font-medium flex items-center">
@@ -154,10 +256,16 @@ const AnalysisTabs = () => {
                       </div>
                     </div>
                   </CardHeader>
-                  <CardContent className="pt-0">
-                    <div className="h-[300px] w-full">
+                  <CardContent className="pt-6">
+                    <div className="h-[280px] w-full">
                       <ResponsiveContainer width="100%" height="100%">
-                        <RechartsLineChart data={revenueData} margin={{ top: 20, right: 10, left: 10, bottom: 5 }}>
+                        <AreaChart data={revenueData} margin={{ top: 20, right: 10, left: 10, bottom: 5 }}>
+                          <defs>
+                            <linearGradient id="colorRevenue" x1="0" y1="0" x2="0" y2="1">
+                              <stop offset="5%" stopColor="#9b87f5" stopOpacity={0.8}/>
+                              <stop offset="95%" stopColor="#9b87f5" stopOpacity={0.1}/>
+                            </linearGradient>
+                          </defs>
                           <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f0f0f0" />
                           <XAxis dataKey="month" axisLine={false} tickLine={false} />
                           <YAxis 
@@ -168,66 +276,110 @@ const AnalysisTabs = () => {
                           />
                           <Tooltip 
                             formatter={(value) => [`R$ ${Number(value).toLocaleString()}`, 'Receita']}
-                            contentStyle={{ borderRadius: '8px', border: '1px solid #f0f0f0' }}
+                            contentStyle={{ borderRadius: '8px', border: '1px solid #f0f0f0', boxShadow: '0 2px 10px rgba(0,0,0,0.08)' }}
                           />
-                          <Line 
+                          <Area 
                             type="monotone" 
                             dataKey="value" 
                             stroke="#9b87f5" 
-                            strokeWidth={3} 
-                            dot={{ stroke: '#9b87f5', strokeWidth: 3, r: 4, fill: 'white' }}
+                            strokeWidth={3}
+                            fillOpacity={1}
+                            fill="url(#colorRevenue)"
                             activeDot={{ stroke: '#9b87f5', strokeWidth: 3, r: 6, fill: 'white' }}
                           />
-                        </RechartsLineChart>
+                        </AreaChart>
                       </ResponsiveContainer>
                     </div>
                   </CardContent>
                 </Card>
 
-                <Card>
-                  <CardHeader className="pb-2">
-                    <CardTitle className="text-xl">Status do Estoque</CardTitle>
-                    <CardDescription>Análise de estoque vs demanda por produto</CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="h-[250px]">
-                      <ResponsiveContainer width="100%" height="100%">
-                        <RechartsBarChart data={inventoryData} margin={{ top: 20, right: 30, left: 0, bottom: 5 }}>
-                          <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f0f0f0" />
-                          <XAxis dataKey="name" axisLine={false} tickLine={false} />
-                          <YAxis axisLine={false} tickLine={false} />
-                          <Tooltip contentStyle={{ borderRadius: '8px', border: '1px solid #f0f0f0' }} />
-                          <Bar dataKey="stock" fill={INVENTORY_COLORS.stock} radius={[4, 4, 0, 0]} name="Estoque" />
-                          <Bar dataKey="demand" fill={INVENTORY_COLORS.demand} radius={[4, 4, 0, 0]} name="Demanda" />
-                        </RechartsBarChart>
-                      </ResponsiveContainer>
-                    </div>
-                  </CardContent>
-                  <CardFooter className="pt-0 border-t">
-                    <div className="w-full bg-yellow-50 p-3 rounded-lg flex gap-3 items-center">
-                      <AlertCircle size={18} className="text-yellow-600" />
-                      <p className="text-sm text-yellow-700">Produto C tem estoque abaixo da demanda prevista. Recomendamos reabastecer.</p>
-                    </div>
-                  </CardFooter>
-                </Card>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <Card className="overflow-hidden border-none shadow-lg hover:shadow-xl transition-shadow">
+                    <CardHeader className="pb-2 bg-gradient-to-r from-blue-50 to-indigo-50">
+                      <CardTitle className="text-xl flex items-center gap-2">
+                        <BarChartIcon size={18} className="text-blue-500" />
+                        Clientes
+                      </CardTitle>
+                      <CardDescription>Novos vs. Recorrentes</CardDescription>
+                    </CardHeader>
+                    <CardContent className="pt-4">
+                      <div className="h-[220px]">
+                        <ResponsiveContainer width="100%" height="100%">
+                          <BarChart data={customerData} margin={{ top: 20, right: 10, left: 10, bottom: 5 }}>
+                            <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f0f0f0" />
+                            <XAxis dataKey="month" axisLine={false} tickLine={false} />
+                            <YAxis axisLine={false} tickLine={false} />
+                            <Tooltip 
+                              contentStyle={{ borderRadius: '8px', border: '1px solid #f0f0f0', boxShadow: '0 2px 10px rgba(0,0,0,0.08)' }}
+                            />
+                            <Bar dataKey="returning" name="Recorrentes" fill={CUSTOMER_COLORS.returning} radius={[4, 4, 0, 0]} />
+                            <Bar dataKey="new" name="Novos" fill={CUSTOMER_COLORS.new} radius={[4, 4, 0, 0]} />
+                          </BarChart>
+                        </ResponsiveContainer>
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  <Card className="overflow-hidden border-none shadow-lg hover:shadow-xl transition-shadow">
+                    <CardHeader className="pb-2 bg-gradient-to-r from-pink-50 to-red-50">
+                      <CardTitle className="text-xl flex items-center gap-2">
+                        <PieChart size={18} className="text-pink-500" />
+                        Vendas por Região
+                      </CardTitle>
+                      <CardDescription>Distribuição geográfica</CardDescription>
+                    </CardHeader>
+                    <CardContent className="pt-4">
+                      <div className="h-[220px]">
+                        <ResponsiveContainer width="100%" height="100%">
+                          <RechartsPieChart>
+                            <Pie
+                              data={salesByRegionData}
+                              cx="50%"
+                              cy="50%"
+                              innerRadius={60}
+                              outerRadius={80}
+                              paddingAngle={2}
+                              dataKey="value"
+                              label={({name, percent}) => `${name}: ${(percent * 100).toFixed(0)}%`}
+                              labelLine={false}
+                            >
+                              {salesByRegionData.map((entry, index) => (
+                                <Cell key={`cell-${index}`} fill={REGION_COLORS[index % REGION_COLORS.length]} />
+                              ))}
+                            </Pie>
+                            <Tooltip 
+                              formatter={(value) => [`${value}%`, 'Percentual']}
+                              contentStyle={{ borderRadius: '8px', border: '1px solid #f0f0f0', boxShadow: '0 2px 10px rgba(0,0,0,0.08)' }}
+                            />
+                          </RechartsPieChart>
+                        </ResponsiveContainer>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
               </div>
 
               <div className="lg:col-span-1 space-y-6">
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="text-xl">Meta Mensal</CardTitle>
+                <Card className="border-none shadow-lg hover:shadow-xl transition-shadow overflow-hidden">
+                  <CardHeader className="bg-gradient-to-r from-purple-50 to-indigo-50">
+                    <CardTitle className="text-xl flex items-center gap-2">
+                      <Target size={18} className="text-sightx-purple" />
+                      Meta Mensal
+                    </CardTitle>
                     <CardDescription>Progresso para agosto/2023</CardDescription>
                   </CardHeader>
-                  <CardContent className="flex flex-col items-center">
-                    <div className="w-[180px] h-[180px]">
+                  <CardContent className="flex flex-col items-center pt-6">
+                    <div className="w-[180px] h-[180px] relative">
                       <ResponsiveContainer width="100%" height="100%">
-                        <PieChart>
+                        <RechartsPieChart>
                           <Pie
                             data={goalData}
                             cx="50%"
                             cy="50%"
                             innerRadius={60}
                             outerRadius={80}
+                            startAngle={90}
+                            endAngle={-270}
                             paddingAngle={0}
                             dataKey="value"
                           >
@@ -235,26 +387,24 @@ const AnalysisTabs = () => {
                               <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                             ))}
                           </Pie>
-                          <Tooltip 
-                            formatter={(value) => [`${value}%`, 'Progresso']}
-                            contentStyle={{ borderRadius: '8px', border: '1px solid #f0f0f0' }}
-                          />
-                        </PieChart>
+                        </RechartsPieChart>
                       </ResponsiveContainer>
+                      <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center">
+                        <h3 className="text-3xl font-bold text-sightx-purple">78%</h3>
+                      </div>
                     </div>
-                    <div className="text-center mt-4">
-                      <h3 className="text-3xl font-bold text-sightx-purple">78%</h3>
+                    <div className="text-center mt-2">
                       <p className="text-gray-500">R$ 85.800 de R$ 110.000</p>
                     </div>
                   </CardContent>
                 </Card>
 
                 <div className="grid grid-cols-2 gap-4">
-                  <Card className="bg-white">
+                  <Card className="bg-white shadow hover:shadow-md transition-shadow p-1">
                     <CardContent className="p-4">
                       <div className="flex flex-col items-center">
-                        <div className="w-10 h-10 rounded-full bg-purple-50 flex items-center justify-center mb-2">
-                          <DollarSign size={20} className="text-sightx-purple" />
+                        <div className="w-10 h-10 rounded-full bg-gradient-to-br from-purple-400 to-purple-600 flex items-center justify-center mb-2">
+                          <DollarSign size={20} className="text-white" />
                         </div>
                         <p className="text-sm text-gray-500">Ticket Médio</p>
                         <h4 className="text-xl font-bold">R$ 178,50</h4>
@@ -266,11 +416,11 @@ const AnalysisTabs = () => {
                     </CardContent>
                   </Card>
 
-                  <Card className="bg-white">
+                  <Card className="bg-white shadow hover:shadow-md transition-shadow p-1">
                     <CardContent className="p-4">
                       <div className="flex flex-col items-center">
-                        <div className="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center mb-2">
-                          <Activity size={20} className="text-blue-500" />
+                        <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center mb-2">
+                          <Activity size={20} className="text-white" />
                         </div>
                         <p className="text-sm text-gray-500">Vendas</p>
                         <h4 className="text-xl font-bold">481</h4>
@@ -281,40 +431,9 @@ const AnalysisTabs = () => {
                       </div>
                     </CardContent>
                   </Card>
-
-                  <Card className="bg-white">
-                    <CardContent className="p-4">
-                      <div className="flex flex-col items-center">
-                        <div className="w-10 h-10 rounded-full bg-green-50 flex items-center justify-center mb-2">
-                          <Package size={20} className="text-green-500" />
-                        </div>
-                        <p className="text-sm text-gray-500">Produtos</p>
-                        <h4 className="text-xl font-bold">24</h4>
-                        <div className="flex items-center text-gray-500 text-xs">
-                          <span>Estável</span>
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-
-                  <Card className="bg-white">
-                    <CardContent className="p-4">
-                      <div className="flex flex-col items-center">
-                        <div className="w-10 h-10 rounded-full bg-red-50 flex items-center justify-center mb-2">
-                          <Target size={20} className="text-red-500" />
-                        </div>
-                        <p className="text-sm text-gray-500">Conversão</p>
-                        <h4 className="text-xl font-bold">24.8%</h4>
-                        <div className="flex items-center text-red-600 text-xs">
-                          <ChevronDown size={14} />
-                          <span>3%</span>
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
                 </div>
 
-                <Card className="bg-gradient-to-br from-purple-50 to-indigo-50 border-purple-100">
+                <Card className="bg-gradient-to-br from-purple-50 to-indigo-50 border-purple-100 shadow-lg hover:shadow-xl transition-shadow">
                   <CardHeader>
                     <CardTitle className="flex items-center text-xl gap-2">
                       <Bot size={18} className="text-sightx-purple" />
@@ -322,14 +441,19 @@ const AnalysisTabs = () => {
                     </CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-4">
-                    <div className="bg-white p-3 rounded-lg shadow-sm border border-purple-100">
+                    <div className="bg-white p-3 rounded-lg shadow-sm border border-purple-100 hover:shadow-md transition-shadow">
+                      <div className="flex items-center gap-2 mb-1">
+                        <Zap size={14} className="text-yellow-500" />
+                        <p className="text-sm font-medium">Oportunidade</p>
+                      </div>
                       <p className="text-sm">Suas vendas às quintas-feiras são 23% maiores que nos outros dias. Considere aumentar o estoque para esse dia da semana.</p>
                     </div>
-                    <div className="bg-white p-3 rounded-lg shadow-sm border border-purple-100">
+                    <div className="bg-white p-3 rounded-lg shadow-sm border border-purple-100 hover:shadow-md transition-shadow">
+                      <div className="flex items-center gap-2 mb-1">
+                        <AlertCircle size={14} className="text-red-500" />
+                        <p className="text-sm font-medium">Alerta</p>
+                      </div>
                       <p className="text-sm">O Produto C está prestes a ficar sem estoque, mas possui alta demanda. Recomendamos reabastecer com urgência.</p>
-                    </div>
-                    <div className="bg-white p-3 rounded-lg shadow-sm border border-purple-100">
-                      <p className="text-sm">A conversão caiu 3% este mês. Analisando os dados, percebemos uma correlação com o aumento de 5% no tempo de carregamento do site.</p>
                     </div>
                   </CardContent>
                   <CardFooter>
@@ -345,11 +469,11 @@ const AnalysisTabs = () => {
           <TabsContent value="chat-donna" className="animate-fade-in">
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
               <div className="lg:col-span-2">
-                <Card className="h-[650px] flex flex-col">
-                  <CardHeader className="flex-shrink-0 border-b">
+                <Card className="h-[600px] flex flex-col overflow-hidden border-none shadow-lg">
+                  <CardHeader className="flex-shrink-0 border-b bg-gradient-to-r from-purple-50 to-indigo-50">
                     <div className="flex justify-between items-center">
                       <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-full bg-sightx-purple flex-shrink-0 flex items-center justify-center">
+                        <div className="w-10 h-10 rounded-full bg-gradient-to-br from-purple-400 to-purple-600 flex-shrink-0 flex items-center justify-center">
                           <Bot size={18} className="text-white" />
                         </div>
                         <div>
@@ -363,82 +487,84 @@ const AnalysisTabs = () => {
                       </div>
                     </div>
                   </CardHeader>
-                  <CardContent className="flex-1 overflow-y-auto p-6 space-y-6">
+                  <CardContent className="flex-1 overflow-y-auto p-6 space-y-6 bg-gradient-to-b from-white to-gray-50">
                     <div className="flex flex-col gap-6">
+                      {chatMessages.map((msg) => (
+                        <div 
+                          key={msg.id}
+                          className={`flex items-start gap-3 ${msg.sender === 'user' ? 'flex-row-reverse' : ''}`}
+                        >
+                          <div 
+                            className={`w-8 h-8 rounded-full flex-shrink-0 flex items-center justify-center
+                              ${msg.sender === 'user' 
+                                ? 'bg-gradient-to-br from-blue-400 to-blue-600' 
+                                : 'bg-gradient-to-br from-purple-400 to-purple-600'}`
+                            }
+                          >
+                            {msg.sender === 'user' 
+                              ? <span className="text-white font-medium text-sm">C</span>
+                              : <Bot size={14} className="text-white" />
+                            }
+                          </div>
+                          
+                          {msg.isAnalysis ? (
+                            <div className="space-y-2 max-w-[85%]">
+                              <div className={`
+                                rounded-lg p-4 ${msg.sender === 'user' 
+                                  ? 'bg-blue-500 text-white rounded-tr-none' 
+                                  : 'bg-gray-100 rounded-tl-none'}`
+                                }
+                              >
+                                {msg.message}
+                              </div>
+                            </div>
+                          ) : msg.isHtml ? (
+                            <div className={`
+                              rounded-lg p-4 ${msg.sender === 'user' 
+                                ? 'bg-blue-500 text-white rounded-tr-none' 
+                                : 'bg-gray-100 rounded-tl-none'}`
+                              }
+                              dangerouslySetInnerHTML={{ __html: msg.message }}
+                            />
+                          ) : (
+                            <div className={`
+                              rounded-lg p-4 max-w-[80%] shadow-sm ${msg.sender === 'user' 
+                                ? 'bg-blue-500 text-white rounded-tr-none' 
+                                : 'bg-gray-100 rounded-tl-none'}`
+                              }
+                            >
+                              <p>{msg.message}</p>
+                              <div className={`text-xs mt-1 text-right ${msg.sender === 'user' ? 'text-blue-100' : 'text-gray-400'}`}>
+                                {msg.timestamp}
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      ))}
+                      
                       <div className="flex items-start gap-3">
-                        <div className="w-8 h-8 rounded-full bg-sightx-purple flex-shrink-0 flex items-center justify-center">
+                        <div className="w-8 h-8 rounded-full bg-gradient-to-br from-purple-400 to-purple-600 flex-shrink-0 flex items-center justify-center">
                           <Bot size={14} className="text-white" />
                         </div>
-                        <div className="bg-gray-100 rounded-lg rounded-tl-none p-4 max-w-[80%]">
-                          <p>Olá Carlos! Como posso ajudar você hoje?</p>
-                        </div>
-                      </div>
-
-                      <div className="flex items-start gap-3 flex-row-reverse">
-                        <div className="w-8 h-8 rounded-full bg-blue-500 flex-shrink-0 flex items-center justify-center">
-                          <span className="text-white font-medium text-sm">C</span>
-                        </div>
-                        <div className="bg-blue-500 text-white rounded-lg rounded-tr-none p-4 max-w-[80%]">
-                          <p>Preciso entender por que minhas vendas caíram neste mês.</p>
-                        </div>
-                      </div>
-
-                      <div className="flex items-start gap-3">
-                        <div className="w-8 h-8 rounded-full bg-sightx-purple flex-shrink-0 flex items-center justify-center">
-                          <Bot size={14} className="text-white" />
-                        </div>
-                        <div className="space-y-4 max-w-[85%]">
-                          <div className="bg-gray-100 rounded-lg rounded-tl-none p-4">
-                            <p>Analisei seus dados de vendas e identifiquei algumas causas possíveis para a queda:</p>
-                          </div>
-                          <div className="bg-gray-100 rounded-lg p-4">
-                            <p className="font-medium mb-2">Análise de Vendas - Julho/2023</p>
-                            <ul className="list-disc pl-4 space-y-2 text-sm">
-                              <li>Suas vendas caíram 8% em relação ao mês anterior</li>
-                              <li>O tempo de carregamento do seu site aumentou 5%</li>
-                              <li>Seus concorrentes lançaram uma campanha promocional agressiva</li>
-                              <li>O produto mais vendido (Produto C) ficou sem estoque por 5 dias</li>
-                            </ul>
-                          </div>
-                          <div className="bg-gray-100 rounded-lg p-4">
-                            <p className="font-medium mb-2">Recomendação:</p>
-                            <p className="text-sm">Sugiro lançar uma campanha promocional focada nos produtos A e B, que têm bom estoque, e otimizar o tempo de carregamento do site para melhorar a experiência do usuário.</p>
-                          </div>
-                        </div>
-                      </div>
-
-                      <div className="flex items-start gap-3 flex-row-reverse">
-                        <div className="w-8 h-8 rounded-full bg-blue-500 flex-shrink-0 flex items-center justify-center">
-                          <span className="text-white font-medium text-sm">C</span>
-                        </div>
-                        <div className="bg-blue-500 text-white rounded-lg rounded-tr-none p-4 max-w-[80%]">
-                          <p>Ótimas sugestões! Como posso otimizar o tempo de carregamento do site?</p>
-                        </div>
-                      </div>
-
-                      <div className="flex items-start gap-3">
-                        <div className="w-8 h-8 rounded-full bg-sightx-purple flex-shrink-0 flex items-center justify-center">
-                          <Bot size={14} className="text-white" />
-                        </div>
-                        <div className="bg-gray-100 rounded-lg rounded-tl-none p-4 max-w-[80%]">
+                        <div className="bg-gray-100 rounded-lg rounded-tl-none p-4 max-w-[80%] shadow-sm">
                           <div className="flex gap-1">
-                            <span className="w-2 h-2 bg-gray-400 rounded-full animate-pulse" style={{ animationDelay: "0s" }}></span>
-                            <span className="w-2 h-2 bg-gray-400 rounded-full animate-pulse" style={{ animationDelay: "0.2s" }}></span>
-                            <span className="w-2 h-2 bg-gray-400 rounded-full animate-pulse" style={{ animationDelay: "0.4s" }}></span>
+                            <span className="w-2 h-2 bg-sightx-purple rounded-full animate-pulse" style={{ animationDelay: "0s" }}></span>
+                            <span className="w-2 h-2 bg-sightx-purple rounded-full animate-pulse" style={{ animationDelay: "0.2s" }}></span>
+                            <span className="w-2 h-2 bg-sightx-purple rounded-full animate-pulse" style={{ animationDelay: "0.4s" }}></span>
                           </div>
                         </div>
                       </div>
                     </div>
                   </CardContent>
-                  <CardFooter className="border-t p-4">
+                  <CardFooter className="border-t p-4 bg-white">
                     <div className="flex w-full gap-2 items-center">
                       <div className="w-full relative">
                         <input 
                           type="text" 
-                          className="w-full py-2 px-4 border rounded-full bg-gray-50 focus:outline-none focus:ring-2 focus:ring-sightx-purple focus:border-transparent" 
+                          className="w-full py-3 px-4 pr-12 border rounded-full bg-gray-50 focus:outline-none focus:ring-2 focus:ring-sightx-purple focus:border-transparent shadow-sm" 
                           placeholder="Digite sua mensagem..."
                         />
-                        <button className="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 bg-sightx-purple text-white rounded-full">
+                        <button className="absolute right-2 top-1/2 -translate-y-1/2 p-2 bg-gradient-to-r from-purple-500 to-purple-600 text-white rounded-full shadow-md hover:shadow-lg transition-shadow">
                           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 12h14M12 5l7 7-7 7" />
                           </svg>
@@ -450,59 +576,72 @@ const AnalysisTabs = () => {
               </div>
 
               <div className="lg:col-span-1 space-y-6">
-                <Card>
-                  <CardHeader>
+                <Card className="shadow-lg border-none overflow-hidden">
+                  <CardHeader className="bg-gradient-to-r from-purple-50 to-indigo-50">
                     <CardTitle className="text-lg">Contexto da Conversa</CardTitle>
                   </CardHeader>
-                  <CardContent className="space-y-4">
-                    <div className="bg-gray-50 p-3 rounded-lg">
+                  <CardContent className="space-y-4 p-5">
+                    <div className="bg-gray-50 p-3 rounded-lg border border-gray-100 shadow-sm">
                       <p className="text-sm font-medium mb-1">Dados Disponíveis:</p>
                       <div className="flex flex-wrap gap-2">
-                        <span className="px-2 py-1 bg-purple-100 text-sightx-purple rounded-full text-xs">Vendas</span>
-                        <span className="px-2 py-1 bg-blue-100 text-blue-600 rounded-full text-xs">Estoque</span>
-                        <span className="px-2 py-1 bg-green-100 text-green-600 rounded-full text-xs">Marketing</span>
-                        <span className="px-2 py-1 bg-orange-100 text-orange-600 rounded-full text-xs">Concorrentes</span>
-                        <span className="px-2 py-1 bg-pink-100 text-pink-600 rounded-full text-xs">Website</span>
+                        <span className="px-2 py-1 bg-purple-100 text-sightx-purple rounded-full text-xs flex items-center gap-1">
+                          <BarChartIcon size={10} />
+                          Vendas
+                        </span>
+                        <span className="px-2 py-1 bg-blue-100 text-blue-600 rounded-full text-xs flex items-center gap-1">
+                          <Package size={10} />
+                          Estoque
+                        </span>
+                        <span className="px-2 py-1 bg-green-100 text-green-600 rounded-full text-xs flex items-center gap-1">
+                          <TrendingUp size={10} />
+                          Marketing
+                        </span>
+                        <span className="px-2 py-1 bg-pink-100 text-pink-600 rounded-full text-xs flex items-center gap-1">
+                          <Activity size={10} />
+                          Website
+                        </span>
                       </div>
                     </div>
-                    <div className="bg-gray-50 p-3 rounded-lg">
+                    <div className="bg-gray-50 p-3 rounded-lg border border-gray-100 shadow-sm">
                       <p className="text-sm font-medium mb-1">Período Analisado:</p>
-                      <p className="text-sm">Julho 2023 (Comparativo com Jun/2023)</p>
+                      <p className="text-sm flex items-center gap-2">
+                        <Calendar size={14} className="text-sightx-purple" />
+                        Julho 2023 (Comparativo com Jun/2023)
+                      </p>
                     </div>
-                    <div className="bg-gray-50 p-3 rounded-lg">
+                    <div className="bg-gray-50 p-3 rounded-lg border border-gray-100 shadow-sm">
                       <p className="text-sm font-medium mb-1">Produto em Foco:</p>
-                      <p className="text-sm">Produto C (Estoque baixo)</p>
+                      <p className="text-sm flex items-center gap-2">
+                        <Package size={14} className="text-sightx-purple" />
+                        Produto C (Estoque baixo)
+                      </p>
                     </div>
                   </CardContent>
                 </Card>
 
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="text-lg">Conversas Recentes</CardTitle>
+                <Card className="shadow-lg border-none overflow-hidden">
+                  <CardHeader className="bg-gradient-to-r from-purple-50 to-indigo-50">
+                    <CardTitle className="text-lg flex items-center gap-2">
+                      <MessageCircle size={16} className="text-sightx-purple" />
+                      Conversas Recentes
+                    </CardTitle>
                   </CardHeader>
                   <CardContent className="p-0">
                     <div className="divide-y">
-                      <button className="w-full p-4 text-left hover:bg-gray-50 transition-colors flex items-center gap-3">
-                        <MessageCircle size={16} className="text-gray-400" />
-                        <div>
-                          <p className="text-sm font-medium">Estratégia de Marketing Q3</p>
-                          <p className="text-xs text-gray-500">Ontem às 14:30</p>
-                        </div>
-                      </button>
-                      <button className="w-full p-4 text-left hover:bg-gray-50 transition-colors flex items-center gap-3">
-                        <MessageCircle size={16} className="text-gray-400" />
-                        <div>
-                          <p className="text-sm font-medium">Análise de Concorrentes</p>
-                          <p className="text-xs text-gray-500">25/07 às 10:15</p>
-                        </div>
-                      </button>
-                      <button className="w-full p-4 text-left hover:bg-gray-50 transition-colors flex items-center gap-3">
-                        <MessageCircle size={16} className="text-gray-400" />
-                        <div>
-                          <p className="text-sm font-medium">Problema de Estoque</p>
-                          <p className="text-xs text-gray-500">20/07 às 09:45</p>
-                        </div>
-                      </button>
+                      {['Estratégia de Marketing Q3', 'Análise de Concorrentes', 'Problema de Estoque'].map((title, i) => (
+                        <button 
+                          key={i} 
+                          className="w-full p-4 text-left hover:bg-gray-50 transition-colors flex items-center gap-3 group"
+                        >
+                          <div className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center group-hover:bg-gray-200 transition-colors">
+                            <MessageCircle size={14} className="text-gray-500" />
+                          </div>
+                          <div>
+                            <p className="text-sm font-medium">{title}</p>
+                            <p className="text-xs text-gray-500">{i === 0 ? 'Ontem às 14:30' : i === 1 ? '25/07 às 10:15' : '20/07 às 09:45'}</p>
+                          </div>
+                        </button>
+                      ))}
                     </div>
                   </CardContent>
                   <CardFooter className="border-t">
@@ -510,7 +649,7 @@ const AnalysisTabs = () => {
                   </CardFooter>
                 </Card>
 
-                <Card className="bg-gradient-to-br from-purple-50 to-indigo-50 border-purple-100">
+                <Card className="bg-gradient-to-br from-purple-50 to-indigo-50 border-purple-100 shadow-lg hover:shadow-xl transition-shadow">
                   <CardHeader>
                     <CardTitle className="text-lg flex items-center gap-2">
                       <Bot size={16} className="text-sightx-purple" />
@@ -518,18 +657,20 @@ const AnalysisTabs = () => {
                     </CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-2">
-                    <button className="w-full text-left p-2 bg-white rounded-lg hover:bg-gray-50 transition-colors text-sm border border-purple-100">
-                      Analisar meus dados de vendas
-                    </button>
-                    <button className="w-full text-left p-2 bg-white rounded-lg hover:bg-gray-50 transition-colors text-sm border border-purple-100">
-                      Gerar relatório mensal
-                    </button>
-                    <button className="w-full text-left p-2 bg-white rounded-lg hover:bg-gray-50 transition-colors text-sm border border-purple-100">
-                      Comparar com concorrentes
-                    </button>
-                    <button className="w-full text-left p-2 bg-white rounded-lg hover:bg-gray-50 transition-colors text-sm border border-purple-100">
-                      Verificar produtos com baixo estoque
-                    </button>
+                    {[
+                      'Analisar meus dados de vendas',
+                      'Gerar relatório mensal',
+                      'Comparar com concorrentes',
+                      'Verificar produtos com baixo estoque'
+                    ].map((suggestion, i) => (
+                      <button 
+                        key={i} 
+                        className="w-full text-left p-3 bg-white rounded-lg hover:bg-gray-50 transition-colors text-sm border border-purple-100 shadow-sm hover:shadow-md flex items-center gap-2"
+                      >
+                        <Zap size={14} className="text-sightx-purple" />
+                        {suggestion}
+                      </button>
+                    ))}
                   </CardContent>
                 </Card>
               </div>
@@ -947,4 +1088,3 @@ const AnalysisTabs = () => {
 };
 
 export default AnalysisTabs;
-
