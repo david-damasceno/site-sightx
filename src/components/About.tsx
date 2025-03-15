@@ -29,10 +29,7 @@ const About = () => {
               <Brain className="text-sightx-purple h-8 w-8" />
             </div>
             <h3 className="text-xl font-bold mb-3">Análise Inteligente</h3>
-            <p className="text-gray-600">
-              Utilizamos algoritmos avançados de IA e banco vetorial com pgvector para identificar padrões, tendências e correlações
-              que seriam impossíveis de detectar manualmente.
-            </p>
+            <p className="text-gray-600">Utilizamos inteligência artificial avançada para identificar padrões, tendências e correlações de forma precisa e automatizada. Os dados são analisados internamente por um modelo próprio de IA, sem envio para terceiros, garantindo total segurança e privacidade.</p>
           </div>
 
           <div className="bg-white p-8 rounded-xl shadow-lg transition-transform hover:scale-105 animate-fade-in" style={{
