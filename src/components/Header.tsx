@@ -1,7 +1,7 @@
 
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
-import { Menu, X, ChevronDown, LineChart } from 'lucide-react';
+import { Menu, X, Home, Info, Bot, LineChart } from 'lucide-react';
 
 const Header = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -42,17 +42,17 @@ const Header = () => {
     {
       id: 'home',
       label: 'Home',
-      icon: null
+      icon: <Home size={16} className="mr-1" />
     }, 
     {
       id: 'about',
       label: 'Sobre',
-      icon: null
+      icon: <Info size={16} className="mr-1" />
     }, 
     {
       id: 'whatsapp',
-      label: 'WhatsApp',
-      icon: null
+      label: 'Donna',
+      icon: <Bot size={16} className="mr-1" />
     }, 
     {
       id: 'data-analysis',
