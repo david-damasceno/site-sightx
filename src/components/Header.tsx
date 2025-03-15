@@ -23,7 +23,7 @@ const Header = () => {
         <div className="flex items-center">
           <a href="#" className="flex items-center">
             <img src="/sightx-logo.svg" alt="SightX Logo" className="h-10 mr-2" />
-            <span className={`text-xl font-bold transition-colors ${scrolled ? 'text-sightx-purple' : 'text-sightx-black'}`}>
+            <span className="text-xl font-bold text-black">
               Sight<span className="text-black">X</span>
             </span>
           </a>
