@@ -1,9 +1,6 @@
-
 import { Brain, Database, LineChart, MessageCircle } from 'lucide-react';
-
 const About = () => {
-  return (
-    <section id="about" className="py-16 md:py-20 bg-gradient-to-b from-gray-50 to-white">
+  return <section id="about" className="py-16 bg-gradient-to-b from-gray-50 to-white md:py-[10px]">
       <div className="container-custom">
         <div className="text-center max-w-3xl mx-auto mb-12">
           <h2 className="text-3xl md:text-4xl font-bold mb-4">Como a <span className="gradient-text">SightX</span> Funciona</h2>
@@ -137,8 +134,6 @@ const About = () => {
           </div>
         </div>
       </div>
-    </section>
-  );
+    </section>;
 };
-
 export default About;
