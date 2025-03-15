@@ -1,12 +1,9 @@
-
 import { Brain, Database, Rocket } from 'lucide-react';
-
 const About = () => {
-  return (
-    <section id="about" className="section-padding bg-gray-50">
+  return <section id="about" className="section-padding bg-gray-50">
       <div className="container-custom">
         <div className="text-center max-w-3xl mx-auto mb-16 animate-fade-in">
-          <h2 className="mb-6">Como a <span className="gradient-text">SightX</span> Funciona</h2>
+          <h2 className="mb-6 text-gray-950">Como a <span className="gradient-text">SightX</span> Funciona</h2>
           <p className="text-gray-700">
             Transformamos dados dispersos em insights acionáveis através de tecnologia avançada e inteligência artificial, 
             permitindo que PMEs tomem decisões estratégicas com a mesma qualidade que grandes corporações.
@@ -25,7 +22,9 @@ const About = () => {
             </p>
           </div>
 
-          <div className="bg-white p-8 rounded-xl shadow-lg transition-transform hover:scale-105 animate-fade-in" style={{ animationDelay: '0.2s' }}>
+          <div className="bg-white p-8 rounded-xl shadow-lg transition-transform hover:scale-105 animate-fade-in" style={{
+          animationDelay: '0.2s'
+        }}>
             <div className="w-16 h-16 bg-sightx-purple bg-opacity-10 rounded-lg flex items-center justify-center mb-6">
               <Brain className="text-sightx-purple h-8 w-8" />
             </div>
@@ -36,7 +35,9 @@ const About = () => {
             </p>
           </div>
 
-          <div className="bg-white p-8 rounded-xl shadow-lg transition-transform hover:scale-105 animate-fade-in" style={{ animationDelay: '0.4s' }}>
+          <div className="bg-white p-8 rounded-xl shadow-lg transition-transform hover:scale-105 animate-fade-in" style={{
+          animationDelay: '0.4s'
+        }}>
             <div className="w-16 h-16 bg-sightx-purple bg-opacity-10 rounded-lg flex items-center justify-center mb-6">
               <Rocket className="text-sightx-purple h-8 w-8" />
             </div>
@@ -113,8 +114,6 @@ const About = () => {
           </div>
         </div>
       </div>
-    </section>
-  );
+    </section>;
 };
-
 export default About;
