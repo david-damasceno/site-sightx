@@ -1,3 +1,4 @@
+
 import { useState } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { 
@@ -430,14 +431,14 @@ const AnalysisTabs = () => {
                   <CardContent>
                     <div className="h-[250px]">
                       <ResponsiveContainer width="100%" height="100%">
-                        <RechartsBarChart data={inventoryData} margin={{ top: 20, right: 30, left: 0, bottom: 5 }}>
+                        <BarChart data={inventoryData} margin={{ top: 20, right: 30, left: 0, bottom: 5 }}>
                           <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f0f0f0" />
                           <XAxis dataKey="name" axisLine={false} tickLine={false} />
                           <YAxis axisLine={false} tickLine={false} />
                           <Tooltip contentStyle={{ borderRadius: '8px', border: '1px solid #f0f0f0' }} />
                           <Bar dataKey="stock" fill={INVENTORY_COLORS.stock} radius={[4, 4, 0, 0]} name="Estoque" />
                           <Bar dataKey="demand" fill={INVENTORY_COLORS.demand} radius={[4, 4, 0, 0]} name="Demanda" />
-                        </RechartsBarChart>
+                        </BarChart>
                       </ResponsiveContainer>
                     </div>
                   </CardContent>
@@ -692,4 +693,347 @@ const AnalysisTabs = () => {
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
               <div className="lg:col-span-2">
                 <Card className="h-[650px] flex flex-col overflow-hidden border-purple-100">
-                  <CardHeader className="
+                  <CardHeader className="border-b bg-gradient-to-r from-purple-50 to-indigo-50 px-6 py-3">
+                    <div className="flex items-center">
+                      <div className="w-10 h-10 rounded-full bg-gradient-to-br from-purple-500 to-indigo-600 flex items-center justify-center text-white mr-3">
+                        <Bot size={20} />
+                      </div>
+                      <div>
+                        <CardTitle className="text-lg">Donna AI</CardTitle>
+                        <CardDescription>Sua assistente de negócios</CardDescription>
+                      </div>
+                      <div className="ml-auto flex gap-2">
+                        <Button variant="outline" size="sm" className="h-8 px-2">
+                          <HelpCircle size={14} />
+                        </Button>
+                        <Button variant="outline" size="sm" className="h-8 px-2">
+                          <Settings size={14} />
+                        </Button>
+                      </div>
+                    </div>
+                  </CardHeader>
+                  <div className="flex-1 overflow-y-auto p-6 space-y-6 bg-white">
+                    {/* Bot Message */}
+                    <div className="flex items-start max-w-[80%]">
+                      <div className="w-8 h-8 rounded-full bg-gradient-to-br from-purple-500 to-indigo-600 flex items-center justify-center text-white mr-3 flex-shrink-0">
+                        <Bot size={16} />
+                      </div>
+                      <div className="bg-gray-100 rounded-2xl rounded-tl-none px-4 py-3 text-sm">
+                        <p>Olá Carlos! Como posso ajudar você com seu negócio hoje?</p>
+                      </div>
+                    </div>
+                    
+                    {/* User Message */}
+                    <div className="flex items-start flex-row-reverse max-w-[80%] ml-auto">
+                      <div className="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center text-white ml-3 flex-shrink-0">
+                        <span className="text-sm font-medium">C</span>
+                      </div>
+                      <div className="bg-blue-500 text-white rounded-2xl rounded-tr-none px-4 py-3 text-sm">
+                        <p>Preciso analisar o desempenho de vendas do último mês.</p>
+                      </div>
+                    </div>
+                    
+                    {/* Bot Message with data card */}
+                    <div className="flex items-start max-w-[85%]">
+                      <div className="w-8 h-8 rounded-full bg-gradient-to-br from-purple-500 to-indigo-600 flex items-center justify-center text-white mr-3 flex-shrink-0">
+                        <Bot size={16} />
+                      </div>
+                      <div className="space-y-3">
+                        <div className="bg-gray-100 rounded-2xl rounded-tl-none px-4 py-3 text-sm">
+                          <p>Claro, Carlos! Aqui está um resumo do desempenho de vendas do último mês:</p>
+                        </div>
+                        
+                        <div className="bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden">
+                          <div className="p-4 border-b bg-gray-50">
+                            <h4 className="font-medium">Relatório de Vendas - Agosto 2023</h4>
+                          </div>
+                          <div className="p-4">
+                            <div className="flex justify-between mb-3">
+                              <span className="text-gray-500 text-sm">Total de Vendas</span>
+                              <span className="font-medium">481 pedidos</span>
+                            </div>
+                            <div className="flex justify-between mb-3">
+                              <span className="text-gray-500 text-sm">Faturamento</span>
+                              <span className="font-medium">R$ 110.000</span>
+                            </div>
+                            <div className="flex justify-between mb-3">
+                              <span className="text-gray-500 text-sm">Ticket Médio</span>
+                              <span className="font-medium">R$ 178,50</span>
+                            </div>
+                            <div className="flex justify-between">
+                              <span className="text-gray-500 text-sm">Crescimento</span>
+                              <span className="font-medium text-green-600">+14,6%</span>
+                            </div>
+                          </div>
+                          <div className="p-3 bg-gray-50 flex justify-center">
+                            <div className="h-[140px] w-full">
+                              <ResponsiveContainer width="100%" height="100%">
+                                <AreaChart data={revenueData} margin={{ top: 5, right: 5, left: 5, bottom: 5 }}>
+                                  <defs>
+                                    <linearGradient id="colorValue" x1="0" y1="0" x2="0" y2="1">
+                                      <stop offset="5%" stopColor="#8884d8" stopOpacity={0.8}/>
+                                      <stop offset="95%" stopColor="#8884d8" stopOpacity={0.1}/>
+                                    </linearGradient>
+                                  </defs>
+                                  <XAxis dataKey="month" axisLine={false} tickLine={false} />
+                                  <YAxis hide={true} />
+                                  <Tooltip />
+                                  <Area type="monotone" dataKey="value" stroke="#8884d8" fillOpacity={1} fill="url(#colorValue)" />
+                                </AreaChart>
+                              </ResponsiveContainer>
+                            </div>
+                          </div>
+                        </div>
+                        
+                        <div className="bg-gray-100 rounded-2xl rounded-tl-none px-4 py-3 text-sm">
+                          <p>Que tal analisarmos quais produtos tiveram o melhor desempenho?</p>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    {/* User Message */}
+                    <div className="flex items-start flex-row-reverse max-w-[80%] ml-auto">
+                      <div className="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center text-white ml-3 flex-shrink-0">
+                        <span className="text-sm font-medium">C</span>
+                      </div>
+                      <div className="bg-blue-500 text-white rounded-2xl rounded-tr-none px-4 py-3 text-sm">
+                        <p>Sim, mostre-me o top 5 produtos em vendas.</p>
+                      </div>
+                    </div>
+                    
+                    {/* Bot Message with chart */}
+                    <div className="flex items-start max-w-[85%]">
+                      <div className="w-8 h-8 rounded-full bg-gradient-to-br from-purple-500 to-indigo-600 flex items-center justify-center text-white mr-3 flex-shrink-0">
+                        <Bot size={16} />
+                      </div>
+                      <div className="space-y-3">
+                        <div className="bg-gray-100 rounded-2xl rounded-tl-none px-4 py-3 text-sm">
+                          <p>Aqui estão os 5 produtos mais vendidos no último mês:</p>
+                        </div>
+                        
+                        <div className="bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden">
+                          <div className="p-4">
+                            <div className="h-[200px] w-full">
+                              <ResponsiveContainer width="100%" height="100%">
+                                <BarChart
+                                  data={[
+                                    { name: 'Produto X', vendas: 78 },
+                                    { name: 'Produto Y', vendas: 65 },
+                                    { name: 'Produto Z', vendas: 52 },
+                                    { name: 'Produto W', vendas: 38 },
+                                    { name: 'Produto V', vendas: 25 }
+                                  ]}
+                                  margin={{ top: 20, right: 5, left: 5, bottom: 5 }}
+                                  layout="vertical"
+                                >
+                                  <CartesianGrid horizontal strokeDasharray="3 3" />
+                                  <XAxis type="number" axisLine={false} tickLine={false} />
+                                  <YAxis dataKey="name" type="category" axisLine={false} tickLine={false} />
+                                  <Tooltip />
+                                  <Bar 
+                                    dataKey="vendas" 
+                                    fill="#6366f1" 
+                                    radius={[0, 4, 4, 0]}
+                                    barSize={30}
+                                  />
+                                </BarChart>
+                              </ResponsiveContainer>
+                            </div>
+                          </div>
+                        </div>
+                        
+                        <div className="bg-gray-100 rounded-2xl rounded-tl-none px-4 py-3 text-sm">
+                          <p>O Produto X foi seu campeão de vendas, com 78 unidades vendidas. Notei também que os itens que você promoveu nas redes sociais tiveram um aumento médio de 23% nas vendas. Gostaria de ver uma análise de performance dos canais de marketing?</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="p-4 border-t bg-white">
+                    <div className="relative">
+                      <input
+                        type="text"
+                        placeholder="Digite sua mensagem para a Donna..."
+                        className="w-full pl-4 pr-20 py-3 rounded-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-sightx-purple focus:border-transparent"
+                      />
+                      <div className="absolute right-2 top-1/2 transform -translate-y-1/2 flex gap-1">
+                        <button className="p-2 text-gray-400 hover:text-gray-600">
+                          <div className="w-6 h-6 rounded-full bg-purple-100 flex items-center justify-center">
+                            <Zap size={14} className="text-sightx-purple" />
+                          </div>
+                        </button>
+                        <button className="p-2 rounded-full bg-sightx-purple text-white flex items-center justify-center">
+                          <MessageCircle size={16} />
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </Card>
+              </div>
+              
+              <div className="lg:col-span-1 space-y-6">
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="text-xl">Recursos</CardTitle>
+                    <CardDescription>O que a Donna pode fazer por você</CardDescription>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div className="bg-purple-50 p-3 rounded-lg flex gap-3 hover:bg-purple-100 transition-colors cursor-pointer">
+                      <div className="w-10 h-10 rounded-full bg-white flex items-center justify-center flex-shrink-0">
+                        <BarChartIcon size={20} className="text-sightx-purple" />
+                      </div>
+                      <div>
+                        <h4 className="font-medium text-sm">Análise de Dados</h4>
+                        <p className="text-xs text-gray-500">Peça relatórios, análises e insights sobre seus dados</p>
+                      </div>
+                    </div>
+                    
+                    <div className="bg-blue-50 p-3 rounded-lg flex gap-3 hover:bg-blue-100 transition-colors cursor-pointer">
+                      <div className="w-10 h-10 rounded-full bg-white flex items-center justify-center flex-shrink-0">
+                        <CalendarDays size={20} className="text-blue-500" />
+                      </div>
+                      <div>
+                        <h4 className="font-medium text-sm">Planejamento</h4>
+                        <p className="text-xs text-gray-500">Crie planos de ação e estratégias baseadas em dados</p>
+                      </div>
+                    </div>
+                    
+                    <div className="bg-green-50 p-3 rounded-lg flex gap-3 hover:bg-green-100 transition-colors cursor-pointer">
+                      <div className="w-10 h-10 rounded-full bg-white flex items-center justify-center flex-shrink-0">
+                        <TrendingUp size={20} className="text-green-500" />
+                      </div>
+                      <div>
+                        <h4 className="font-medium text-sm">Previsões</h4>
+                        <p className="text-xs text-gray-500">Obtenha previsões sobre vendas, estoque e tendências</p>
+                      </div>
+                    </div>
+                    
+                    <div className="bg-amber-50 p-3 rounded-lg flex gap-3 hover:bg-amber-100 transition-colors cursor-pointer">
+                      <div className="w-10 h-10 rounded-full bg-white flex items-center justify-center flex-shrink-0">
+                        <AlertCircle size={20} className="text-amber-500" />
+                      </div>
+                      <div>
+                        <h4 className="font-medium text-sm">Alertas</h4>
+                        <p className="text-xs text-gray-500">Configure alertas para métricas importantes</p>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+                
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="text-xl">Perguntas Sugeridas</CardTitle>
+                    <CardDescription>Tente perguntar para a Donna</CardDescription>
+                  </CardHeader>
+                  <CardContent className="space-y-3">
+                    <div className="bg-gray-100 p-3 rounded-lg text-sm hover:bg-gray-200 transition-colors cursor-pointer">
+                      "Qual foi o produto mais vendido este mês?"
+                    </div>
+                    <div className="bg-gray-100 p-3 rounded-lg text-sm hover:bg-gray-200 transition-colors cursor-pointer">
+                      "Como estão as vendas comparadas com o mesmo período do ano passado?"
+                    </div>
+                    <div className="bg-gray-100 p-3 rounded-lg text-sm hover:bg-gray-200 transition-colors cursor-pointer">
+                      "Quais dias da semana temos mais vendas?"
+                    </div>
+                    <div className="bg-gray-100 p-3 rounded-lg text-sm hover:bg-gray-200 transition-colors cursor-pointer">
+                      "Quais produtos estão com estoque baixo?"
+                    </div>
+                    <div className="bg-gray-100 p-3 rounded-lg text-sm hover:bg-gray-200 transition-colors cursor-pointer">
+                      "Qual canal de vendas tem o maior ticket médio?"
+                    </div>
+                  </CardContent>
+                  <CardFooter>
+                    <Button variant="outline" className="w-full">Ver mais sugestões</Button>
+                  </CardFooter>
+                </Card>
+                
+                <Card className="bg-gradient-to-br from-indigo-50 to-purple-50 border-indigo-100">
+                  <CardContent className="p-6">
+                    <div className="text-center mb-4">
+                      <div className="w-16 h-16 rounded-full bg-white mx-auto flex items-center justify-center mb-3 shadow-sm">
+                        <Zap size={24} className="text-sightx-purple" />
+                      </div>
+                      <h3 className="text-lg font-medium mb-1">Upgrade para Pro</h3>
+                      <p className="text-sm text-gray-600 mb-4">Desbloqueie recursos avançados e análises aprofundadas</p>
+                    </div>
+                    <div className="space-y-3 mb-6">
+                      <div className="flex items-center gap-2">
+                        <div className="w-5 h-5 rounded-full bg-green-100 flex items-center justify-center">
+                          <Check size={12} className="text-green-600" />
+                        </div>
+                        <p className="text-sm">Análises preditivas avançadas</p>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <div className="w-5 h-5 rounded-full bg-green-100 flex items-center justify-center">
+                          <Check size={12} className="text-green-600" />
+                        </div>
+                        <p className="text-sm">Integração com seu CRM</p>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <div className="w-5 h-5 rounded-full bg-green-100 flex items-center justify-center">
+                          <Check size={12} className="text-green-600" />
+                        </div>
+                        <p className="text-sm">Suporte prioritário 24/7</p>
+                      </div>
+                    </div>
+                    <Button className="w-full bg-sightx-purple hover:bg-purple-700">
+                      Conheça o Plano Pro
+                    </Button>
+                  </CardContent>
+                </Card>
+              </div>
+            </div>
+          </TabsContent>
+
+          <TabsContent value="google-maps" className="h-[600px] bg-gray-50 flex items-center justify-center rounded-lg animate-fade-in">
+            <div className="text-center">
+              <Map size={64} className="text-gray-300 mx-auto mb-4" />
+              <h3 className="text-xl font-medium text-gray-700">Integração com Google Maps</h3>
+              <p className="text-gray-500 max-w-md mx-auto mt-2">Visualize dados geográficos, análise de território e comportamento de clientes.</p>
+              <Button className="mt-6 bg-sightx-purple hover:bg-purple-700">Configurar Integração</Button>
+            </div>
+          </TabsContent>
+
+          <TabsContent value="social-media" className="h-[600px] bg-gray-50 flex items-center justify-center rounded-lg animate-fade-in">
+            <div className="text-center">
+              <Share2 size={64} className="text-gray-300 mx-auto mb-4" />
+              <h3 className="text-xl font-medium text-gray-700">Análise de Redes Sociais</h3>
+              <p className="text-gray-500 max-w-md mx-auto mt-2">Monitore o desempenho de campanhas, engajamento e conversões através das redes sociais.</p>
+              <Button className="mt-6 bg-sightx-purple hover:bg-purple-700">Conectar Redes Sociais</Button>
+            </div>
+          </TabsContent>
+
+          <TabsContent value="geo-analysis" className="h-[600px] bg-gray-50 flex items-center justify-center rounded-lg animate-fade-in">
+            <div className="text-center">
+              <Map size={64} className="text-gray-300 mx-auto mb-4" />
+              <h3 className="text-xl font-medium text-gray-700">Análise Geográfica</h3>
+              <p className="text-gray-500 max-w-md mx-auto mt-2">Explore dados com base em localização, identifique regiões de alto desempenho e oportunidades.</p>
+              <Button className="mt-6 bg-sightx-purple hover:bg-purple-700">Iniciar Análise</Button>
+            </div>
+          </TabsContent>
+        </Tabs>
+      </div>
+    </section>
+  );
+};
+
+// Helper component for check icon in the upgrade card
+const Check = ({ size, className }) => {
+  return (
+    <svg 
+      xmlns="http://www.w3.org/2000/svg" 
+      width={size} 
+      height={size} 
+      viewBox="0 0 24 24" 
+      fill="none" 
+      stroke="currentColor" 
+      strokeWidth="2" 
+      strokeLinecap="round" 
+      strokeLinejoin="round" 
+      className={className}
+    >
+      <polyline points="20 6 9 17 4 12" />
+    </svg>
+  );
+};
+
+export default AnalysisTabs;
