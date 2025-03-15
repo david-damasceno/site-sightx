@@ -1,16 +1,12 @@
-
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Menu, X } from 'lucide-react';
-
 const Header = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  
   const toggleMobileMenu = () => {
     setMobileMenuOpen(!mobileMenuOpen);
   };
-  
   useEffect(() => {
     const handleScroll = () => {
       if (window.scrollY > 10) {
@@ -19,21 +15,16 @@ const Header = () => {
         setScrolled(false);
       }
     };
-    
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
-  
-  return (
-    <header className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 ${
-      scrolled ? 'bg-white/95 backdrop-blur-md shadow-md py-2' : 'bg-transparent py-4'
-    }`}>
+  return <header className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 ${scrolled ? 'bg-white/95 backdrop-blur-md shadow-md py-2' : 'bg-transparent py-4'}`}>
       <div className="container-custom flex justify-between items-center">
         <div className="flex items-center">
           <a href="#" className="flex items-center">
             <img src="/sightx-logo.svg" alt="SightX Logo" className="h-10 mr-2" />
             <span className={`text-xl font-bold transition-colors ${scrolled ? 'text-sightx-purple' : 'text-sightx-black'}`}>
-              Sight<span className="text-sightx-green">X</span>
+              Sight<span className="text-black">X</span>
             </span>
           </a>
         </div>
@@ -70,18 +61,13 @@ const Header = () => {
         </nav>
 
         {/* Mobile Menu Button */}
-        <button 
-          className="md:hidden text-sightx-black p-2 rounded-md hover:bg-gray-100" 
-          onClick={toggleMobileMenu} 
-          aria-label={mobileMenuOpen ? 'Fechar menu' : 'Abrir menu'}
-        >
+        <button className="md:hidden text-sightx-black p-2 rounded-md hover:bg-gray-100" onClick={toggleMobileMenu} aria-label={mobileMenuOpen ? 'Fechar menu' : 'Abrir menu'}>
           {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
         </button>
       </div>
 
       {/* Mobile Navigation */}
-      {mobileMenuOpen && (
-        <div className="md:hidden fixed inset-0 top-20 bg-white/95 backdrop-blur-md z-40 animate-fade-in">
+      {mobileMenuOpen && <div className="md:hidden fixed inset-0 top-20 bg-white/95 backdrop-blur-md z-40 animate-fade-in">
           <nav className="flex flex-col items-center pt-8 space-y-6">
             <a href="#home" className="text-xl font-medium hover:text-sightx-purple transition-colors" onClick={() => setMobileMenuOpen(false)}>
               Home
@@ -105,10 +91,7 @@ const Header = () => {
               <a href="#waitlist">Entrar na Lista</a>
             </Button>
           </nav>
-        </div>
-      )}
-    </header>
-  );
+        </div>}
+    </header>;
 };
-
 export default Header;
