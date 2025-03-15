@@ -74,7 +74,7 @@ const CTASection = ({
     }, 1500);
   };
   return <section id={id} className="section-padding py-[10px]">
-      <div className="container-custom">
+      <div className="container-custom py-[10px]">
         <div className="bg-gradient-to-r from-sightx-purple to-sightx-purple/80 rounded-2xl p-8 md:p-12 text-white overflow-hidden relative">
           <div className="absolute top-0 left-0 w-full h-full opacity-10">
             <div className="absolute top-10 right-10 w-40 h-40 rounded-full bg-white"></div>
