@@ -1,13 +1,16 @@
+
 import { useState, useEffect } from 'react';
 import { MessageCircle, MessageSquare, User2, BarChart2, LightbulbIcon, Info, MessageSquareDashed, Bot, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+
 const ChatSimulation = () => {
   const [activeQuestion, setActiveQuestion] = useState<number | null>(null);
   const [showResponse, setShowResponse] = useState(false);
   const [typingIndex, setTypingIndex] = useState(0);
   const [typingComplete, setTypingComplete] = useState(false);
   const [category, setCategory] = useState("vendas");
+
   const categories = {
     vendas: {
       icon: <BarChart2 className="h-5 w-5 text-sightx-purple" />,
@@ -25,6 +28,7 @@ const ChatSimulation = () => {
       description: "Fluxo de caixa, lucratividade e oportunidades de economia"
     }
   };
+
   const questionsData = {
     vendas: [{
       id: 1,
@@ -58,7 +62,9 @@ const ChatSimulation = () => {
       response: "Projeção de fluxo de caixa para o próximo semestre:\n\nOut: +R$89.400 (alta sazonal)\nNov: +R$112.300 (Black Friday)\nDez: +R$107.600 (Festas)\nJan: -R$22.400 (período negativo)\nFev: +R$41.500 (recuperação)\nMar: +R$63.200 (estabilização)\n\nAtenção para Janeiro, onde os recebíveis cairão 34% enquanto despesas de impostos e 13º terceirizado impactarão o caixa. Recomendo provisionar R$40.000 em Dezembro para cobrir o déficit previsto.\n\nHá também oportunidade de antecipar recebíveis de cartão com taxa menor que seu empréstimo atual, economizando 4.2% ao ano."
     }]
   };
+
   const questions = questionsData[category as keyof typeof questionsData];
+
   useEffect(() => {
     // Reset when changing category
     setActiveQuestion(null);
@@ -66,10 +72,13 @@ const ChatSimulation = () => {
     setTypingComplete(false);
     setTypingIndex(0);
   }, [category]);
+
   useEffect(() => {
     let typingTimer: ReturnType<typeof setTimeout>;
+    
     if (showResponse && !typingComplete) {
       const currentResponse = questions.find(q => q.id === activeQuestion)?.response || "";
+      
       if (typingIndex < currentResponse.length) {
         typingTimer = setTimeout(() => {
           setTypingIndex(prev => prev + 1);
@@ -78,8 +87,10 @@ const ChatSimulation = () => {
         setTypingComplete(true);
       }
     }
+    
     return () => clearTimeout(typingTimer);
   }, [showResponse, typingIndex, activeQuestion, questions, typingComplete]);
+
   const handleQuestionClick = (id: number) => {
     setActiveQuestion(id);
     setShowResponse(false);
@@ -91,11 +102,115 @@ const ChatSimulation = () => {
       setShowResponse(true);
     }, 1000);
   };
+
   const getCurrentText = () => {
     if (!activeQuestion || !showResponse) return "";
     const fullResponse = questions.find(q => q.id === activeQuestion)?.response || "";
     return fullResponse.substring(0, typingIndex);
   };
-  return;
+
+  return (
+    <section className="py-16 container-custom" id="demo">
+      <div className="mx-auto">
+        <h2 className="text-3xl font-bold text-center mb-12">Experimente a Interface da SightX</h2>
+        
+        <div className="bg-white rounded-lg shadow-xl overflow-hidden max-w-4xl mx-auto">
+          {/* Category Selector */}
+          <div className="bg-gray-50 p-4 border-b">
+            <Select value={category} onValueChange={setCategory}>
+              <SelectTrigger className="w-full max-w-xs">
+                <SelectValue placeholder="Selecione uma categoria" />
+              </SelectTrigger>
+              <SelectContent>
+                {Object.entries(categories).map(([key, cat]) => (
+                  <SelectItem key={key} value={key} className="flex items-center">
+                    <div className="flex items-center">
+                      {cat.icon}
+                      <span className="ml-2">{cat.title}</span>
+                    </div>
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <p className="text-gray-600 mt-2 text-sm">
+              {categories[category as keyof typeof categories].description}
+            </p>
+          </div>
+          
+          {/* Chat Interface */}
+          <div className="grid md:grid-cols-5 min-h-[400px]">
+            {/* Questions Panel */}
+            <div className="bg-gray-50 p-4 md:col-span-2 border-r">
+              <div className="mb-3 flex items-center">
+                <User2 className="h-4 w-4 mr-2 text-gray-600" />
+                <p className="text-sm text-gray-600 font-medium">Pergunte algo sobre seus dados</p>
+              </div>
+              
+              <div className="space-y-2">
+                {questions.map((q) => (
+                  <button
+                    key={q.id}
+                    onClick={() => handleQuestionClick(q.id)}
+                    className={`w-full text-left p-3 rounded-md transition-colors ${
+                      activeQuestion === q.id
+                        ? "bg-sightx-purple text-white"
+                        : "bg-white hover:bg-gray-100 text-gray-800"
+                    }`}
+                  >
+                    <p className="text-sm font-medium">{q.text}</p>
+                  </button>
+                ))}
+              </div>
+            </div>
+            
+            {/* Response Panel */}
+            <div className="p-4 md:col-span-3 flex flex-col">
+              {activeQuestion ? (
+                <>
+                  <div className="mb-4 flex items-center">
+                    <Bot className="h-5 w-5 mr-2 text-sightx-purple" />
+                    <p className="text-sm font-medium">SightX</p>
+                    {showResponse && !typingComplete && (
+                      <span className="ml-2 opacity-75 animate-pulse">
+                        <Sparkles className="h-4 w-4" />
+                      </span>
+                    )}
+                  </div>
+                  
+                  <div className="flex-1 overflow-auto">
+                    {!showResponse ? (
+                      <div className="h-full flex items-center justify-center">
+                        <div className="animate-pulse flex space-x-2">
+                          <div className="h-2 w-2 bg-gray-400 rounded-full"></div>
+                          <div className="h-2 w-2 bg-gray-400 rounded-full"></div>
+                          <div className="h-2 w-2 bg-gray-400 rounded-full"></div>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="prose prose-sm max-w-none">
+                        {getCurrentText().split('\n').map((line, i) => (
+                          <p key={i} className={line.trim() === '' ? 'my-4' : ''}>
+                            {line}
+                          </p>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                </>
+              ) : (
+                <div className="h-full flex items-center justify-center text-center text-gray-500">
+                  <div>
+                    <MessageCircle className="h-12 w-12 mx-auto mb-4 opacity-20" />
+                    <p>Selecione uma pergunta para ver a resposta da análise.</p>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
 };
+
 export default ChatSimulation;
