@@ -3,7 +3,7 @@ import Header from "@/components/Header";
 import Hero from "@/components/Hero";
 import About from "@/components/About";
 import DonnaSection from "@/components/DonnaSection";
-import DataSection from "@/components/DataSection";
+import AnalysisTabs from "@/components/AnalysisTabs";
 import WhatsAppSection from "@/components/WhatsAppSection";
 import ChatSimulation from "@/components/ChatSimulation";
 import CTASection from "@/components/CTASection";
@@ -17,7 +17,7 @@ const Index = () => {
         <Hero />
         <About />
         <DonnaSection />
-        <DataSection />
+        <AnalysisTabs />
         <WhatsAppSection />
         <ChatSimulation />
         <CTASection />

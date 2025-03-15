@@ -99,11 +99,11 @@
   }
 
   h1 {
-    @apply text-4xl md:text-5xl lg:text-6xl;
+    @apply text-4xl md:text-5xl lg:text-6xl tracking-tight;
   }
   
   h2 {
-    @apply text-3xl md:text-4xl;
+    @apply text-3xl md:text-4xl tracking-tight;
   }
   
   h3 {
@@ -129,7 +129,7 @@
   }
 
   .section-padding {
-    @apply py-16 md:py-24;
+    @apply py-16 md:py-24 lg:py-32;
   }
   
   .container-custom {
@@ -149,11 +149,11 @@
   }
 
   .btn-primary {
-    @apply bg-sightx-purple hover:bg-opacity-90 text-white font-medium py-3 px-6 rounded-md transition-all;
+    @apply bg-sightx-purple hover:bg-opacity-90 text-white font-medium py-3 px-6 rounded-md transition-all shadow-md hover:shadow-lg;
   }
 
   .btn-secondary {
-    @apply bg-sightx-green hover:bg-opacity-90 text-white font-medium py-3 px-6 rounded-md transition-all;
+    @apply bg-sightx-green hover:bg-opacity-90 text-white font-medium py-3 px-6 rounded-md transition-all shadow-md hover:shadow-lg;
   }
 
   .btn-outline {
@@ -175,4 +175,73 @@
   .data-tab[data-state="inactive"] {
     @apply text-gray-600 hover:text-sightx-purple;
   }
+
+  .card-hover {
+    @apply transition-all duration-300 hover:shadow-xl hover:-translate-y-1;
+  }
+  
+  .feature-card {
+    @apply bg-white rounded-xl shadow-md p-6 card-hover border border-gray-100;
+  }
+  
+  .glass-effect {
+    @apply bg-white/70 backdrop-blur-md border border-white/20;
+  }
+  
+  .section-title {
+    @apply mb-12 text-center;
+  }
+  
+  .section-title h2 {
+    @apply mb-4;
+  }
+  
+  .section-title p {
+    @apply text-gray-600 max-w-2xl mx-auto;
+  }
+  
+  .animated-gradient-bg {
+    @apply bg-gradient-to-r from-sightx-purple via-sightx-green to-sightx-purple bg-size-200 animate-gradient-x;
+  }
+}
+
+@keyframes gradient-x {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.bg-size-200 {
+  background-size: 200% 200%;
+}
+
+.animate-gradient-x {
+  animation: gradient-x 15s ease infinite;
+}
+
+.text-balance {
+  text-wrap: balance;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.shadow-soft {
+  box-shadow: 0 10px 25px -3px rgba(0, 0, 0, 0.05);
+}
+
+.shadow-float {
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.05), 0 10px 10px -5px rgba(0, 0, 0, 0.01);
 }
