@@ -188,8 +188,8 @@ const Hero = () => {
                   <div className="relative z-10 w-full">
                     <div className="flex items-center justify-between mb-4">
                       <div className="flex items-center">
-                        <PieChart className="text-sightx-purple mr-1.5" size={14} />
-                        <span className="font-medium text-gray-800 text-xs">Desempenho de Vendas</span>
+                        
+                        
                       </div>
                       <div className="flex gap-1">
                         
