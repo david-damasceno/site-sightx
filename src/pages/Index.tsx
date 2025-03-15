@@ -18,11 +18,11 @@ const Index = () => {
         <div className="bg-gray-50">
           <About />
         </div>
+        <WhatsAppSection />
         <DonnaSection />
         <div className="bg-gray-50">
           <AnalysisTabs />
         </div>
-        <WhatsAppSection />
         <div className="bg-gray-50" id="demo">
           <ChatSimulation />
         </div>
