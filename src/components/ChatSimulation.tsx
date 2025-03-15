@@ -97,10 +97,7 @@ const ChatSimulation = () => {
     return fullResponse.substring(0, typingIndex);
   };
   return <section id="demo" className="section-padding bg-gradient-to-b from-gray-50 to-white relative overflow-hidden">
-      <div className="absolute top-0 left-0 w-full h-full opacity-10">
-        <div className="absolute top-20 left-10 w-40 h-40 bg-sightx-purple rounded-full blur-3xl"></div>
-        <div className="absolute bottom-20 right-10 w-60 h-60 bg-sightx-green rounded-full blur-3xl"></div>
-      </div>
+      
       
       
     </section>;
