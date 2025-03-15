@@ -4,7 +4,6 @@ import Hero from "@/components/Hero";
 import About from "@/components/About";
 import DataSection from "@/components/DataSection";
 import WhatsAppSection from "@/components/WhatsAppSection";
-import ChatSimulation from "@/components/ChatSimulation";
 import CTASection from "@/components/CTASection";
 import Footer from "@/components/Footer";
 
@@ -20,9 +19,6 @@ const Index = () => {
         <WhatsAppSection />
         <div className="bg-gray-50">
           <DataSection />
-        </div>
-        <div className="bg-gray-50" id="demo">
-          <ChatSimulation />
         </div>
         <CTASection id="waitlist" />
       </main>
