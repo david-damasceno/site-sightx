@@ -1,10 +1,7 @@
-
 import { ArrowRight, BarChart2, Database, LineChart, Brain, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-
 const Hero = () => {
-  return (
-    <section id="home" className="pt-28 pb-16 md:pt-36 md:pb-24 overflow-hidden">
+  return <section id="home" className="pt-28 pb-16 md:pt-36 md:pb-24 overflow-hidden">
       <div className="container-custom">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
           <div className="animate-fade-in">
@@ -52,7 +49,7 @@ const Hero = () => {
               </Button>
               
               <Button className="border-2 border-sightx-purple text-sightx-purple bg-transparent hover:bg-sightx-purple/10 flex items-center gap-2" asChild variant="outline">
-                <a href="#demo">Ver Demonstração <ArrowRight size={16} /></a>
+                
               </Button>
             </div>
           </div>
@@ -112,8 +109,6 @@ const Hero = () => {
           </div>
         </div>
       </div>
-    </section>
-  );
+    </section>;
 };
-
 export default Hero;
