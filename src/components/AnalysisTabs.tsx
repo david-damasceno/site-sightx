@@ -22,19 +22,19 @@ const AnalysisTabs = () => {
         <TabsList className="mx-auto mb-8 max-w-3xl">
           <TabsTrigger value="dashboard" className={isMobile ? "gap-1" : "gap-2"}>
             <BarChart2 className="h-4 w-4" />
-            {isMobile ? "Dashboard" : "Dashboard"}
+            <span>{isMobile ? "Dashboard" : "Dashboard"}</span>
           </TabsTrigger>
           <TabsTrigger value="maps" className={isMobile ? "gap-1" : "gap-2"}>
             <MapPin className="h-4 w-4" />
-            {isMobile ? "Maps" : "Google Maps"}
+            <span>{isMobile ? "Maps" : "Google Maps"}</span>
           </TabsTrigger>
           <TabsTrigger value="social" className={isMobile ? "gap-1" : "gap-2"}>
             <Smartphone className="h-4 w-4" />
-            {isMobile ? "Social" : "Mídias Sociais"}
+            <span>{isMobile ? "Social" : "Mídias Sociais"}</span>
           </TabsTrigger>
           <TabsTrigger value="geo" className={isMobile ? "gap-1" : "gap-2"}>
             <Globe className="h-4 w-4" />
-            {isMobile ? "Geo" : "Análise Geográfica"}
+            <span>{isMobile ? "Geo" : "Análise Geográfica"}</span>
           </TabsTrigger>
         </TabsList>
         
