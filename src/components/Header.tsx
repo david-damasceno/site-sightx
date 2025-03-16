@@ -72,7 +72,7 @@ const Header = () => {
   }) => (
     <a 
       href={`#${id}`} 
-      className={`font-medium transition-colors relative px-2 py-1 ${activeSection === id ? 'text-sightx-purple' : 'text-gray-800 hover:text-sightx-purple'}`} 
+      className={`font-medium transition-colors relative px-2 py-1 group ${activeSection === id ? 'text-sightx-purple' : 'text-gray-800 hover:text-sightx-purple'}`} 
       onClick={() => setMobileMenuOpen(false)}
     >
       <div className="flex items-center">
