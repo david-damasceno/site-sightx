@@ -16,7 +16,9 @@ const Index = () => {
         <div className="bg-gray-50">
           <About />
         </div>
-        <WhatsAppSection />
+        <div id="whatsapp">
+          <WhatsAppSection />
+        </div>
         <div className="bg-gray-50">
           <DataSection />
         </div>
