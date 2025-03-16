@@ -4,14 +4,15 @@ import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useIsMobile } from '@/hooks/use-mobile';
+
 const WhatsAppSection = () => {
   const [activeTab, setActiveTab] = useState("business-insights");
   const [isTyping, setIsTyping] = useState(false);
   const [typedText, setTypedText] = useState('');
   const [currentMessageIndex, setCurrentMessageIndex] = useState(0);
-  const {
-    toast
-  } = useToast();
+  const isMobile = useIsMobile();
+  const { toast } = useToast();
 
   // Use case scenarios
   const scenarios = {
@@ -192,10 +193,16 @@ const WhatsAppSection = () => {
 
           <div className="lg:col-span-8">
             <Tabs defaultValue="business-insights" value={activeTab} onValueChange={value => setActiveTab(value)} className="w-full">
-              <TabsList className="grid grid-cols-3 mb-6">
-                <TabsTrigger value="business-insights">Insights de Negócio</TabsTrigger>
-                <TabsTrigger value="strategic-planning">Planejamento Estratégico</TabsTrigger>
-                <TabsTrigger value="alerts">Alertas Proativos</TabsTrigger>
+              <TabsList className={`mb-6 ${isMobile ? "flex flex-col gap-2 w-full h-auto p-2" : "grid grid-cols-3"}`}>
+                <TabsTrigger value="business-insights" className={isMobile ? "w-full justify-center" : ""}>
+                  {isMobile ? "Insights" : "Insights de Negócio"}
+                </TabsTrigger>
+                <TabsTrigger value="strategic-planning" className={isMobile ? "w-full justify-center" : ""}>
+                  {isMobile ? "Planejamento" : "Planejamento Estratégico"}
+                </TabsTrigger>
+                <TabsTrigger value="alerts" className={isMobile ? "w-full justify-center" : ""}>
+                  {isMobile ? "Alertas" : "Alertas Proativos"}
+                </TabsTrigger>
               </TabsList>
               
               {Object.keys(scenarios).map(scenarioKey => <TabsContent key={scenarioKey} value={scenarioKey} className="mt-0">
