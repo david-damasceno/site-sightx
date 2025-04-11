@@ -1,4 +1,7 @@
+
 import { ArrowUp } from 'lucide-react';
+import { Link } from 'react-router-dom';
+
 const Footer = () => {
   const scrollToTop = () => {
     window.scrollTo({
@@ -6,6 +9,7 @@ const Footer = () => {
       behavior: 'smooth'
     });
   };
+  
   return <footer className="bg-sightx-black text-white pt-16 pb-8">
       <div className="container-custom">
         <div className="grid grid-cols-1 md:grid-cols-12 gap-8 mb-12">
@@ -44,7 +48,7 @@ const Footer = () => {
             <h4 className="text-lg font-bold mb-4 text-white">Empresa</h4>
             <ul className="space-y-3">
               <li>
-                <a href="#" className="text-gray-400 hover:text-white transition-colors hover:pl-1 duration-200 block">Sobre nós</a>
+                <a href="#about" className="text-gray-400 hover:text-white transition-colors hover:pl-1 duration-200 block">Sobre nós</a>
               </li>
               <li>
                 <a href="#" className="text-gray-400 hover:text-white transition-colors hover:pl-1 duration-200 block">Missão</a>
@@ -62,10 +66,10 @@ const Footer = () => {
             <h4 className="text-lg font-bold mb-4 text-white">Recursos</h4>
             <ul className="space-y-3">
               <li>
-                <a href="#" className="text-gray-400 hover:text-white transition-colors hover:pl-1 duration-200 block">Demo</a>
+                <Link to="/blog" className="text-gray-400 hover:text-white transition-colors hover:pl-1 duration-200 block">Blog</Link>
               </li>
               <li>
-                <a href="#" className="text-gray-400 hover:text-white transition-colors hover:pl-1 duration-200 block">Blog</a>
+                <a href="#" className="text-gray-400 hover:text-white transition-colors hover:pl-1 duration-200 block">Demo</a>
               </li>
               <li>
                 <a href="#" className="text-gray-400 hover:text-white transition-colors hover:pl-1 duration-200 block">FAQs</a>
@@ -101,8 +105,8 @@ const Footer = () => {
             &copy; {new Date().getFullYear()} SightX. Todos os direitos reservados.
           </p>
           <div className="flex space-x-6">
-            <a href="#" className="text-gray-500 hover:text-white text-sm transition-colors">Termos de Uso</a>
-            <a href="#" className="text-gray-500 hover:text-white text-sm transition-colors">Política de Privacidade</a>
+            <Link to="/termos" className="text-gray-500 hover:text-white text-sm transition-colors">Termos de Uso</Link>
+            <Link to="/privacidade" className="text-gray-500 hover:text-white text-sm transition-colors">Política de Privacidade</Link>
             <a href="#" className="text-gray-500 hover:text-white text-sm transition-colors">Cookies</a>
           </div>
           
@@ -113,4 +117,5 @@ const Footer = () => {
       </div>
     </footer>;
 };
+
 export default Footer;

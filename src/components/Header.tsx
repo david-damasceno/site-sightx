@@ -1,12 +1,15 @@
 
 import { useState, useEffect } from 'react';
+import { Link, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { Menu, X, Home, Info, Bot, LineChart } from 'lucide-react';
+import { Menu, X, Home, Info, Bot, LineChart, BookOpen } from 'lucide-react';
 
 const Header = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [activeSection, setActiveSection] = useState('home');
+  const location = useLocation();
+  const isHomePage = location.pathname === '/';
 
   const toggleMobileMenu = () => {
     setMobileMenuOpen(!mobileMenuOpen);
@@ -20,15 +23,17 @@ const Header = () => {
         setScrolled(false);
       }
 
-      // Track active section based on scroll position
-      const sections = ['home', 'about', 'whatsapp', 'data-analysis', 'waitlist'];
-      for (const section of sections) {
-        const element = document.getElementById(section);
-        if (element) {
-          const rect = element.getBoundingClientRect();
-          if (rect.top <= 100 && rect.bottom >= 100) {
-            setActiveSection(section);
-            break;
+      // Track active section based on scroll position only on homepage
+      if (isHomePage) {
+        const sections = ['home', 'about', 'whatsapp', 'data-analysis', 'waitlist'];
+        for (const section of sections) {
+          const element = document.getElementById(section);
+          if (element) {
+            const rect = element.getBoundingClientRect();
+            if (rect.top <= 100 && rect.bottom >= 100) {
+              setActiveSection(section);
+              break;
+            }
           }
         }
       }
@@ -36,54 +41,84 @@ const Header = () => {
 
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+  }, [isHomePage]);
 
   const menuItems = [
     {
       id: 'home',
       label: 'Home',
-      icon: <Home size={16} className="mr-1" />
+      path: '/',
+      icon: <Home size={16} className="mr-1" />,
+      showOnlyOnHome: false
     }, 
     {
       id: 'about',
       label: 'Sobre',
-      icon: <Info size={16} className="mr-1" />
+      path: '/#about',
+      icon: <Info size={16} className="mr-1" />,
+      showOnlyOnHome: true
     }, 
     {
       id: 'whatsapp',
       label: 'Donna',
-      icon: <Bot size={16} className="mr-1" />
+      path: '/#whatsapp',
+      icon: <Bot size={16} className="mr-1" />,
+      showOnlyOnHome: true
     }, 
     {
       id: 'data-analysis',
       label: 'Análise',
-      icon: <LineChart size={16} className="mr-1" />
+      path: '/#data-analysis',
+      icon: <LineChart size={16} className="mr-1" />,
+      showOnlyOnHome: true
+    },
+    {
+      id: 'blog',
+      label: 'Blog',
+      path: '/blog',
+      icon: <BookOpen size={16} className="mr-1" />,
+      showOnlyOnHome: false
     }
   ];
 
   const NavLink = ({
     id,
     label,
-    icon
+    path,
+    icon,
+    showOnlyOnHome
   }: {
     id: string;
     label: string;
-    icon: React.ReactNode | null;
-  }) => (
-    <a 
-      href={`#${id}`} 
-      className={`font-medium transition-colors relative px-2 py-1 group ${activeSection === id ? 'text-sightx-purple' : 'text-gray-800 hover:text-sightx-purple'}`} 
-      onClick={() => setMobileMenuOpen(false)}
-    >
-      <div className="flex items-center">
-        {icon}
-        {label}
-      </div>
-      <span 
-        className={`absolute bottom-0 left-0 h-0.5 bg-sightx-purple transition-all duration-300 ${activeSection === id ? 'w-full' : 'w-0 group-hover:w-full'}`}
-      ></span>
-    </a>
-  );
+    path: string;
+    icon: React.ReactNode;
+    showOnlyOnHome: boolean;
+  }) => {
+    // Não mostrar este item se deveria aparecer apenas na página inicial e não estamos na página inicial
+    if (showOnlyOnHome && !isHomePage) {
+      return null;
+    }
+    
+    const isActive = isHomePage 
+      ? activeSection === id
+      : location.pathname === path || location.pathname.startsWith(`${path}/`);
+      
+    return (
+      <Link 
+        to={path} 
+        className={`font-medium transition-colors relative px-2 py-1 group ${isActive ? 'text-sightx-purple' : 'text-gray-800 hover:text-sightx-purple'}`} 
+        onClick={() => setMobileMenuOpen(false)}
+      >
+        <div className="flex items-center">
+          {icon}
+          {label}
+        </div>
+        <span 
+          className={`absolute bottom-0 left-0 h-0.5 bg-sightx-purple transition-all duration-300 ${isActive ? 'w-full' : 'w-0 group-hover:w-full'}`}
+        ></span>
+      </Link>
+    );
+  };
 
   return (
     <header 
@@ -91,13 +126,13 @@ const Header = () => {
     >
       <div className="container-custom flex justify-between items-center">
         <div className="flex items-center">
-          <a href="#" className="flex items-center">
+          <Link to="/" className="flex items-center">
             <img 
               src="/sightx-logo.svg" 
               alt="SightX Logo" 
               className="h-10 mr-2 transition-transform hover:scale-105" 
             />
-          </a>
+          </Link>
         </div>
 
         {/* Desktop Navigation */}
@@ -107,14 +142,16 @@ const Header = () => {
               key={item.id} 
               id={item.id} 
               label={item.label} 
-              icon={item.icon} 
+              path={item.path}
+              icon={item.icon}
+              showOnlyOnHome={item.showOnlyOnHome}
             />
           ))}
           <Button 
             className="bg-sightx-purple hover:bg-sightx-purple/90 text-white shadow-md hover:shadow-lg transform transition-transform hover:scale-105" 
             asChild
           >
-            <a href="#waitlist">Entrar na Lista</a>
+            <Link to="/#waitlist">Entrar na Lista</Link>
           </Button>
         </nav>
 
@@ -132,23 +169,31 @@ const Header = () => {
       {mobileMenuOpen && (
         <div className="md:hidden fixed inset-0 top-16 bg-white/95 backdrop-blur-md z-40 animate-fade-in">
           <nav className="flex flex-col items-center pt-8 gap-6">
-            {menuItems.map(item => (
-              <a 
-                key={item.id} 
-                href={`#${item.id}`} 
-                className={`text-lg font-medium transition-colors ${activeSection === item.id ? 'text-sightx-purple' : 'text-gray-800 hover:text-sightx-purple'} flex items-center`} 
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                {item.icon}
-                {item.label}
-              </a>
-            ))}
+            {menuItems
+              .filter(item => !item.showOnlyOnHome || isHomePage)
+              .map(item => (
+                <Link 
+                  key={item.id} 
+                  to={item.path} 
+                  className={`text-lg font-medium transition-colors 
+                    ${(isHomePage && activeSection === item.id) || 
+                      (!isHomePage && location.pathname === item.path) 
+                        ? 'text-sightx-purple' 
+                        : 'text-gray-800 hover:text-sightx-purple'
+                    } flex items-center`} 
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  {item.icon}
+                  {item.label}
+                </Link>
+              ))
+            }
             <Button 
               className="bg-sightx-purple hover:bg-sightx-purple/90 text-white mt-6 w-3/4 shadow-md" 
               onClick={() => setMobileMenuOpen(false)} 
               asChild
             >
-              <a href="#waitlist">Entrar na Lista</a>
+              <Link to="/#waitlist">Entrar na Lista</Link>
             </Button>
           </nav>
         </div>
