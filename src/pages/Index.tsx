@@ -12,14 +12,16 @@ const Index = () => {
     <div className="min-h-screen flex flex-col">
       <Header />
       <main className="flex-1">
-        <Hero />
-        <div className="bg-gray-50">
+        <div id="home">
+          <Hero />
+        </div>
+        <div id="about" className="bg-gray-50">
           <About />
         </div>
         <div id="whatsapp">
           <WhatsAppSection />
         </div>
-        <div className="bg-gray-50">
+        <div id="data-analysis" className="bg-gray-50">
           <DataSection />
         </div>
         <CTASection id="waitlist" />
