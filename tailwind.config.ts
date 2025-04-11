@@ -71,6 +71,10 @@ export default {
 					black: '#09090B',
 				},
 			},
+			fontFamily: {
+				// Adding Playfair Display font for elegant headings
+				'playfair': ['Playfair Display', 'Georgia', 'serif'],
+			},
 			borderRadius: {
 				lg: 'var(--radius)',
 				md: 'calc(var(--radius) - 2px)',
