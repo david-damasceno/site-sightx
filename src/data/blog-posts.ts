@@ -13,26 +13,15 @@ export interface BlogPost {
   author: BlogPostAuthor;
   excerpt: string;
   content: string;
-  coverImage: string;
+  coverImage?: string;
   tags: string[];
   readTime: number;
 }
 
 export const blogAuthors = {
-  mariaOliveira: {
-    name: "Maria Oliveira",
-    role: "Cientista de Dados",
-    avatar: "/images/blog/authors/maria-oliveira.png"
-  },
-  joaoPedrosa: {
-    name: "João Pedrosa",
-    role: "Especialista em BI",
-    avatar: "/images/blog/authors/joao-pedrosa.png"
-  },
-  anaRibeiro: {
-    name: "Ana Ribeiro",
-    role: "CEO SightX",
-    avatar: "/images/blog/authors/ana-ribeiro.png"
+  davidDamasceno: {
+    name: "David Damasceno",
+    role: "Especialista em Business Intelligence",
   }
 };
 
@@ -42,7 +31,7 @@ export const blogPosts: BlogPost[] = [
     title: "Como a Inteligência Artificial está revolucionando a análise de dados para PMEs",
     slug: "como-ia-esta-revolucionando-analise-dados-pmes",
     date: "2025-04-05",
-    author: blogAuthors.mariaOliveira,
+    author: blogAuthors.davidDamasceno,
     excerpt: "Descubra como pequenas e médias empresas estão utilizando IA para obter insights valiosos sem a necessidade de grandes equipes de analistas.",
     content: `
 # Como a Inteligência Artificial está revolucionando a análise de dados para PMEs
@@ -53,13 +42,15 @@ A transformação digital não é mais exclusividade das grandes corporações. 
 
 Por muito tempo, as PMEs enfrentaram um dilema complexo: embora coletassem uma quantidade significativa de dados em suas operações diárias, faltavam recursos, tempo e conhecimento técnico para transformá-los em insights acionáveis. Como resultado, decisões importantes frequentemente eram tomadas com base em intuição ou experiências passadas, em vez de análises objetivas.
 
+:::info
 Segundo uma pesquisa da McKinsey, apenas 15% das PMEs brasileiras conseguem aproveitar efetivamente seus dados para melhorar seus negócios, enquanto esse número sobe para mais de 60% entre as grandes empresas. Essa disparidade cria uma desvantagem competitiva significativa para negócios menores.
+:::
 
 ## A democratização da análise de dados com IA
 
 A boa notícia é que estamos testemunhando uma verdadeira democratização da análise de dados, impulsionada pela inteligência artificial. Ferramentas de IA e machine learning, antes acessíveis apenas a organizações com orçamentos robustos de TI, agora estão disponíveis em formatos mais simples e acessíveis para empresas de todos os tamanhos.
 
-> "A inteligência artificial está nivelando o campo de jogo entre PMEs e grandes corporações no que diz respeito à capacidade de análise de dados." - Ana Ribeiro, CEO da SightX
+> "A inteligência artificial está nivelando o campo de jogo entre PMEs e grandes corporações no que diz respeito à capacidade de análise de dados." - David Damasceno
 
 ### Como PMEs estão aproveitando a IA para análise de dados
 
@@ -88,6 +79,10 @@ A boa notícia é que estamos testemunhando uma verdadeira democratização da a
 ### Caso 1: Loja de móveis sob medida
 
 Uma loja de móveis sob medida com 25 funcionários implementou uma solução baseada em IA para analisar dados históricos de vendas e otimizar seu inventário. O resultado foi impressionante: redução de 30% nos custos de estoque e aumento de 22% na disponibilidade de produtos.
+
+:::tip
+A implementação de algoritmos de previsão de demanda permitiu à empresa reduzir significativamente seu estoque de segurança sem comprometer o nível de serviço ao cliente.
+:::
 
 ### Caso 2: Restaurante familiar
 
@@ -127,13 +122,20 @@ Diversas plataformas estão surgindo para atender especificamente às necessidad
    
    Mesmo com soluções automatizadas, é importante que sua equipe compreenda os conceitos básicos de análise de dados para aproveitar ao máximo as ferramentas.
 
+:::warning
+Não caia na armadilha de buscar soluções de IA apenas porque estão na moda. Sempre comece com problemas de negócio específicos que precisam ser resolvidos e busque as ferramentas adequadas para esses problemas.
+:::
+
 ## Conclusão
 
 A análise de dados baseada em IA não é mais um luxo reservado às grandes empresas - é uma necessidade competitiva para PMEs que desejam prosperar no mercado atual. O investimento inicial em tecnologia e capacitação é rapidamente compensado pelos benefícios em termos de eficiência operacional, satisfação do cliente e vantagem competitiva.
 
 Com as ferramentas certas e uma abordagem estratégica, PMEs podem não apenas igualar a capacidade analítica de concorrentes maiores, mas também usar seu tamanho como vantagem, sendo mais ágeis na implementação de insights obtidos através dos dados.
+
+---
+
+Se sua empresa está considerando iniciar a jornada de transformação baseada em dados, o momento é agora. A SightX está pronta para ajudar sua empresa a dar os primeiros passos nessa direção, com soluções personalizadas e acessíveis para o seu negócio.
     `,
-    coverImage: "/images/blog/ai-data-analysis.jpg",
     tags: ["Inteligência Artificial", "Análise de Dados", "PMEs", "Business Intelligence", "Data Driven"],
     readTime: 8
   },
@@ -142,7 +144,7 @@ Com as ferramentas certas e uma abordagem estratégica, PMEs podem não apenas i
     title: "5 métricas essenciais que toda PME deve acompanhar para crescer com segurança",
     slug: "5-metricas-essenciais-pmes-crescer-seguranca",
     date: "2025-04-08",
-    author: blogAuthors.joaoPedrosa,
+    author: blogAuthors.davidDamasceno,
     excerpt: "Conheça os 5 indicadores fundamentais que pequenas e médias empresas precisam monitorar para tomar decisões mais acertadas e promover um crescimento sustentável.",
     content: `
 # 5 métricas essenciais que toda PME deve acompanhar para crescer com segurança
@@ -160,7 +162,11 @@ Antes de entrarmos nas métricas específicas, é importante entender por que o 
 - **Alinhamento de equipe**: Criar objetivos claros e mensuráveis para todos os colaboradores
 - **Medição de progresso**: Acompanhar a evolução da empresa em direção aos seus objetivos estratégicos
 
+:::info
 Segundo o SEBRAE, empresas que monitoram indicadores de desempenho têm uma taxa de sobrevivência 30% maior nos primeiros cinco anos de operação. Ainda assim, apenas 24% das PMEs brasileiras acompanham seus KPIs de forma sistemática.
+:::
+
+---
 
 ## Métrica #1: Fluxo de Caixa Operacional (FCO)
 
@@ -170,7 +176,7 @@ O Fluxo de Caixa Operacional representa a quantidade real de dinheiro gerada pel
 
 O FCO mostra se as operações principais da sua empresa estão gerando ou consumindo dinheiro. Uma empresa pode parecer lucrativa no papel, mas enfrentar problemas sérios de fluxo de caixa que comprometam sua sobrevivência.
 
-> "Lucro é opinião, caixa é fato. É possível sobreviver por algum tempo sem lucro, mas nunca sem caixa." - João Pedrosa, Especialista em BI
+> "Lucro é opinião, caixa é fato. É possível sobreviver por algum tempo sem lucro, mas nunca sem caixa." - David Damasceno
 
 ### Como calcular:
 
@@ -183,6 +189,10 @@ Semanal ou quinzenal para pequenos negócios. Mensal para empresas mais estabele
 ### Benchmark de referência:
 
 Um FCO consistentemente positivo e crescente ao longo do tempo é o cenário ideal. Para empresas em estágio inicial, períodos de FCO negativo são normais, mas deve haver um plano claro para chegar ao positivo.
+
+:::tip
+Para uma análise mais robusta do fluxo de caixa, divida-o em três dimensões: operacional (gerado pelas operações), financeiro (empréstimos, financiamentos) e de investimentos (compra de ativos, expansão). Isso permite entender melhor as fontes e usos dos recursos.
+:::
 
 ## Métrica #2: Customer Acquisition Cost (CAC) e Customer Lifetime Value (CLV)
 
@@ -197,9 +207,13 @@ A relação entre CLV e CAC é fundamental para entender a sustentabilidade do s
 
 ### Como calcular:
 
+\`\`\`
 CAC = Total de gastos em marketing e vendas em um período ÷ Número de novos clientes no mesmo período
+\`\`\`
 
+\`\`\`
 CLV = Valor médio de compra × Frequência de compra × Tempo médio de retenção do cliente
+\`\`\`
 
 ### Frequência de monitoramento:
 
@@ -219,9 +233,13 @@ Adquirir novos clientes custa entre 5 a 25 vezes mais do que manter os existente
 
 ### Como calcular:
 
+\`\`\`
 Taxa de Retenção = (Número de clientes no fim do período - Novos clientes adquiridos durante o período) ÷ Número de clientes no início do período × 100
+\`\`\`
 
+\`\`\`
 Taxa de Churn = 100% - Taxa de Retenção
+\`\`\`
 
 ### Frequência de monitoramento:
 
@@ -234,6 +252,10 @@ Varia significativamente por setor:
 - Varejo: Taxa de retenção acima de 20% é considerada boa
 - Serviços profissionais: Taxa de retenção acima de 70% é desejável
 
+:::warning
+O churn nem sempre é linear. Muitas empresas experimentam o que chamamos de "churn sazonal", quando clientes tendem a cancelar em determinados períodos do ano. Entender esses padrões é crucial para implementar estratégias preventivas nos momentos certos.
+:::
+
 ## Métrica #4: Produtividade por Funcionário
 
 Esta métrica mede quanto valor cada colaborador gera para a empresa, geralmente calculada como receita por funcionário.
@@ -244,11 +266,15 @@ A produtividade por funcionário é um excelente indicador da eficiência operac
 
 ### Como calcular:
 
+\`\`\`
 Produtividade por Funcionário = Receita total ÷ Número de funcionários em tempo integral
+\`\`\`
 
 Algumas empresas preferem usar o Valor Adicionado por Funcionário:
 
+\`\`\`
 Valor Adicionado por Funcionário = (Receita - Custos de materiais e serviços externos) ÷ Número de funcionários
+\`\`\`
 
 ### Frequência de monitoramento:
 
@@ -268,9 +294,13 @@ Esta métrica ajuda a identificar quais produtos ou serviços são realmente luc
 
 ### Como calcular:
 
+\`\`\`
 Margem de Contribuição = Preço de Venda - Custos Variáveis
+\`\`\`
 
+\`\`\`
 Margem de Contribuição Percentual = (Margem de Contribuição ÷ Preço de Venda) × 100
+\`\`\`
 
 ### Frequência de monitoramento:
 
@@ -279,6 +309,10 @@ Mensal para empresas de varejo ou com muitos produtos. Trimestral para empresas 
 ### Benchmark de referência:
 
 Novamente, varia por setor, mas uma margem de contribuição percentual acima de 40% é geralmente considerada boa para a maioria dos negócios.
+
+:::tip
+Para uma análise mais granular, calcule a margem de contribuição por canal de vendas, por região geográfica ou por segmento de cliente. Isso permite identificar não apenas quais produtos são mais lucrativos, mas também em quais contextos eles performam melhor.
+:::
 
 ## Como implementar um sistema de monitoramento de KPIs
 
@@ -304,13 +338,16 @@ Transparência é fundamental. Compartilhe os principais indicadores com sua equ
 
 À medida que sua empresa evolui, alguns indicadores podem se tornar mais ou menos relevantes. Faça uma revisão anual dos KPIs que você acompanha para garantir que continuam alinhados com seus objetivos estratégicos.
 
+---
+
 ## Conclusão
 
 Acompanhar métricas não é um fim em si mesmo, mas uma ferramenta poderosa para tomar decisões mais inteligentes e conduzir sua empresa por um caminho de crescimento sustentável. Ao monitorar regularmente esses cinco indicadores fundamentais, você terá uma visão muito mais clara da saúde do seu negócio e das áreas que precisam de atenção.
 
 Lembre-se: o que não é medido não pode ser gerenciado. E no ambiente competitivo atual, gerenciar com precisão pode fazer toda a diferença entre o sucesso e o fracasso da sua PME.
+
+A SightX oferece soluções personalizadas para ajudar sua empresa a implementar um sistema eficaz de monitoramento de KPIs, com dashboards intuitivos e relatórios automatizados que facilitam a tomada de decisão baseada em dados.
     `,
-    coverImage: "/images/blog/metrics-dashboard.jpg",
     tags: ["Métricas", "KPIs", "Gestão", "Crescimento", "Dashboard"],
     readTime: 10
   },
@@ -319,7 +356,7 @@ Lembre-se: o que não é medido não pode ser gerenciado. E no ambiente competit
     title: "WhatsApp Business API: Como usar chatbots inteligentes para atendimento e vendas",
     slug: "whatsapp-business-api-chatbots-inteligentes-atendimento-vendas",
     date: "2025-04-10",
-    author: blogAuthors.anaRibeiro,
+    author: blogAuthors.davidDamasceno,
     excerpt: "Descubra como implementar chatbots no WhatsApp Business API para automatizar atendimento, aumentar conversões e extrair insights valiosos das interações com clientes.",
     content: `
 # WhatsApp Business API: Como usar chatbots inteligentes para atendimento e vendas
@@ -330,7 +367,9 @@ Com mais de 2 bilhões de usuários ativos em todo o mundo e 120 milhões soment
 
 O WhatsApp começou como um simples aplicativo de troca de mensagens, mas evoluiu para se tornar uma plataforma de negócios robusta. A transição começou com o WhatsApp Business em 2018, uma versão simplificada para pequenas empresas, e culminou com o lançamento do WhatsApp Business API, uma solução corporativa que permite integração com sistemas existentes e automação em larga escala.
 
+:::info
 Segundo pesquisas recentes, 76% dos brasileiros preferem se comunicar com empresas via WhatsApp em comparação com outros canais, como email (15%) ou telefone (9%). Essa preferência torna o aplicativo um canal estratégico para qualquer empresa que deseje melhorar sua comunicação com clientes.
+:::
 
 ## O que é o WhatsApp Business API?
 
@@ -366,7 +405,7 @@ Os chatbots de hoje não são como os irritantes sistemas de árvore de decisão
 - Podem transferir para humanos no momento certo
 - Oferecem experiências verdadeiramente conversacionais
 
-> "Um chatbot bem implementado não deve parecer um robô, mas sim um assistente eficiente que sabe quando pode resolver sozinho e quando precisa trazer um especialista humano para a conversa." - Ana Ribeiro, CEO da SightX
+> "Um chatbot bem implementado não deve parecer um robô, mas sim um assistente eficiente que sabe quando pode resolver sozinho e quando precisa trazer um especialista humano para a conversa." - David Damasceno
 
 ## Casos de uso para chatbots no WhatsApp
 
@@ -377,6 +416,10 @@ Os chatbots no WhatsApp podem ser aplicados em praticamente todas as áreas de n
 - **Resposta a perguntas frequentes**: O chatbot pode responder instantaneamente às dúvidas mais comuns, como horário de funcionamento, localização, status de pedidos, etc.
 - **Abertura e acompanhamento de tickets**: Permite que clientes abram chamados de suporte e acompanhem seu progresso sem sair do WhatsApp.
 - **Solução de problemas comuns**: Guiar o cliente através de procedimentos de troubleshooting para resolver problemas simples.
+
+:::tip
+Para um atendimento ao cliente eficaz, configure seu chatbot para reconhecer quando deve escalar para um atendente humano. Sinais como múltiplas repetições da mesma pergunta, uso de palavras que denotam frustração, ou solicitações explícitas para falar com um humano são bons gatilhos para transferência.
+:::
 
 ### 2. Vendas e conversão
 
@@ -414,6 +457,10 @@ Existem três caminhos principais:
 - **Plataformas no-code/low-code**: Ideais para casos de uso simples e equipes com recursos limitados.
 - **Soluções prontas de mercado**: Plataformas especializadas que oferecem modelos pré-construídos que podem ser personalizados.
 - **Desenvolvimento customizado**: Para casos complexos que exigem integrações específicas ou fluxos muito personalizados.
+
+:::warning
+Ao escolher uma plataforma para seu chatbot, certifique-se de que ela é um parceiro oficial do WhatsApp Business. Soluções não oficiais podem violar os termos de serviço e resultar no bloqueio do seu número empresarial.
+:::
 
 ### 3. Obter acesso ao WhatsApp Business API
 
@@ -468,6 +515,10 @@ Além do valor operacional imediato, os chatbots geram uma riqueza de dados que 
 - **Oportunidades de melhoria**: Identificar lacunas no atendimento, produtos ou comunicação.
 - **Feedback em tempo real**: Capturar reações imediatas a novos lançamentos ou mudanças.
 
+:::tip
+Crie um pipeline de feedback do chatbot para sua equipe de produto. As perguntas mais frequentes e os pontos de atrito identificados nas conversas são excelentes sinais para priorização de melhorias em produtos e serviços.
+:::
+
 ## Melhores práticas e considerações importantes
 
 Para maximizar os benefícios e evitar armadilhas comuns, considere estas práticas:
@@ -506,6 +557,10 @@ O cenário de chatbots no WhatsApp está evoluindo rapidamente, com algumas tend
 - **Hiperinteligência e personalização**: Bots que antecipam necessidades com base no histórico e comportamento do cliente.
 - **Omnicanalidade perfeita**: Transição suave entre WhatsApp e outros canais, mantendo o contexto da conversa.
 
+:::info
+Com o recente lançamento da API de pagamentos do WhatsApp no Brasil, em breve será possível realizar transações financeiras diretamente nas conversas, simplificando ainda mais o processo de compra e reduzindo o atrito na jornada do cliente.
+:::
+
 ## Conclusão
 
 O WhatsApp Business API, combinado com chatbots inteligentes, representa uma oportunidade única para empresas transformarem seu relacionamento com clientes. Mais que uma tendência tecnológica, é uma nova forma de fazer negócios que combina a conveniência de um aplicativo que os clientes já usam com a eficiência da automação inteligente.
@@ -513,8 +568,11 @@ O WhatsApp Business API, combinado com chatbots inteligentes, representa uma opo
 As empresas que conseguirem implementar estratégias eficazes de chatbot no WhatsApp estarão bem posicionadas não apenas para atender às expectativas atuais dos consumidores, mas também para se adaptar rapidamente às mudanças no comportamento digital que continuarão a surgir.
 
 A chave para o sucesso está em encontrar o equilíbrio certo entre automação e toque humano, sempre colocando a experiência do cliente no centro de todas as decisões. Quando bem implementado, um chatbot no WhatsApp não é apenas uma ferramenta de redução de custos, mas um diferencial competitivo que pode transformar significativamente a percepção da sua marca.
+
+---
+
+A SightX oferece soluções completas de chatbots para WhatsApp Business API, com foco em pequenas e médias empresas que desejam melhorar seu atendimento ao cliente e potencializar suas vendas através do canal preferido dos brasileiros. Entre em contato para uma demonstração personalizada.
     `,
-    coverImage: "/images/blog/whatsapp-chatbot.jpg",
     tags: ["WhatsApp", "Chatbots", "Automação", "Atendimento ao Cliente", "IA", "Conversational AI"],
     readTime: 12
   }

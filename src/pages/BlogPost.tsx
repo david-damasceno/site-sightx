@@ -56,26 +56,29 @@ const BlogPost = () => {
       <Header />
       <main className="flex-1 pt-24 md:pt-32">
         <article>
-          {/* Hero section with cover image */}
-          <div className="relative w-full h-[40vh] md:h-[50vh] overflow-hidden">
-            <div className="absolute inset-0 bg-gradient-to-b from-black/60 to-black/30 z-10" />
-            <img 
-              src={post.coverImage} 
-              alt={post.title} 
-              className="w-full h-full object-cover"
-            />
-            <div className="absolute inset-0 z-20 flex items-center">
-              <div className="container-custom">
-                <Button 
-                  variant="outline" 
-                  size="sm" 
-                  onClick={() => navigate("/blog")}
-                  className="bg-white/80 backdrop-blur-sm mb-4 hover:bg-white"
-                >
-                  <ArrowLeft size={16} className="mr-2" />
-                  Voltar para o blog
-                </Button>
-                <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white max-w-4xl">{post.title}</h1>
+          {/* Hero section with header */}
+          <div className="bg-gradient-to-r from-sightx-purple to-sightx-purple/80 py-12 md:py-16">
+            <div className="container-custom">
+              <Button 
+                variant="outline" 
+                size="sm" 
+                onClick={() => navigate("/blog")}
+                className="bg-white/90 backdrop-blur-sm mb-4 hover:bg-white"
+              >
+                <ArrowLeft size={16} className="mr-2" />
+                Voltar para o blog
+              </Button>
+              <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white max-w-4xl">{post.title}</h1>
+              
+              <div className="flex flex-wrap mt-6 gap-3">
+                <div className="flex items-center text-sm text-white/90">
+                  <Calendar size={16} className="mr-1" />
+                  {formattedDate}
+                </div>
+                <div className="flex items-center text-sm text-white/90">
+                  <Clock size={16} className="mr-1" />
+                  {post.readTime} min de leitura
+                </div>
               </div>
             </div>
           </div>
@@ -92,15 +95,16 @@ const BlogPost = () => {
                 </div>
               </div>
               
-              <div className="flex flex-wrap gap-3">
-                <div className="flex items-center text-sm text-gray-500">
-                  <Calendar size={16} className="mr-1" />
-                  {formattedDate}
-                </div>
-                <div className="flex items-center text-sm text-gray-500">
-                  <Clock size={16} className="mr-1" />
-                  {post.readTime} min de leitura
-                </div>
+              <div className="flex flex-wrap gap-2">
+                {post.tags.map((tag, index) => (
+                  <span 
+                    key={index} 
+                    className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-gray-100 text-gray-800"
+                  >
+                    <Tag size={14} className="mr-1" />
+                    {tag}
+                  </span>
+                ))}
               </div>
             </div>
             
@@ -109,42 +113,44 @@ const BlogPost = () => {
                 <div className="prose prose-lg max-w-none">
                   <Markdown content={post.content} />
                 </div>
-                
-                <div className="mt-8 pt-6 border-t border-gray-200">
-                  <h3 className="text-lg font-medium mb-3">Tags</h3>
-                  <div className="flex flex-wrap gap-2">
-                    {post.tags.map((tag, index) => (
-                      <span 
-                        key={index} 
-                        className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-gray-100 text-gray-800"
-                      >
-                        <Tag size={14} className="mr-1" />
-                        {tag}
-                      </span>
-                    ))}
-                  </div>
-                </div>
               </div>
               
               <div className="lg:w-1/3 mt-8 lg:mt-0">
-                <div className="sticky top-24 bg-gray-50 rounded-xl p-6 shadow-sm">
-                  <h3 className="text-xl font-bold mb-4">Sobre o autor</h3>
-                  <div className="flex items-center mb-4">
-                    <div className="h-16 w-16 rounded-full bg-sightx-purple flex items-center justify-center text-white text-xl font-bold">
-                      {post.author.name.charAt(0)}
+                <div className="sticky top-24">
+                  <div className="bg-gray-50 rounded-xl p-6 shadow-sm mb-6">
+                    <h3 className="text-xl font-bold mb-4">Sobre o autor</h3>
+                    <div className="flex items-center mb-4">
+                      <div className="h-16 w-16 rounded-full bg-sightx-purple flex items-center justify-center text-white text-xl font-bold">
+                        {post.author.name.charAt(0)}
+                      </div>
+                      <div className="ml-4">
+                        <p className="font-semibold text-gray-900">{post.author.name}</p>
+                        <p className="text-gray-600">{post.author.role}</p>
+                      </div>
                     </div>
-                    <div className="ml-4">
-                      <p className="font-semibold text-gray-900">{post.author.name}</p>
-                      <p className="text-gray-600">{post.author.role}</p>
+                    <p className="text-gray-600 mb-6">
+                      Especialista em transformação digital para pequenas e médias empresas, 
+                      com foco em análise de dados e inteligência artificial aplicada a negócios.
+                    </p>
+                    <Button className="w-full bg-sightx-purple hover:bg-sightx-purple/90">
+                      Ver todos os artigos
+                    </Button>
+                  </div>
+                  
+                  <div className="bg-gray-50 rounded-xl p-6 shadow-sm">
+                    <h3 className="text-xl font-bold mb-4">Tópicos relacionados</h3>
+                    <div className="flex flex-wrap gap-2">
+                      {post.tags.map((tag, index) => (
+                        <Link 
+                          key={index}
+                          to={`/blog?tag=${tag}`}
+                          className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-gray-100 text-gray-800 hover:bg-gray-200 transition-colors"
+                        >
+                          {tag}
+                        </Link>
+                      ))}
                     </div>
                   </div>
-                  <p className="text-gray-600 mb-6">
-                    Especialista em transformação digital para pequenas e médias empresas, 
-                    com foco em análise de dados e inteligência artificial aplicada a negócios.
-                  </p>
-                  <Button className="w-full bg-sightx-purple hover:bg-sightx-purple/90">
-                    Ver todos os artigos
-                  </Button>
                 </div>
               </div>
             </div>

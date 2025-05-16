@@ -14,18 +14,19 @@ const RelatedPosts: React.FC<RelatedPostsProps> = ({ posts }) => {
         <Link 
           key={post.id} 
           to={`/blog/${post.slug}`}
-          className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-all hover:-translate-y-1"
+          className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-all hover:-translate-y-1 border border-gray-100"
         >
-          <div className="h-40 overflow-hidden">
-            <img 
-              src={post.coverImage} 
-              alt={post.title} 
-              className="w-full h-full object-cover transition-transform hover:scale-105 duration-500"
-            />
-          </div>
-          <div className="p-4">
-            <h3 className="font-bold text-lg mb-2 line-clamp-2">{post.title}</h3>
-            <p className="text-gray-600 text-sm line-clamp-3">{post.excerpt}</p>
+          <div className="p-6">
+            <div className="flex gap-2 mb-3 flex-wrap">
+              {post.tags.slice(0, 3).map((tag, index) => (
+                <span key={index} className="text-xs font-medium bg-gray-100 text-gray-600 px-2 py-1 rounded-full">
+                  {tag}
+                </span>
+              ))}
+            </div>
+            <h3 className="font-bold text-lg mb-2 line-clamp-2 text-gray-800">{post.title}</h3>
+            <p className="text-gray-600 text-sm line-clamp-3 mb-4">{post.excerpt}</p>
+            <div className="text-sightx-purple font-medium text-sm">Leia mais →</div>
           </div>
         </Link>
       ))}
