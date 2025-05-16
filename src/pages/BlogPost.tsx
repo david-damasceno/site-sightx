@@ -56,27 +56,19 @@ const BlogPost = () => {
       <Header />
       <main className="flex-1 pt-24 md:pt-32">
         <article>
-          {/* Hero section with cover image */}
-          <div className="relative w-full h-[40vh] md:h-[50vh] overflow-hidden">
-            <div className="absolute inset-0 bg-gradient-to-b from-black/60 to-black/30 z-10" />
-            <img 
-              src={post.coverImage} 
-              alt={post.title} 
-              className="w-full h-full object-cover"
-            />
-            <div className="absolute inset-0 z-20 flex items-center">
-              <div className="container-custom">
-                <Button 
-                  variant="outline" 
-                  size="sm" 
-                  onClick={() => navigate("/blog")}
-                  className="bg-white/80 backdrop-blur-sm mb-4 hover:bg-white"
-                >
-                  <ArrowLeft size={16} className="mr-2" />
-                  Voltar para o blog
-                </Button>
-                <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white max-w-4xl">{post.title}</h1>
-              </div>
+          {/* Hero section - removida a imagem de capa */}
+          <div className="relative w-full bg-gradient-to-r from-sightx-purple/80 to-sightx-green/80 py-16">
+            <div className="container-custom">
+              <Button 
+                variant="outline" 
+                size="sm" 
+                onClick={() => navigate("/blog")}
+                className="bg-white/80 backdrop-blur-sm mb-4 hover:bg-white"
+              >
+                <ArrowLeft size={16} className="mr-2" />
+                Voltar para o blog
+              </Button>
+              <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white max-w-4xl">{post.title}</h1>
             </div>
           </div>
           

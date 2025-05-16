@@ -70,17 +70,8 @@ const Blog = () => {
 
 const BlogPostCard = ({ post }) => {
   return (
-    <div className="bg-white rounded-xl shadow-md overflow-hidden transition-all hover:shadow-lg hover:-translate-y-1 duration-300">
-      <Link to={`/blog/${post.slug}`}>
-        <div className="h-48 overflow-hidden">
-          <img 
-            src={post.coverImage} 
-            alt={post.title} 
-            className="w-full h-full object-cover transition-transform hover:scale-105 duration-500"
-          />
-        </div>
-      </Link>
-      <div className="p-6">
+    <div className="bg-white rounded-xl shadow-md overflow-hidden transition-all hover:shadow-lg hover:-translate-y-1 duration-300 h-full flex flex-col">
+      <div className="p-6 flex-grow">
         <div className="flex gap-2 mb-3">
           {post.tags.slice(0, 3).map((tag, index) => (
             <span key={index} className="text-xs font-medium bg-gray-100 text-gray-600 px-2 py-1 rounded-full">
@@ -96,7 +87,7 @@ const BlogPostCard = ({ post }) => {
         <p className="text-gray-600 mb-4 line-clamp-3">
           {post.excerpt}
         </p>
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between mt-auto">
           <div className="flex items-center">
             <div className="w-8 h-8 bg-sightx-purple rounded-full flex items-center justify-center text-white">
               {post.author.name.charAt(0)}
