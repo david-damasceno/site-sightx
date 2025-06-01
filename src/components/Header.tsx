@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -18,7 +17,8 @@ const Header = () => {
   const scrollToSection = (sectionId: string) => {
     const element = document.getElementById(sectionId);
     if (element) {
-      const headerHeight = 10; // Alterado para 10px conforme solicitado
+      // Offset específico para a seção Donna (whatsapp), 3px para as outras seções mantém 10px
+      const headerHeight = sectionId === 'whatsapp' ? 3 : 10;
       const elementPosition = element.offsetTop - headerHeight;
       
       window.scrollTo({
