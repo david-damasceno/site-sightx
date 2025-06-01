@@ -15,6 +15,20 @@ const Header = () => {
     setMobileMenuOpen(!mobileMenuOpen);
   };
 
+  const scrollToSection = (sectionId: string) => {
+    const element = document.getElementById(sectionId);
+    if (element) {
+      const headerHeight = 80; // Altura aproximada do header fixo
+      const elementPosition = element.offsetTop - headerHeight;
+      
+      window.scrollTo({
+        top: elementPosition,
+        behavior: 'smooth'
+      });
+    }
+    setMobileMenuOpen(false);
+  };
+
   useEffect(() => {
     const handleScroll = () => {
       if (window.scrollY > 10) {
@@ -102,12 +116,26 @@ const Header = () => {
     const isActive = isHomePage 
       ? activeSection === id
       : location.pathname === path || location.pathname.startsWith(`${path}/`);
+
+    const handleClick = (e: React.MouseEvent) => {
+      // Se é uma seção da homepage e estamos na homepage
+      if (isHomePage && path.startsWith('/#')) {
+        e.preventDefault();
+        const sectionId = path.substring(2); // Remove '/#'
+        scrollToSection(sectionId);
+      }
+      // Se é uma seção da homepage mas não estamos na homepage
+      else if (path.startsWith('/#') && !isHomePage) {
+        // Deixa o Link navegar normalmente para a homepage com a âncora
+        return;
+      }
+    };
       
     return (
       <Link 
         to={path} 
         className={`font-medium transition-colors relative px-2 py-1 group ${isActive ? 'text-sightx-purple' : 'text-gray-800 hover:text-sightx-purple'}`} 
-        onClick={() => setMobileMenuOpen(false)}
+        onClick={handleClick}
       >
         <div className="flex items-center">
           {icon}
@@ -149,9 +177,19 @@ const Header = () => {
           ))}
           <Button 
             className="bg-sightx-purple hover:bg-sightx-purple/90 text-white shadow-md hover:shadow-lg transform transition-transform hover:scale-105" 
-            asChild
+            onClick={(e) => {
+              if (isHomePage) {
+                e.preventDefault();
+                scrollToSection('waitlist');
+              }
+            }}
+            asChild={!isHomePage}
           >
-            <Link to="/#waitlist">Entrar na Lista</Link>
+            {isHomePage ? (
+              <span>Entrar na Lista</span>
+            ) : (
+              <Link to="/#waitlist">Entrar na Lista</Link>
+            )}
           </Button>
         </nav>
 
@@ -171,29 +209,51 @@ const Header = () => {
           <nav className="flex flex-col items-center pt-8 gap-6">
             {menuItems
               .filter(item => !item.showOnlyOnHome || isHomePage)
-              .map(item => (
-                <Link 
-                  key={item.id} 
-                  to={item.path} 
-                  className={`text-lg font-medium transition-colors 
-                    ${(isHomePage && activeSection === item.id) || 
-                      (!isHomePage && location.pathname === item.path) 
-                        ? 'text-sightx-purple' 
-                        : 'text-gray-800 hover:text-sightx-purple'
-                    } flex items-center`} 
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  {item.icon}
-                  {item.label}
-                </Link>
-              ))
+              .map(item => {
+                const handleMobileClick = (e: React.MouseEvent) => {
+                  if (isHomePage && item.path.startsWith('/#')) {
+                    e.preventDefault();
+                    const sectionId = item.path.substring(2);
+                    scrollToSection(sectionId);
+                  }
+                  setMobileMenuOpen(false);
+                };
+
+                return (
+                  <Link 
+                    key={item.id} 
+                    to={item.path} 
+                    className={`text-lg font-medium transition-colors 
+                      ${(isHomePage && activeSection === item.id) || 
+                        (!isHomePage && location.pathname === item.path) 
+                          ? 'text-sightx-purple' 
+                          : 'text-gray-800 hover:text-sightx-purple'
+                      } flex items-center`} 
+                    onClick={handleMobileClick}
+                  >
+                    {item.icon}
+                    {item.label}
+                  </Link>
+                );
+              })
             }
             <Button 
               className="bg-sightx-purple hover:bg-sightx-purple/90 text-white mt-6 w-3/4 shadow-md" 
-              onClick={() => setMobileMenuOpen(false)} 
-              asChild
+              onClick={(e) => {
+                if (isHomePage) {
+                  e.preventDefault();
+                  scrollToSection('waitlist');
+                } else {
+                  setMobileMenuOpen(false);
+                }
+              }}
+              asChild={!isHomePage}
             >
-              <Link to="/#waitlist">Entrar na Lista</Link>
+              {isHomePage ? (
+                <span>Entrar na Lista</span>
+              ) : (
+                <Link to="/#waitlist">Entrar na Lista</Link>
+              )}
             </Button>
           </nav>
         </div>
