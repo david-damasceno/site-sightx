@@ -20,6 +20,10 @@ Deno.serve(async (req) => {
   }
 
   try {
+    console.log('=== Google Auth Function Started ===');
+    console.log('Request method:', req.method);
+    console.log('Request URL:', req.url);
+
     const supabaseClient = createClient(
       Deno.env.get('SUPABASE_URL') ?? '',
       Deno.env.get('SUPABASE_ANON_KEY') ?? '',
@@ -28,6 +32,7 @@ Deno.serve(async (req) => {
     // Get the authorization header
     const authHeader = req.headers.get('Authorization')
     if (!authHeader) {
+      console.error('No authorization header found');
       throw new Error('No authorization header')
     }
 
@@ -37,25 +42,57 @@ Deno.serve(async (req) => {
     )
 
     if (userError || !user) {
+      console.error('User authentication failed:', userError);
       throw new Error('User not authenticated')
     }
 
+    console.log('User authenticated:', user.id);
+
     const url = new URL(req.url)
     const code = url.searchParams.get('code')
+    const error = url.searchParams.get('error')
+    const errorDescription = url.searchParams.get('error_description')
+    
+    console.log('URL parameters:', {
+      code: code ? 'present' : 'missing',
+      error,
+      errorDescription
+    });
+
+    if (error) {
+      console.error('OAuth error from Google:', { error, errorDescription });
+      return new Response(null, {
+        status: 302,
+        headers: {
+          ...corsHeaders,
+          'Location': `${url.origin}/google-business?error=${encodeURIComponent(error)}&description=${encodeURIComponent(errorDescription || '')}`
+        }
+      });
+    }
     
     const clientId = Deno.env.get('GOOGLE_CLIENT_ID')
     const clientSecret = Deno.env.get('GOOGLE_CLIENT_SECRET')
-    const redirectUri = `${url.origin}/supabase/functions/v1/google-auth`
+    
+    console.log('Environment variables check:', {
+      clientId: clientId ? `present (${clientId.substring(0, 10)}...)` : 'missing',
+      clientSecret: clientSecret ? 'present' : 'missing'
+    });
 
     if (!clientId || !clientSecret) {
+      console.error('Google credentials not configured');
       throw new Error('Google credentials not configured')
     }
+
+    // Use a more reliable redirect URI
+    const redirectUri = `https://kisndnwlvephihwahbrh.supabase.co/functions/v1/google-auth`
+    console.log('Redirect URI:', redirectUri);
 
     if (!code) {
       // Step 1: Generate authorization URL
       const scopes = [
         'https://www.googleapis.com/auth/business.manage',
-        'https://www.googleapis.com/auth/plus.business.view'
+        'https://www.googleapis.com/auth/userinfo.profile',
+        'https://www.googleapis.com/auth/userinfo.email'
       ].join(' ')
 
       const authUrl = new URL('https://accounts.google.com/o/oauth2/v2/auth')
@@ -67,7 +104,7 @@ Deno.serve(async (req) => {
       authUrl.searchParams.set('prompt', 'consent')
       authUrl.searchParams.set('state', user.id)
 
-      console.log('Generated auth URL:', authUrl.toString())
+      console.log('Generated auth URL:', authUrl.toString());
 
       return new Response(
         JSON.stringify({ authUrl: authUrl.toString() }),
@@ -80,49 +117,75 @@ Deno.serve(async (req) => {
       )
     } else {
       // Step 2: Exchange code for tokens
-      console.log('Exchanging code for tokens...')
+      console.log('Exchanging code for tokens...');
+      console.log('Code received:', code.substring(0, 20) + '...');
       
+      const tokenRequestBody = new URLSearchParams({
+        client_id: clientId,
+        client_secret: clientSecret,
+        code: code,
+        grant_type: 'authorization_code',
+        redirect_uri: redirectUri,
+      });
+
+      console.log('Token request body:', tokenRequestBody.toString());
+
       const tokenResponse = await fetch('https://oauth2.googleapis.com/token', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
         },
-        body: new URLSearchParams({
-          client_id: clientId,
-          client_secret: clientSecret,
-          code: code,
-          grant_type: 'authorization_code',
-          redirect_uri: redirectUri,
-        }),
-      })
+        body: tokenRequestBody,
+      });
+
+      console.log('Token response status:', tokenResponse.status);
+      console.log('Token response headers:', Object.fromEntries(tokenResponse.headers.entries()));
 
       if (!tokenResponse.ok) {
         const errorText = await tokenResponse.text()
-        console.error('Token exchange failed:', errorText)
-        throw new Error(`Token exchange failed: ${errorText}`)
+        console.error('Token exchange failed:', {
+          status: tokenResponse.status,
+          statusText: tokenResponse.statusText,
+          body: errorText
+        });
+        
+        return new Response(null, {
+          status: 302,
+          headers: {
+            ...corsHeaders,
+            'Location': `${url.origin}/google-business?error=token_exchange_failed&description=${encodeURIComponent(errorText)}`
+          }
+        });
       }
 
       const tokens: TokenResponse = await tokenResponse.json()
-      console.log('Tokens received successfully')
+      console.log('Tokens received successfully:', {
+        access_token: tokens.access_token ? 'present' : 'missing',
+        refresh_token: tokens.refresh_token ? 'present' : 'missing',
+        expires_in: tokens.expires_in
+      });
 
-      // Store tokens in Supabase (you may want to create a user_tokens table)
-      // For now, we'll return success and redirect to the app
+      // Store tokens in the user's metadata or a custom table
+      // For now, we'll redirect back with success
+      console.log('Redirecting to success page...');
       
-      // Redirect back to the application with success
       return new Response(null, {
         status: 302,
         headers: {
           ...corsHeaders,
           'Location': `${url.origin}/google-business?success=true`
         }
-      })
+      });
     }
 
   } catch (error) {
-    console.error('Google auth error:', error)
+    console.error('Google auth error:', error);
+    console.error('Error stack:', error.stack);
+    
     return new Response(
       JSON.stringify({ 
-        error: error.message || 'Authentication failed' 
+        error: error.message || 'Authentication failed',
+        details: error.stack
       }),
       { 
         status: 400,

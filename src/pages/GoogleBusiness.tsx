@@ -36,16 +36,38 @@ const GoogleBusiness = () => {
   }, [user, authLoading, navigate]);
 
   useEffect(() => {
-    // Check if we're returning from Google OAuth
+    // Check for OAuth callback parameters
     const urlParams = new URLSearchParams(window.location.search);
     const success = urlParams.get('success');
+    const error = urlParams.get('error');
+    const description = urlParams.get('description');
     
     if (success === 'true') {
       toast({
         title: "Conexão estabelecida",
         description: "Google Business conectado com sucesso! Agora você pode sincronizar os dados.",
       });
-      // Clear the URL parameter
+      // Clear the URL parameters
+      window.history.replaceState({}, document.title, window.location.pathname);
+    } else if (error) {
+      console.error('OAuth error:', { error, description });
+      let errorMessage = 'Erro ao conectar com o Google';
+      
+      if (error === 'access_denied') {
+        errorMessage = 'Acesso negado pelo usuário. Você precisa autorizar o acesso para continuar.';
+      } else if (error === 'token_exchange_failed') {
+        errorMessage = 'Falha na troca de tokens. Verifique as configurações do OAuth.';
+      } else if (description) {
+        errorMessage = `Erro: ${description}`;
+      }
+      
+      setError(errorMessage);
+      toast({
+        variant: "destructive",
+        title: "Erro na autenticação",
+        description: errorMessage,
+      });
+      // Clear the URL parameters
       window.history.replaceState({}, document.title, window.location.pathname);
     }
   }, [toast]);
@@ -79,7 +101,7 @@ const GoogleBusiness = () => {
       }
     } catch (err) {
       console.error('Google auth error:', err);
-      setError('Erro ao conectar com o Google. Verifique as credenciais.');
+      setError('Erro ao conectar com o Google. Verifique as credenciais e configurações.');
       toast({
         variant: "destructive",
         title: "Erro na autenticação",
@@ -213,6 +235,18 @@ const GoogleBusiness = () => {
               <AlertDescription>{error}</AlertDescription>
             </Alert>
           )}
+
+          {/* Debug information */}
+          <Card className="bg-blue-50 border-blue-200">
+            <CardHeader>
+              <CardTitle className="text-sm text-blue-800">Informações de Debug</CardTitle>
+            </CardHeader>
+            <CardContent className="text-sm text-blue-700">
+              <p><strong>Client ID configurado:</strong> {Deno?.env?.get ? 'Ambiente servidor' : 'Ambiente cliente'}</p>
+              <p><strong>URL atual:</strong> {window.location.href}</p>
+              <p><strong>Redirect configurado:</strong> https://kisndnwlvephihwahbrh.supabase.co/functions/v1/google-auth</p>
+            </CardContent>
+          </Card>
 
           {loading ? (
             <div className="flex justify-center py-12">
