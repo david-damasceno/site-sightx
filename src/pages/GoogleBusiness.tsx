@@ -6,7 +6,6 @@ import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Badge } from '@/components/ui/badge';
 import { Loader2, LogOut, RefreshCw, Building, Star, Phone, Globe, MapPin } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
@@ -36,33 +35,6 @@ const GoogleBusiness = () => {
       navigate('/login');
     }
   }, [user, authLoading, navigate]);
-
-  useEffect(() => {
-    if (user) {
-      loadBusinessProfiles();
-    }
-  }, [user]);
-
-  const loadBusinessProfiles = async () => {
-    if (!user) return;
-
-    setLoading(true);
-    try {
-      const { data, error } = await supabase
-        .from('business_profiles')
-        .select('*')
-        .eq('user_id', user.id)
-        .order('created_at', { ascending: false });
-
-      if (error) throw error;
-      setProfiles(data || []);
-    } catch (err) {
-      console.error('Error loading profiles:', err);
-      setError('Erro ao carregar perfis empresariais');
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const handleGoogleAuth = async () => {
     setSyncing(true);
@@ -98,7 +70,10 @@ const GoogleBusiness = () => {
       
       if (error) throw error;
       
-      await loadBusinessProfiles();
+      // Simulate setting profile data from the response
+      if (data && data.profiles) {
+        setProfiles(data.profiles);
+      }
       
       toast({
         title: "Sincronização concluída",
@@ -226,7 +201,9 @@ const GoogleBusiness = () => {
                   <CardHeader>
                     <div className="flex items-start justify-between">
                       <CardTitle className="text-lg">{profile.business_name}</CardTitle>
-                      <Badge variant="secondary">{profile.category}</Badge>
+                      <span className="px-2 py-1 bg-gray-100 text-gray-700 text-xs rounded-full">
+                        {profile.category}
+                      </span>
                     </div>
                     <CardDescription className="flex items-center">
                       <MapPin className="h-4 w-4 mr-1" />
