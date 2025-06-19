@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
@@ -36,25 +35,55 @@ const GoogleBusiness = () => {
     }
   }, [user, authLoading, navigate]);
 
+  useEffect(() => {
+    // Check if we're returning from Google OAuth
+    const urlParams = new URLSearchParams(window.location.search);
+    const success = urlParams.get('success');
+    
+    if (success === 'true') {
+      toast({
+        title: "Conexão estabelecida",
+        description: "Google Business conectado com sucesso! Agora você pode sincronizar os dados.",
+      });
+      // Clear the URL parameter
+      window.history.replaceState({}, document.title, window.location.pathname);
+    }
+  }, [toast]);
+
   const handleGoogleAuth = async () => {
     setSyncing(true);
     setError('');
 
     try {
-      const { data, error } = await supabase.functions.invoke('google-auth');
+      console.log('Iniciando autenticação Google...');
       
-      if (error) throw error;
+      const { data, error } = await supabase.functions.invoke('google-auth', {
+        headers: {
+          Authorization: `Bearer ${(await supabase.auth.getSession()).data.session?.access_token}`,
+        },
+      });
+      
+      if (error) {
+        console.error('Erro na função:', error);
+        throw error;
+      }
+      
+      console.log('Resposta da função:', data);
       
       if (data?.authUrl) {
+        console.log('Redirecionando para:', data.authUrl);
+        // Redirect to Google OAuth
         window.location.href = data.authUrl;
+      } else {
+        throw new Error('URL de autenticação não recebida');
       }
     } catch (err) {
       console.error('Google auth error:', err);
-      setError('Erro ao conectar com o Google');
+      setError('Erro ao conectar com o Google. Verifique as credenciais.');
       toast({
         variant: "destructive",
         title: "Erro na autenticação",
-        description: "Não foi possível conectar com o Google",
+        description: "Não foi possível conectar com o Google. Verifique se as credenciais estão configuradas corretamente.",
       });
     } finally {
       setSyncing(false);
@@ -66,26 +95,38 @@ const GoogleBusiness = () => {
     setError('');
 
     try {
-      const { data, error } = await supabase.functions.invoke('google-business-data');
+      console.log('Sincronizando dados do Google Business...');
       
-      if (error) throw error;
+      const { data, error } = await supabase.functions.invoke('google-business-data', {
+        headers: {
+          Authorization: `Bearer ${(await supabase.auth.getSession()).data.session?.access_token}`,
+        },
+      });
       
-      // Simulate setting profile data from the response
-      if (data && data.profiles) {
-        setProfiles(data.profiles);
+      if (error) {
+        console.error('Erro na sincronização:', error);
+        throw error;
       }
       
-      toast({
-        title: "Sincronização concluída",
-        description: "Dados do Google Business atualizados com sucesso",
-      });
+      console.log('Dados recebidos:', data);
+      
+      // Set profile data from the response
+      if (data && data.profiles) {
+        setProfiles(data.profiles);
+        toast({
+          title: "Sincronização concluída",
+          description: data.message || "Dados do Google Business atualizados com sucesso",
+        });
+      } else {
+        throw new Error('Dados não recebidos da API');
+      }
     } catch (err) {
       console.error('Sync error:', err);
       setError('Erro ao sincronizar dados do Google Business');
       toast({
         variant: "destructive",
         title: "Erro na sincronização",
-        description: "Não foi possível sincronizar os dados",
+        description: "Não foi possível sincronizar os dados. Certifique-se de que está conectado ao Google.",
       });
     } finally {
       setSyncing(false);
