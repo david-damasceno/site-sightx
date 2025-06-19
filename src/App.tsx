@@ -10,6 +10,8 @@ import Termos from "./pages/Termos";
 import Privacidade from "./pages/Privacidade";
 import Blog from "./pages/Blog";
 import BlogPost from "./pages/BlogPost";
+import Login from "./pages/Login";
+import GoogleBusiness from "./pages/GoogleBusiness";
 
 const queryClient = new QueryClient();
 
@@ -19,6 +21,8 @@ const App = () => (
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Index />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/google-business" element={<GoogleBusiness />} />
           <Route path="/termos" element={<Termos />} />
           <Route path="/privacidade" element={<Privacidade />} />
           <Route path="/blog" element={<Blog />} />
