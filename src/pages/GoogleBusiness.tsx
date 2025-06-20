@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
@@ -242,7 +243,7 @@ const GoogleBusiness = () => {
               <CardTitle className="text-sm text-blue-800">Informações de Debug</CardTitle>
             </CardHeader>
             <CardContent className="text-sm text-blue-700">
-              <p><strong>Client ID configurado:</strong> {Deno?.env?.get ? 'Ambiente servidor' : 'Ambiente cliente'}</p>
+              <p><strong>Ambiente:</strong> Frontend React</p>
               <p><strong>URL atual:</strong> {window.location.href}</p>
               <p><strong>Redirect configurado:</strong> https://kisndnwlvephihwahbrh.supabase.co/functions/v1/google-auth</p>
             </CardContent>
