@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
@@ -42,25 +41,26 @@ const GoogleBusiness = () => {
     const success = urlParams.get('success');
     const error = urlParams.get('error');
     const description = urlParams.get('description');
-    const tokensReceived = urlParams.get('tokens_received');
+    const tokensStored = urlParams.get('tokens_stored');
+    const apiType = urlParams.get('api_type');
     
-    console.log('OAuth callback params:', { success, error, description, tokensReceived });
+    console.log('OAuth callback params:', { success, error, description, tokensStored, apiType });
     
     if (success === 'true') {
       toast({
         title: "Conexão estabelecida",
-        description: tokensReceived ? 
-          "Google Business conectado com sucesso! Tokens recebidos." : 
-          "Google Business conectado com sucesso! Agora você pode sincronizar os dados.",
+        description: tokensStored ? 
+          "Google Business Profile conectado com sucesso! Tokens armazenados com segurança." : 
+          "Google Business Profile conectado com sucesso! Agora você pode sincronizar os dados.",
       });
       // Clear the URL parameters
       window.history.replaceState({}, document.title, window.location.pathname);
     } else if (error) {
       console.error('OAuth error:', { error, description });
-      let errorMessage = 'Erro ao conectar com o Google';
+      let errorMessage = 'Erro ao conectar com o Google Business Profile';
       
       if (error === 'access_denied') {
-        errorMessage = 'Acesso negado pelo usuário. Você precisa autorizar o acesso para continuar.';
+        errorMessage = 'Acesso negado pelo usuário. Você precisa autorizar o acesso ao Google Business Profile para continuar.';
       } else if (error === 'token_exchange_failed') {
         errorMessage = `Falha na troca de tokens: ${description || 'Verifique as configurações do OAuth no Google Cloud Console.'}`;
       } else if (error === 'function_error') {
@@ -85,7 +85,7 @@ const GoogleBusiness = () => {
     setError('');
 
     try {
-      console.log('Iniciando autenticação Google...');
+      console.log('Iniciando autenticação Google Business Profile Performance API...');
       console.log('User session:', user?.id);
       
       const { data, error } = await supabase.functions.invoke('google-auth', {
@@ -113,11 +113,11 @@ const GoogleBusiness = () => {
       }
     } catch (err) {
       console.error('Google auth error:', err);
-      setError('Erro ao conectar com o Google. Verifique as credenciais e configurações.');
+      setError('Erro ao conectar com o Google Business Profile. Verifique as credenciais e configurações.');
       toast({
         variant: "destructive",
         title: "Erro na autenticação",
-        description: "Não foi possível conectar com o Google. Verifique se as credenciais estão configuradas corretamente.",
+        description: "Não foi possível conectar com o Google Business Profile. Verifique se as credenciais estão configuradas corretamente.",
       });
     } finally {
       setSyncing(false);
@@ -129,7 +129,7 @@ const GoogleBusiness = () => {
     setError('');
 
     try {
-      console.log('Sincronizando dados do Google Business...');
+      console.log('Sincronizando dados do Google Business Profile...');
       
       const { data, error } = await supabase.functions.invoke('google-business-data', {
         headers: {
@@ -149,18 +149,18 @@ const GoogleBusiness = () => {
         setProfiles(data.profiles);
         toast({
           title: "Sincronização concluída",
-          description: data.message || "Dados do Google Business atualizados com sucesso",
+          description: data.message || "Dados do Google Business Profile atualizados com sucesso",
         });
       } else {
         throw new Error('Dados não recebidos da API');
       }
     } catch (err) {
       console.error('Sync error:', err);
-      setError('Erro ao sincronizar dados do Google Business');
+      setError('Erro ao sincronizar dados do Google Business Profile');
       toast({
         variant: "destructive",
         title: "Erro na sincronização",
-        description: "Não foi possível sincronizar os dados. Certifique-se de que está conectado ao Google.",
+        description: "Não foi possível sincronizar os dados. Certifique-se de que está conectado ao Google Business Profile.",
       });
     } finally {
       setSyncing(false);
@@ -219,8 +219,8 @@ const GoogleBusiness = () => {
         <div className="space-y-6">
           <div className="flex justify-between items-center">
             <div>
-              <h2 className="text-2xl font-bold text-gray-900">Perfis Empresariais</h2>
-              <p className="text-gray-600 mt-1">Gerencie e visualize os dados do seu Google Business Profile</p>
+              <h2 className="text-2xl font-bold text-gray-900">Google Business Profile</h2>
+              <p className="text-gray-600 mt-1">Gerencie e visualize os dados do seu Google Business Profile usando a Business Profile Performance API</p>
             </div>
             <div className="flex space-x-3">
               <Button
@@ -248,26 +248,25 @@ const GoogleBusiness = () => {
             </Alert>
           )}
 
-          {/* Enhanced debug information */}
+          {/* Updated debug information */}
           <Card className="bg-blue-50 border-blue-200">
             <CardHeader>
-              <CardTitle className="text-sm text-blue-800">Informações de Debug - OAuth 2.0</CardTitle>
+              <CardTitle className="text-sm text-blue-800">Google Business Profile Performance API</CardTitle>
             </CardHeader>
             <CardContent className="text-sm text-blue-700 space-y-2">
-              <p><strong>Ambiente:</strong> Frontend React</p>
-              <p><strong>URL atual:</strong> {window.location.href}</p>
-              <p><strong>Redirect URI configurado:</strong> https://kisndnwlvephihwahbrh.supabase.co/functions/v1/google-auth</p>
+              <p><strong>API:</strong> Business Profile Performance API (simplificada)</p>
+              <p><strong>Redirect URI:</strong> https://kisndnwlvephihwahbrh.supabase.co/functions/v1/google-auth</p>
               <p><strong>User ID:</strong> {user?.id || 'Não autenticado'}</p>
               <p><strong>Session ativa:</strong> {user ? 'Sim' : 'Não'}</p>
               
-              <div className="mt-4 p-3 bg-yellow-100 rounded border-l-4 border-yellow-500">
-                <p className="font-semibold text-yellow-800">Checklist para OAuth 2.0:</p>
-                <ul className="mt-2 text-xs text-yellow-700 space-y-1">
-                  <li>✓ Client ID e Client Secret configurados no Supabase</li>
+              <div className="mt-4 p-3 bg-green-100 rounded border-l-4 border-green-500">
+                <p className="font-semibold text-green-800">Configuração Necessária no Google Cloud Console:</p>
+                <ul className="mt-2 text-xs text-green-700 space-y-1">
+                  <li>✓ Client ID e Client Secret configurados</li>
+                  <li>✓ APIs habilitadas: My Business Business Information API</li>
+                  <li>✓ APIs habilitadas: My Business Account Management API</li>
                   <li>✓ Redirect URI: https://kisndnwlvephihwahbrh.supabase.co/functions/v1/google-auth</li>
-                  <li>🔄 Google Cloud Console - OAuth 2.0 configurado</li>
-                  <li>🔄 Google My Business API habilitada</li>
-                  <li>🔄 Domínios autorizados incluem: kisndnwlvephihwahbrh.supabase.co</li>
+                  <li>✓ Escopo: https://www.googleapis.com/auth/business.manage</li>
                 </ul>
               </div>
             </CardContent>

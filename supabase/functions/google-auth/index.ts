@@ -20,10 +20,8 @@ Deno.serve(async (req) => {
   }
 
   try {
-    console.log('=== Google Auth Function Started ===');
+    console.log('=== Google Business Profile Performance API Auth Started ===');
     console.log('Request method:', req.method);
-    console.log('Request URL:', req.url);
-    console.log('Request headers:', Object.fromEntries(req.headers.entries()));
 
     const supabaseClient = createClient(
       Deno.env.get('SUPABASE_URL') ?? '',
@@ -53,13 +51,11 @@ Deno.serve(async (req) => {
     const code = url.searchParams.get('code')
     const error = url.searchParams.get('error')
     const errorDescription = url.searchParams.get('error_description')
-    const state = url.searchParams.get('state')
     
     console.log('URL parameters:', {
       code: code ? `present (${code.substring(0, 20)}...)` : 'missing',
       error,
-      errorDescription,
-      state
+      errorDescription
     });
 
     if (error) {
@@ -78,8 +74,7 @@ Deno.serve(async (req) => {
     
     console.log('Environment variables check:', {
       clientId: clientId ? `present (${clientId.substring(0, 20)}...)` : 'missing',
-      clientSecret: clientSecret ? 'present' : 'missing',
-      supabaseUrl: Deno.env.get('SUPABASE_URL') ? 'present' : 'missing'
+      clientSecret: clientSecret ? 'present' : 'missing'
     });
 
     if (!clientId || !clientSecret) {
@@ -87,23 +82,21 @@ Deno.serve(async (req) => {
       throw new Error('Google credentials not configured')
     }
 
-    // Use the exact redirect URI that should be configured in Google Console
     const redirectUri = `https://kisndnwlvephihwahbrh.supabase.co/functions/v1/google-auth`
     console.log('Using redirect URI:', redirectUri);
 
     if (!code) {
-      // Step 1: Generate authorization URL
-      console.log('Generating authorization URL...');
+      // Step 1: Generate authorization URL for Business Profile Performance API
+      console.log('Generating authorization URL for Business Profile Performance API...');
       
-      // Updated scopes for Google My Business API v4.9
+      // Simplified scope for Business Profile Performance API
       const scopes = [
         'https://www.googleapis.com/auth/business.manage',
-        'openid',
         'email',
         'profile'
       ].join(' ')
 
-      console.log('Using scopes:', scopes);
+      console.log('Using simplified scopes:', scopes);
 
       const authUrl = new URL('https://accounts.google.com/o/oauth2/v2/auth')
       authUrl.searchParams.set('client_id', clientId)
@@ -113,7 +106,6 @@ Deno.serve(async (req) => {
       authUrl.searchParams.set('access_type', 'offline')
       authUrl.searchParams.set('prompt', 'consent')
       authUrl.searchParams.set('state', user.id)
-      authUrl.searchParams.set('include_granted_scopes', 'true')
 
       console.log('Generated auth URL:', authUrl.toString());
 
@@ -124,7 +116,8 @@ Deno.serve(async (req) => {
             clientId: clientId.substring(0, 20) + '...',
             redirectUri,
             scopes,
-            userId: user.id
+            userId: user.id,
+            apiType: 'Business Profile Performance API'
           }
         }),
         { 
@@ -137,7 +130,6 @@ Deno.serve(async (req) => {
     } else {
       // Step 2: Exchange code for tokens
       console.log('Exchanging authorization code for tokens...');
-      console.log('Code received:', code.substring(0, 20) + '...');
       
       const tokenRequestBody = new URLSearchParams({
         client_id: clientId,
@@ -147,12 +139,7 @@ Deno.serve(async (req) => {
         redirect_uri: redirectUri,
       });
 
-      console.log('Token request to Google:', {
-        url: 'https://oauth2.googleapis.com/token',
-        method: 'POST',
-        redirectUri,
-        clientId: clientId.substring(0, 20) + '...'
-      });
+      console.log('Token request to Google...');
 
       const tokenResponse = await fetch('https://oauth2.googleapis.com/token', {
         method: 'POST',
@@ -163,15 +150,13 @@ Deno.serve(async (req) => {
       });
 
       console.log('Token response status:', tokenResponse.status);
-      console.log('Token response headers:', Object.fromEntries(tokenResponse.headers.entries()));
 
       if (!tokenResponse.ok) {
         const errorText = await tokenResponse.text()
         console.error('Token exchange failed:', {
           status: tokenResponse.status,
           statusText: tokenResponse.statusText,
-          body: errorText,
-          url: tokenResponse.url
+          body: errorText
         });
         
         return new Response(null, {
@@ -185,27 +170,45 @@ Deno.serve(async (req) => {
 
       const tokens: TokenResponse = await tokenResponse.json()
       console.log('Tokens received successfully:', {
-        access_token: tokens.access_token ? `present (${tokens.access_token.substring(0, 20)}...)` : 'missing',
+        access_token: tokens.access_token ? 'present' : 'missing',
         refresh_token: tokens.refresh_token ? 'present' : 'missing',
         expires_in: tokens.expires_in,
         token_type: tokens.token_type
       });
 
-      // TODO: Store tokens securely in database for the user
-      // For now, we'll just redirect back with success
-      console.log('Redirecting to success page...');
+      // Store tokens in database for the user
+      console.log('Storing tokens in database...');
+      
+      const { error: storeError } = await supabaseClient
+        .from('user_google_tokens')
+        .upsert({
+          user_id: user.id,
+          access_token: tokens.access_token,
+          refresh_token: tokens.refresh_token,
+          expires_at: new Date(Date.now() + (tokens.expires_in * 1000)).toISOString(),
+          token_type: tokens.token_type,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString()
+        });
+
+      if (storeError) {
+        console.error('Failed to store tokens:', storeError);
+        // Continue anyway, we can still redirect with success
+      } else {
+        console.log('Tokens stored successfully');
+      }
       
       return new Response(null, {
         status: 302,
         headers: {
           ...corsHeaders,
-          'Location': `${url.origin}/google-business?success=true&tokens_received=true`
+          'Location': `${url.origin}/google-business?success=true&tokens_stored=true&api_type=business_profile_performance`
         }
       });
     }
 
   } catch (error) {
-    console.error('Google auth error:', error);
+    console.error('Google Business Profile Performance API auth error:', error);
     console.error('Error stack:', error.stack);
     
     const url = new URL(req.url)

@@ -6,13 +6,30 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 }
 
-interface GoogleBusinessLocation {
+interface BusinessLocation {
   name: string;
-  locationName: string;
-  primaryPhone: string;
-  websiteUri: string;
-  regularHours: any;
-  categories: { displayName: string }[];
+  title: string;
+  storefrontAddress: {
+    addressLines: string[];
+    locality: string;
+    administrativeArea: string;
+    postalCode: string;
+    regionCode: string;
+  };
+  websiteUri?: string;
+  phoneNumbers?: {
+    primaryPhone: string;
+  };
+  categories?: {
+    primaryCategory: {
+      displayName: string;
+    };
+  };
+  metadata?: {
+    duplicate?: boolean;
+    canDelete?: boolean;
+    canUpdate?: boolean;
+  };
 }
 
 Deno.serve(async (req) => {
@@ -22,6 +39,8 @@ Deno.serve(async (req) => {
   }
 
   try {
+    console.log('=== Business Profile Performance API Data Fetch Started ===');
+    
     const supabaseClient = createClient(
       Deno.env.get('SUPABASE_URL') ?? '',
       Deno.env.get('SUPABASE_ANON_KEY') ?? '',
@@ -42,45 +61,35 @@ Deno.serve(async (req) => {
       throw new Error('User not authenticated')
     }
 
-    // For now, we'll return mock data since we need to implement token storage first
-    // In a real implementation, you would:
-    // 1. Retrieve stored Google tokens for this user
-    // 2. Use the Google My Business API to fetch actual data
-    // 3. Handle token refresh if needed
+    console.log('Fetching Business Profile data for user:', user.id);
 
-    console.log('Fetching Google Business data for user:', user.id)
+    // Get stored tokens for this user
+    const { data: tokenData, error: tokenError } = await supabaseClient
+      .from('user_google_tokens')
+      .select('access_token, refresh_token, expires_at')
+      .eq('user_id', user.id)
+      .single();
 
-    // Mock data for demonstration
-    const mockProfiles = [
-      {
-        id: '1',
-        business_name: 'SightX Consultoria',
-        address: 'São Paulo, SP, Brasil',
-        phone_number: '+55 11 99999-9999',
-        website_url: 'https://www.sightx.com.br',
-        rating: 4.8,
-        review_count: 127,
-        category: 'Consultoria em Marketing',
-        last_updated: new Date().toISOString()
-      },
-      {
-        id: '2',
-        business_name: 'SightX Analytics',
-        address: 'Rio de Janeiro, RJ, Brasil',
-        phone_number: '+55 21 88888-8888',
-        website_url: 'https://analytics.sightx.com.br',
-        rating: 4.9,
-        review_count: 89,
-        category: 'Análise de Dados',
-        last_updated: new Date().toISOString()
-      }
-    ]
+    if (tokenError || !tokenData) {
+      console.error('No stored tokens found:', tokenError);
+      throw new Error('No Google tokens found. Please reconnect your Google account.');
+    }
 
-    // Here you would implement the actual Google My Business API calls:
-    /*
-    const accessToken = await getStoredAccessToken(user.id)
+    console.log('Found stored tokens for user');
+
+    // Check if token is expired
+    const expiresAt = new Date(tokenData.expires_at);
+    const now = new Date();
     
-    // Get accounts
+    if (expiresAt <= now) {
+      console.log('Token expired, need to refresh');
+      throw new Error('Token expired. Please reconnect your Google account.');
+    }
+
+    const accessToken = tokenData.access_token;
+
+    // First, get the accounts
+    console.log('Fetching Google Business accounts...');
     const accountsResponse = await fetch(
       'https://mybusinessaccountmanagement.googleapis.com/v1/accounts',
       {
@@ -89,17 +98,40 @@ Deno.serve(async (req) => {
           'Content-Type': 'application/json'
         }
       }
-    )
-    
+    );
+
     if (!accountsResponse.ok) {
-      throw new Error('Failed to fetch Google Business accounts')
+      const errorText = await accountsResponse.text();
+      console.error('Failed to fetch accounts:', accountsResponse.status, errorText);
+      throw new Error(`Failed to fetch Google Business accounts: ${accountsResponse.status}`);
     }
-    
-    const accounts = await accountsResponse.json()
-    
+
+    const accountsData = await accountsResponse.json();
+    console.log('Accounts response:', accountsData);
+
+    if (!accountsData.accounts || accountsData.accounts.length === 0) {
+      console.log('No business accounts found');
+      return new Response(
+        JSON.stringify({ 
+          success: true,
+          profiles: [],
+          message: 'Nenhuma conta comercial encontrada. Certifique-se de ter um Google Business Profile configurado.'
+        }),
+        { 
+          headers: { 
+            ...corsHeaders, 
+            'Content-Type': 'application/json'
+          } 
+        }
+      );
+    }
+
     // Get locations for each account
-    const allLocations = []
-    for (const account of accounts.accounts || []) {
+    const allProfiles = [];
+    
+    for (const account of accountsData.accounts) {
+      console.log(`Fetching locations for account: ${account.name}`);
+      
       const locationsResponse = await fetch(
         `https://mybusinessbusinessinformation.googleapis.com/v1/${account.name}/locations`,
         {
@@ -108,20 +140,49 @@ Deno.serve(async (req) => {
             'Content-Type': 'application/json'
           }
         }
-      )
-      
+      );
+
       if (locationsResponse.ok) {
-        const locations = await locationsResponse.json()
-        allLocations.push(...(locations.locations || []))
+        const locationsData = await locationsResponse.json();
+        console.log(`Found ${locationsData.locations?.length || 0} locations for account ${account.name}`);
+        
+        if (locationsData.locations) {
+          for (const location of locationsData.locations) {
+            try {
+              // Format the location data
+              const profile = {
+                id: location.name.split('/').pop() || Math.random().toString(),
+                business_name: location.title || 'Nome não disponível',
+                address: formatAddress(location.storefrontAddress),
+                phone_number: location.phoneNumbers?.primaryPhone || '',
+                website_url: location.websiteUri || '',
+                rating: 0, // Performance API doesn't provide ratings directly
+                review_count: 0, // Performance API doesn't provide review count directly
+                category: location.categories?.primaryCategory?.displayName || 'Categoria não especificada',
+                last_updated: new Date().toISOString(),
+                google_location_id: location.name
+              };
+              
+              allProfiles.push(profile);
+            } catch (locationError) {
+              console.error('Error processing location:', locationError);
+              continue;
+            }
+          }
+        }
+      } else {
+        const errorText = await locationsResponse.text();
+        console.error(`Failed to fetch locations for account ${account.name}:`, locationsResponse.status, errorText);
       }
     }
-    */
+
+    console.log(`Total profiles found: ${allProfiles.length}`);
 
     return new Response(
       JSON.stringify({ 
         success: true,
-        profiles: mockProfiles,
-        message: 'Dados sincronizados com sucesso (dados de demonstração)'
+        profiles: allProfiles,
+        message: `${allProfiles.length} perfis comerciais encontrados e sincronizados com sucesso`
       }),
       { 
         headers: { 
@@ -129,13 +190,14 @@ Deno.serve(async (req) => {
           'Content-Type': 'application/json'
         } 
       }
-    )
+    );
 
   } catch (error) {
-    console.error('Google Business data error:', error)
+    console.error('Business Profile Performance API data error:', error);
     return new Response(
       JSON.stringify({ 
-        error: error.message || 'Failed to fetch business data' 
+        error: error.message || 'Failed to fetch business data',
+        details: 'Verifique se sua conta Google Business Profile está configurada corretamente'
       }),
       { 
         status: 400,
@@ -144,6 +206,30 @@ Deno.serve(async (req) => {
           'Content-Type': 'application/json'
         } 
       }
-    )
+    );
   }
-})
+});
+
+function formatAddress(address: any): string {
+  if (!address) return 'Endereço não disponível';
+  
+  const parts = [];
+  
+  if (address.addressLines) {
+    parts.push(...address.addressLines);
+  }
+  
+  if (address.locality) {
+    parts.push(address.locality);
+  }
+  
+  if (address.administrativeArea) {
+    parts.push(address.administrativeArea);
+  }
+  
+  if (address.postalCode) {
+    parts.push(address.postalCode);
+  }
+  
+  return parts.join(', ');
+}
