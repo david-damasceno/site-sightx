@@ -23,6 +23,7 @@ Deno.serve(async (req) => {
     console.log('=== Google Auth Function Started ===');
     console.log('Request method:', req.method);
     console.log('Request URL:', req.url);
+    console.log('Request headers:', Object.fromEntries(req.headers.entries()));
 
     const supabaseClient = createClient(
       Deno.env.get('SUPABASE_URL') ?? '',
@@ -52,11 +53,13 @@ Deno.serve(async (req) => {
     const code = url.searchParams.get('code')
     const error = url.searchParams.get('error')
     const errorDescription = url.searchParams.get('error_description')
+    const state = url.searchParams.get('state')
     
     console.log('URL parameters:', {
-      code: code ? 'present' : 'missing',
+      code: code ? `present (${code.substring(0, 20)}...)` : 'missing',
       error,
-      errorDescription
+      errorDescription,
+      state
     });
 
     if (error) {
@@ -74,8 +77,9 @@ Deno.serve(async (req) => {
     const clientSecret = Deno.env.get('GOOGLE_CLIENT_SECRET')
     
     console.log('Environment variables check:', {
-      clientId: clientId ? `present (${clientId.substring(0, 10)}...)` : 'missing',
-      clientSecret: clientSecret ? 'present' : 'missing'
+      clientId: clientId ? `present (${clientId.substring(0, 20)}...)` : 'missing',
+      clientSecret: clientSecret ? 'present' : 'missing',
+      supabaseUrl: Deno.env.get('SUPABASE_URL') ? 'present' : 'missing'
     });
 
     if (!clientId || !clientSecret) {
@@ -83,17 +87,23 @@ Deno.serve(async (req) => {
       throw new Error('Google credentials not configured')
     }
 
-    // Use a more reliable redirect URI
+    // Use the exact redirect URI that should be configured in Google Console
     const redirectUri = `https://kisndnwlvephihwahbrh.supabase.co/functions/v1/google-auth`
-    console.log('Redirect URI:', redirectUri);
+    console.log('Using redirect URI:', redirectUri);
 
     if (!code) {
       // Step 1: Generate authorization URL
+      console.log('Generating authorization URL...');
+      
+      // Updated scopes for Google My Business API v4.9
       const scopes = [
         'https://www.googleapis.com/auth/business.manage',
-        'https://www.googleapis.com/auth/userinfo.profile',
-        'https://www.googleapis.com/auth/userinfo.email'
+        'openid',
+        'email',
+        'profile'
       ].join(' ')
+
+      console.log('Using scopes:', scopes);
 
       const authUrl = new URL('https://accounts.google.com/o/oauth2/v2/auth')
       authUrl.searchParams.set('client_id', clientId)
@@ -103,11 +113,20 @@ Deno.serve(async (req) => {
       authUrl.searchParams.set('access_type', 'offline')
       authUrl.searchParams.set('prompt', 'consent')
       authUrl.searchParams.set('state', user.id)
+      authUrl.searchParams.set('include_granted_scopes', 'true')
 
       console.log('Generated auth URL:', authUrl.toString());
 
       return new Response(
-        JSON.stringify({ authUrl: authUrl.toString() }),
+        JSON.stringify({ 
+          authUrl: authUrl.toString(),
+          debug: {
+            clientId: clientId.substring(0, 20) + '...',
+            redirectUri,
+            scopes,
+            userId: user.id
+          }
+        }),
         { 
           headers: { 
             ...corsHeaders, 
@@ -117,7 +136,7 @@ Deno.serve(async (req) => {
       )
     } else {
       // Step 2: Exchange code for tokens
-      console.log('Exchanging code for tokens...');
+      console.log('Exchanging authorization code for tokens...');
       console.log('Code received:', code.substring(0, 20) + '...');
       
       const tokenRequestBody = new URLSearchParams({
@@ -128,7 +147,12 @@ Deno.serve(async (req) => {
         redirect_uri: redirectUri,
       });
 
-      console.log('Token request body:', tokenRequestBody.toString());
+      console.log('Token request to Google:', {
+        url: 'https://oauth2.googleapis.com/token',
+        method: 'POST',
+        redirectUri,
+        clientId: clientId.substring(0, 20) + '...'
+      });
 
       const tokenResponse = await fetch('https://oauth2.googleapis.com/token', {
         method: 'POST',
@@ -146,34 +170,36 @@ Deno.serve(async (req) => {
         console.error('Token exchange failed:', {
           status: tokenResponse.status,
           statusText: tokenResponse.statusText,
-          body: errorText
+          body: errorText,
+          url: tokenResponse.url
         });
         
         return new Response(null, {
           status: 302,
           headers: {
             ...corsHeaders,
-            'Location': `${url.origin}/google-business?error=token_exchange_failed&description=${encodeURIComponent(errorText)}`
+            'Location': `${url.origin}/google-business?error=token_exchange_failed&description=${encodeURIComponent(`Status: ${tokenResponse.status} - ${errorText}`)}`
           }
         });
       }
 
       const tokens: TokenResponse = await tokenResponse.json()
       console.log('Tokens received successfully:', {
-        access_token: tokens.access_token ? 'present' : 'missing',
+        access_token: tokens.access_token ? `present (${tokens.access_token.substring(0, 20)}...)` : 'missing',
         refresh_token: tokens.refresh_token ? 'present' : 'missing',
-        expires_in: tokens.expires_in
+        expires_in: tokens.expires_in,
+        token_type: tokens.token_type
       });
 
-      // Store tokens in the user's metadata or a custom table
-      // For now, we'll redirect back with success
+      // TODO: Store tokens securely in database for the user
+      // For now, we'll just redirect back with success
       console.log('Redirecting to success page...');
       
       return new Response(null, {
         status: 302,
         headers: {
           ...corsHeaders,
-          'Location': `${url.origin}/google-business?success=true`
+          'Location': `${url.origin}/google-business?success=true&tokens_received=true`
         }
       });
     }
@@ -182,18 +208,13 @@ Deno.serve(async (req) => {
     console.error('Google auth error:', error);
     console.error('Error stack:', error.stack);
     
-    return new Response(
-      JSON.stringify({ 
-        error: error.message || 'Authentication failed',
-        details: error.stack
-      }),
-      { 
-        status: 400,
-        headers: { 
-          ...corsHeaders, 
-          'Content-Type': 'application/json'
-        } 
+    const url = new URL(req.url)
+    return new Response(null, {
+      status: 302,
+      headers: {
+        ...corsHeaders,
+        'Location': `${url.origin}/google-business?error=function_error&description=${encodeURIComponent(error.message || 'Authentication failed')}`
       }
-    )
+    });
   }
 })

@@ -42,11 +42,16 @@ const GoogleBusiness = () => {
     const success = urlParams.get('success');
     const error = urlParams.get('error');
     const description = urlParams.get('description');
+    const tokensReceived = urlParams.get('tokens_received');
+    
+    console.log('OAuth callback params:', { success, error, description, tokensReceived });
     
     if (success === 'true') {
       toast({
         title: "Conexão estabelecida",
-        description: "Google Business conectado com sucesso! Agora você pode sincronizar os dados.",
+        description: tokensReceived ? 
+          "Google Business conectado com sucesso! Tokens recebidos." : 
+          "Google Business conectado com sucesso! Agora você pode sincronizar os dados.",
       });
       // Clear the URL parameters
       window.history.replaceState({}, document.title, window.location.pathname);
@@ -57,7 +62,9 @@ const GoogleBusiness = () => {
       if (error === 'access_denied') {
         errorMessage = 'Acesso negado pelo usuário. Você precisa autorizar o acesso para continuar.';
       } else if (error === 'token_exchange_failed') {
-        errorMessage = 'Falha na troca de tokens. Verifique as configurações do OAuth.';
+        errorMessage = `Falha na troca de tokens: ${description || 'Verifique as configurações do OAuth no Google Cloud Console.'}`;
+      } else if (error === 'function_error') {
+        errorMessage = `Erro na função: ${description || 'Erro interno do servidor.'}`;
       } else if (description) {
         errorMessage = `Erro: ${description}`;
       }
@@ -79,6 +86,7 @@ const GoogleBusiness = () => {
 
     try {
       console.log('Iniciando autenticação Google...');
+      console.log('User session:', user?.id);
       
       const { data, error } = await supabase.functions.invoke('google-auth', {
         headers: {
@@ -95,6 +103,9 @@ const GoogleBusiness = () => {
       
       if (data?.authUrl) {
         console.log('Redirecionando para:', data.authUrl);
+        if (data.debug) {
+          console.log('Debug info:', data.debug);
+        }
         // Redirect to Google OAuth
         window.location.href = data.authUrl;
       } else {
@@ -237,15 +248,28 @@ const GoogleBusiness = () => {
             </Alert>
           )}
 
-          {/* Debug information */}
+          {/* Enhanced debug information */}
           <Card className="bg-blue-50 border-blue-200">
             <CardHeader>
-              <CardTitle className="text-sm text-blue-800">Informações de Debug</CardTitle>
+              <CardTitle className="text-sm text-blue-800">Informações de Debug - OAuth 2.0</CardTitle>
             </CardHeader>
-            <CardContent className="text-sm text-blue-700">
+            <CardContent className="text-sm text-blue-700 space-y-2">
               <p><strong>Ambiente:</strong> Frontend React</p>
               <p><strong>URL atual:</strong> {window.location.href}</p>
-              <p><strong>Redirect configurado:</strong> https://kisndnwlvephihwahbrh.supabase.co/functions/v1/google-auth</p>
+              <p><strong>Redirect URI configurado:</strong> https://kisndnwlvephihwahbrh.supabase.co/functions/v1/google-auth</p>
+              <p><strong>User ID:</strong> {user?.id || 'Não autenticado'}</p>
+              <p><strong>Session ativa:</strong> {user ? 'Sim' : 'Não'}</p>
+              
+              <div className="mt-4 p-3 bg-yellow-100 rounded border-l-4 border-yellow-500">
+                <p className="font-semibold text-yellow-800">Checklist para OAuth 2.0:</p>
+                <ul className="mt-2 text-xs text-yellow-700 space-y-1">
+                  <li>✓ Client ID e Client Secret configurados no Supabase</li>
+                  <li>✓ Redirect URI: https://kisndnwlvephihwahbrh.supabase.co/functions/v1/google-auth</li>
+                  <li>🔄 Google Cloud Console - OAuth 2.0 configurado</li>
+                  <li>🔄 Google My Business API habilitada</li>
+                  <li>🔄 Domínios autorizados incluem: kisndnwlvephihwahbrh.supabase.co</li>
+                </ul>
+              </div>
             </CardContent>
           </Card>
 
