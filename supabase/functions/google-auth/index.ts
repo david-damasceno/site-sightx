@@ -25,37 +25,20 @@ Deno.serve(async (req) => {
 
     const supabaseClient = createClient(
       Deno.env.get('SUPABASE_URL') ?? '',
-      Deno.env.get('SUPABASE_ANON_KEY') ?? '',
+      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? '',
     )
-
-    // Get the authorization header
-    const authHeader = req.headers.get('Authorization')
-    if (!authHeader) {
-      console.error('No authorization header found');
-      throw new Error('No authorization header')
-    }
-
-    // Verify the user
-    const { data: { user }, error: userError } = await supabaseClient.auth.getUser(
-      authHeader.replace('Bearer ', '')
-    )
-
-    if (userError || !user) {
-      console.error('User authentication failed:', userError);
-      throw new Error('User not authenticated')
-    }
-
-    console.log('User authenticated:', user.id);
 
     const url = new URL(req.url)
     const code = url.searchParams.get('code')
     const error = url.searchParams.get('error')
     const errorDescription = url.searchParams.get('error_description')
+    const state = url.searchParams.get('state') // Este é o user_id que enviamos
     
     console.log('URL parameters:', {
       code: code ? `present (${code.substring(0, 20)}...)` : 'missing',
       error,
-      errorDescription
+      errorDescription,
+      state: state ? `present (${state})` : 'missing'
     });
 
     if (error) {
@@ -87,6 +70,24 @@ Deno.serve(async (req) => {
 
     if (!code) {
       // Step 1: Generate authorization URL for Business Profile Performance API
+      // Só executamos esta parte se tivermos autorização (primeira chamada)
+      const authHeader = req.headers.get('Authorization')
+      if (!authHeader) {
+        console.error('No authorization header found for auth URL generation');
+        throw new Error('No authorization header')
+      }
+
+      // Verify the user
+      const { data: { user }, error: userError } = await supabaseClient.auth.getUser(
+        authHeader.replace('Bearer ', '')
+      )
+
+      if (userError || !user) {
+        console.error('User authentication failed:', userError);
+        throw new Error('User not authenticated')
+      }
+
+      console.log('User authenticated:', user.id);
       console.log('Generating authorization URL for Business Profile Performance API...');
       
       // Simplified scope for Business Profile Performance API
@@ -105,7 +106,7 @@ Deno.serve(async (req) => {
       authUrl.searchParams.set('response_type', 'code')
       authUrl.searchParams.set('access_type', 'offline')
       authUrl.searchParams.set('prompt', 'consent')
-      authUrl.searchParams.set('state', user.id)
+      authUrl.searchParams.set('state', user.id) // Pass user ID in state
 
       console.log('Generated auth URL:', authUrl.toString());
 
@@ -129,7 +130,22 @@ Deno.serve(async (req) => {
       )
     } else {
       // Step 2: Exchange code for tokens
+      // Aqui não precisamos de autorização porque é o callback do Google
       console.log('Exchanging authorization code for tokens...');
+      
+      if (!state) {
+        console.error('No state parameter found in callback');
+        return new Response(null, {
+          status: 302,
+          headers: {
+            ...corsHeaders,
+            'Location': `${url.origin}/google-business?error=invalid_state&description=${encodeURIComponent('Estado inválido no callback OAuth')}`
+          }
+        });
+      }
+
+      const userId = state; // O state contém o user_id
+      console.log('Processing callback for user:', userId);
       
       const tokenRequestBody = new URLSearchParams({
         client_id: clientId,
@@ -182,7 +198,7 @@ Deno.serve(async (req) => {
       const { error: storeError } = await supabaseClient
         .from('user_google_tokens')
         .upsert({
-          user_id: user.id,
+          user_id: userId,
           access_token: tokens.access_token,
           refresh_token: tokens.refresh_token,
           expires_at: new Date(Date.now() + (tokens.expires_in * 1000)).toISOString(),
@@ -193,7 +209,13 @@ Deno.serve(async (req) => {
 
       if (storeError) {
         console.error('Failed to store tokens:', storeError);
-        // Continue anyway, we can still redirect with success
+        return new Response(null, {
+          status: 302,
+          headers: {
+            ...corsHeaders,
+            'Location': `${url.origin}/google-business?error=token_storage_failed&description=${encodeURIComponent('Falha ao armazenar tokens: ' + storeError.message)}`
+          }
+        });
       } else {
         console.log('Tokens stored successfully');
       }
