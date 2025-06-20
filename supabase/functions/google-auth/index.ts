@@ -65,6 +65,7 @@ Deno.serve(async (req) => {
       throw new Error('Google credentials not configured')
     }
 
+    // Use the exact same redirect URI format that should be configured in Google Cloud Console
     const redirectUri = `https://kisndnwlvephihwahbrh.supabase.co/functions/v1/google-auth`
     console.log('Using redirect URI:', redirectUri);
 
