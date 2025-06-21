@@ -71,7 +71,19 @@ Deno.serve(async (req) => {
 
     if (!code) {
       // Step 1: Generate authorization URL for Business Profile Performance API
-      // Só executamos esta parte se tivermos autorização (primeira chamada)
+      // Esta parte só executa se não há código (primeira chamada) E há autorização
+      if (req.method === 'GET') {
+        // Se é GET sem código, é provavelmente um erro ou callback malformado
+        console.error('GET request without code parameter');
+        return new Response(null, {
+          status: 302,
+          headers: {
+            ...corsHeaders,
+            'Location': `${url.origin}/google-business?error=invalid_request&description=${encodeURIComponent('Requisição inválida - faltando parâmetros')}`
+          }
+        });
+      }
+
       const authHeader = req.headers.get('Authorization')
       if (!authHeader) {
         console.error('No authorization header found for auth URL generation');
@@ -131,7 +143,7 @@ Deno.serve(async (req) => {
       )
     } else {
       // Step 2: Exchange code for tokens
-      // Aqui não precisamos de autorização porque é o callback do Google
+      // Esta parte executa quando o Google redireciona de volta (GET request com código)
       console.log('Exchanging authorization code for tokens...');
       
       if (!state) {
