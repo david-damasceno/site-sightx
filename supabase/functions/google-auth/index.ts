@@ -69,82 +69,10 @@ Deno.serve(async (req) => {
     const redirectUri = `https://kisndnwlvephihwahbrh.supabase.co/functions/v1/google-auth`
     console.log('Using redirect URI:', redirectUri);
 
-    if (!code) {
-      // Step 1: Generate authorization URL for Business Profile Performance API
-      // Esta parte só executa se não há código (primeira chamada) E há autorização
-      if (req.method === 'GET') {
-        // Se é GET sem código, é provavelmente um erro ou callback malformado
-        console.error('GET request without code parameter');
-        return new Response(null, {
-          status: 302,
-          headers: {
-            ...corsHeaders,
-            'Location': `${url.origin}/google-business?error=invalid_request&description=${encodeURIComponent('Requisição inválida - faltando parâmetros')}`
-          }
-        });
-      }
-
-      const authHeader = req.headers.get('Authorization')
-      if (!authHeader) {
-        console.error('No authorization header found for auth URL generation');
-        throw new Error('No authorization header')
-      }
-
-      // Verify the user
-      const { data: { user }, error: userError } = await supabaseClient.auth.getUser(
-        authHeader.replace('Bearer ', '')
-      )
-
-      if (userError || !user) {
-        console.error('User authentication failed:', userError);
-        throw new Error('User not authenticated')
-      }
-
-      console.log('User authenticated:', user.id);
-      console.log('Generating authorization URL for Business Profile Performance API...');
-      
-      // Simplified scope for Business Profile Performance API
-      const scopes = [
-        'https://www.googleapis.com/auth/business.manage',
-        'email',
-        'profile'
-      ].join(' ')
-
-      console.log('Using simplified scopes:', scopes);
-
-      const authUrl = new URL('https://accounts.google.com/o/oauth2/v2/auth')
-      authUrl.searchParams.set('client_id', clientId)
-      authUrl.searchParams.set('redirect_uri', redirectUri)
-      authUrl.searchParams.set('scope', scopes)
-      authUrl.searchParams.set('response_type', 'code')
-      authUrl.searchParams.set('access_type', 'offline')
-      authUrl.searchParams.set('prompt', 'consent')
-      authUrl.searchParams.set('state', user.id) // Pass user ID in state
-
-      console.log('Generated auth URL:', authUrl.toString());
-
-      return new Response(
-        JSON.stringify({ 
-          authUrl: authUrl.toString(),
-          debug: {
-            clientId: clientId.substring(0, 20) + '...',
-            redirectUri,
-            scopes,
-            userId: user.id,
-            apiType: 'Business Profile Performance API'
-          }
-        }),
-        { 
-          headers: { 
-            ...corsHeaders, 
-            'Content-Type': 'application/json'
-          } 
-        }
-      )
-    } else {
-      // Step 2: Exchange code for tokens
-      // Esta parte executa quando o Google redireciona de volta (GET request com código)
-      console.log('Exchanging authorization code for tokens...');
+    // Verificar se há código - se sim, é callback do Google
+    if (code) {
+      // Step 2: Exchange code for tokens - CALLBACK DO GOOGLE
+      console.log('Processing Google callback - exchanging authorization code for tokens...');
       
       if (!state) {
         console.error('No state parameter found in callback');
@@ -240,6 +168,68 @@ Deno.serve(async (req) => {
           'Location': `${url.origin}/google-business?success=true&tokens_stored=true&api_type=business_profile_performance`
         }
       });
+
+    } else {
+      // Step 1: Generate authorization URL - REQUISIÇÃO INICIAL
+      console.log('Generating authorization URL for Business Profile Performance API...');
+      
+      // Para gerar URL de autorização, precisamos verificar se o usuário está autenticado
+      const authHeader = req.headers.get('Authorization')
+      if (!authHeader) {
+        console.error('No authorization header found for auth URL generation');
+        throw new Error('No authorization header for URL generation')
+      }
+
+      // Verify the user
+      const { data: { user }, error: userError } = await supabaseClient.auth.getUser(
+        authHeader.replace('Bearer ', '')
+      )
+
+      if (userError || !user) {
+        console.error('User authentication failed:', userError);
+        throw new Error('User not authenticated')
+      }
+
+      console.log('User authenticated:', user.id);
+      
+      // Simplified scope for Business Profile Performance API
+      const scopes = [
+        'https://www.googleapis.com/auth/business.manage',
+        'email',
+        'profile'
+      ].join(' ')
+
+      console.log('Using simplified scopes:', scopes);
+
+      const authUrl = new URL('https://accounts.google.com/o/oauth2/v2/auth')
+      authUrl.searchParams.set('client_id', clientId)
+      authUrl.searchParams.set('redirect_uri', redirectUri)
+      authUrl.searchParams.set('scope', scopes)
+      authUrl.searchParams.set('response_type', 'code')
+      authUrl.searchParams.set('access_type', 'offline')
+      authUrl.searchParams.set('prompt', 'consent')
+      authUrl.searchParams.set('state', user.id) // Pass user ID in state
+
+      console.log('Generated auth URL:', authUrl.toString());
+
+      return new Response(
+        JSON.stringify({ 
+          authUrl: authUrl.toString(),
+          debug: {
+            clientId: clientId.substring(0, 20) + '...',
+            redirectUri,
+            scopes,
+            userId: user.id,
+            apiType: 'Business Profile Performance API'
+          }
+        }),
+        { 
+          headers: { 
+            ...corsHeaders, 
+            'Content-Type': 'application/json'
+          } 
+        }
+      )
     }
 
   } catch (error) {
